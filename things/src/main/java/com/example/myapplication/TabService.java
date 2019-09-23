@@ -315,7 +315,6 @@ public class TabService extends Fragment {
         super.onResume();
         uiUpdate();
         Log.d(TAG, "run: 系统维护页面onResume");
-        //test
     }
 
 }
