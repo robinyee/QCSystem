@@ -15,8 +15,8 @@ import static android.content.ContentValues.TAG;
 
 public class SysGpio {
     static PeripheralManager manager;
-    static Gpio mGpioOutD1,mGpioOutD2,mGpioOutD3,mGpioOutD4,mGpioOutD5,mGpioOutD6,mGpioOutD7,mGpioOutD8,
-            mGpioOutD9,mGpioOutD10,mGpioOutD11,mGpioOutD12,mGpioOutLED,mGpioOut24V;
+    static Gpio mGpioOutD1, mGpioOutD2, mGpioOutD3, mGpioOutD4, mGpioOutD5, mGpioOutD6, mGpioOutD7, mGpioOutD8,
+            mGpioOutD9, mGpioOutD10, mGpioOutD11, mGpioOutD12, mGpioOutLED, mGpioOut24V;
 
     //仪器控制页面状态
     static boolean statusS1 = false;       //S1状态
@@ -49,7 +49,7 @@ public class SysGpio {
     private static final String GPIO_OUT_24V = "BCM6";  //24V 24V供电
 
 
-    public static void gpioInit(){
+    public static void gpioInit() {
         manager = PeripheralManager.getInstance();
         try {
             //打开Gpio端口
@@ -92,15 +92,15 @@ public class SysGpio {
 
     //设置Gpio输出口的开关状态，端口名称，
     public static void setGpioOut(Gpio mGpioOut, boolean v) {
-        try{
+        try {
             mGpioOut.setValue(v);
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     //S1进水样流程
-    public static void s1_JSY(final int num, final int time){
+    public static void s1_JSY(final int num, final int time) {
 
         new Thread(new Runnable() {
 
@@ -110,11 +110,11 @@ public class SysGpio {
                 statusS1 = true;
                 try {
                     SysGpio.mGpioOutD3.setValue(true);
-                    Log.d(TAG, "run: D3状态"+SysGpio.mGpioOutD3.getValue());
-                    Log.d(TAG, "run: 发送串口启动进样泵指令"+num);
+                    Log.d(TAG, "run: D3状态" + SysGpio.mGpioOutD3.getValue());
+                    Log.d(TAG, "run: 发送串口启动进样泵指令" + num);
                     Thread.sleep(time);
                     SysGpio.mGpioOutD3.setValue(false);
-                    Log.d(TAG, "run: D3状态"+SysGpio.mGpioOutD3.getValue());
+                    Log.d(TAG, "run: D3状态" + SysGpio.mGpioOutD3.getValue());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -128,7 +128,7 @@ public class SysGpio {
     }
 
     //水质分析流程 Demo
-    public static void c1_SZFX(){
+    public static void c1_SZFX() {
         new Thread(new Runnable() {
 
             public void run() {
@@ -136,14 +136,14 @@ public class SysGpio {
                 statusS2 = true;
                 try {
                     SysGpio.mGpioOutD9.setValue(true);
-                    Log.d(TAG, "run: D9状态"+SysGpio.mGpioOutD9.getValue());
-                    s1_JSY(240,3000);  //运行s1进水样流程
+                    Log.d(TAG, "run: D9状态" + SysGpio.mGpioOutD9.getValue());
+                    s1_JSY(240, 3000);  //运行s1进水样流程
                     Thread.sleep(3000);
                     Thread.sleep(1000);
-                    s1_JSY(250,3000);  //运行s1进水样流程
+                    s1_JSY(250, 3000);  //运行s1进水样流程
                     Thread.sleep(3000);
                     SysGpio.mGpioOutD9.setValue(false);
-                    Log.d(TAG, "run: D9状态"+SysGpio.mGpioOutD9.getValue());
+                    Log.d(TAG, "run: D9状态" + SysGpio.mGpioOutD9.getValue());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {

@@ -100,7 +100,7 @@ public class UartCom {
                 int read;
                 String msg = null;
                 while ((read = mUartDevice.read(buffer, buffer.length)) > 0) {
-                    String text =  new String(buffer, 0, read);
+                    String text = new String(buffer, 0, read);
                     msg = msg + text;
                     Log.w(TAG, "read from PC:" + text);
                     //byte[] srtbyte = text.getBytes();
@@ -108,7 +108,7 @@ public class UartCom {
                     //mUartDevice.write(srtbyte, srtbyte.length);
                 }
                 //校验返回的数据是否出错
-                if(msg != null) {
+                if (msg != null) {
                     boolean result = checkData(msg.getBytes(), 2);
                     if (result) {
                         backMsg = msg;
@@ -130,7 +130,7 @@ public class UartCom {
      * 发送字节数组
      *
      * @param bytes 需要发送的byte数组
-     * @param num  校验和位数
+     * @param num   校验和位数
      * @return 返回校验结果
      */
     public boolean checkData(byte bytes[], int num) {
@@ -140,7 +140,7 @@ public class UartCom {
         System.arraycopy(bytes, 0, newBytes, 0, bytes.length - num);
         System.arraycopy(bytes, bytes.length - num, sumBytes, 0, num);
         byte result[] = SumCheck(newBytes, num);
-        if(result.equals(sumBytes)) {
+        if (result.equals(sumBytes)) {
             return true;
         } else {
             return false;
@@ -148,7 +148,7 @@ public class UartCom {
     }
 
     //发送字符串
-    public void sendMsg(String text){
+    public void sendMsg(String text) {
         byte[] srtbyte = text.getBytes();
         try {
             mUartDevice.write(srtbyte, srtbyte.length);
@@ -160,14 +160,14 @@ public class UartCom {
     /**
      * 发送字节数组
      *
-     * @param bytes 需要发送的byte数组
+     * @param bytes      需要发送的byte数组
      * @param isSumCheck 是否进行校验和
-     * @param num  校验和位数
+     * @param num        校验和位数
      * @return 返回发送的字节数，返回-1发送失败
      */
-    public int sendBytes(byte bytes[], boolean isSumCheck, int num){
+    public int sendBytes(byte bytes[], boolean isSumCheck, int num) {
         //计算字节码的和校验值，并添加到待发送数字bytes后面
-        if(isSumCheck){
+        if (isSumCheck) {
             byte newBytes[] = new byte[bytes.length + num];
             byte add[] = SumCheck(bytes, num);
             System.arraycopy(bytes, 0, newBytes, 0, bytes.length);
@@ -186,7 +186,7 @@ public class UartCom {
     /**
      * 校验和
      *
-     * @param msg 需要计算校验和的byte数组
+     * @param msg    需要计算校验和的byte数组
      * @param length 校验和位数
      * @return 计算出的校验和数组
      */

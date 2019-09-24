@@ -2,15 +2,18 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.things.device.TimeManager;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TableLayout;
+
 import com.instacart.library.truetime.TrueTime;
+
 import java.io.IOException;
 import java.util.Date;
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         loadTabPager();
 
         //第一次运行获取网络时间，每天零时网络校时
-        if(!SysData.isGetNetTime){
+        if (!SysData.isGetNetTime) {
             setSysTime();
         }
 
@@ -76,8 +79,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //系统时间同步为网络时间
-    private void setSysTime()
-    {
+    private void setSysTime() {
         Log.i("MainActivity", "准备获取网络时间");
         new Thread(new Runnable() {
             @Override
@@ -85,21 +87,21 @@ public class MainActivity extends AppCompatActivity {
                 Date date = null; //new Date(System.currentTimeMillis());  //初始时间从系统获取
                 int isOK = 0;
                 int max = 10;
-                do{
+                do {
                     try {
                         TrueTime.build().initialize();
                         date = TrueTime.now();
                         Log.i("MainActivity", "获取网络时间成功");
-                        Log.i("MainActivity", "网络时间："+date.toString());
-                        Log.i("MainActivity", "网络时间："+date.getTime());
+                        Log.i("MainActivity", "网络时间：" + date.toString());
+                        Log.i("MainActivity", "网络时间：" + date.getTime());
                     } catch (IOException e) {
                         //e.printStackTrace();
                     }
-                    if(date != null){
+                    if (date != null) {
                         timeManager.setTime(date.getTime());
                         isOK = max;
                         SysData.isGetNetTime = true;
-                    }else {
+                    } else {
                         isOK = isOK + 1;
                     }
                     try {
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }while(isOK < max || SysData.isGetNetTime == false);
+                } while (isOK < max || SysData.isGetNetTime == false);
 
                 timeManager.setTimeFormat(TimeManager.FORMAT_24); //设置24小时格式
                 timeManager.setTimeZone("Asia/Shanghai"); //设置时区

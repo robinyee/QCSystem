@@ -21,10 +21,10 @@ import java.io.IOException;
 import static android.content.ContentValues.TAG;
 
 public class TabService extends Fragment {
-    private Switch aSwitchD1,aSwitchD2,aSwitchD3,aSwitchD4,aSwitchD5,aSwitchD6, aSwitchD7,aSwitchD8,
-            aSwitchD9,aSwitchD10,aSwitchD11,aSwitchD12,aSwitchLED,aSwitchV24;
-    private Switch aSwitchS1,aSwitchS2,aSwitchS3,aSwitchS4,aSwitchS5,aSwitchS6, aSwitchS7,aSwitchS8,
-            aSwitchS9,aSwitchS10,aSwitchS11,aSwitchS12;
+    private Switch aSwitchD1, aSwitchD2, aSwitchD3, aSwitchD4, aSwitchD5, aSwitchD6, aSwitchD7, aSwitchD8,
+            aSwitchD9, aSwitchD10, aSwitchD11, aSwitchD12, aSwitchLED, aSwitchV24;
+    private Switch aSwitchS1, aSwitchS2, aSwitchS3, aSwitchS4, aSwitchS5, aSwitchS6, aSwitchS7, aSwitchS8,
+            aSwitchS9, aSwitchS10, aSwitchS11, aSwitchS12;
 
 
     //获取线程发送的Msg信息，更新对于UI界面
@@ -33,8 +33,8 @@ public class TabService extends Fragment {
     @SuppressLint("HandlerLeak")
     private Handler handlerUpdate = new Handler() {
         @Override
-        public void handleMessage(Message msg){
-            if(msg.what == UI_UPDATE){
+        public void handleMessage(Message msg) {
+            if (msg.what == UI_UPDATE) {
                 uiUpdate();
                 //Log.d(TAG, "run: 更新界面");
             }
@@ -252,7 +252,7 @@ public class TabService extends Fragment {
         aSwitchS1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(aSwitchS1.isChecked() && !SysGpio.statusS1) {
+                if (aSwitchS1.isChecked() && !SysGpio.statusS1) {
                     SysGpio.s1_JSY(200, 3000);
                 }
             }
@@ -262,7 +262,7 @@ public class TabService extends Fragment {
         aSwitchS2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(aSwitchS2.isChecked() && !SysGpio.statusS2) {
+                if (aSwitchS2.isChecked() && !SysGpio.statusS2) {
                     SysGpio.c1_SZFX();
                 }
             }
@@ -273,7 +273,7 @@ public class TabService extends Fragment {
 
 
     //刷新界面输出状态
-    public void uiUpdate(){
+    public void uiUpdate() {
         try {
             //基本输出
             aSwitchD1.setChecked(SysGpio.mGpioOutD1.getValue());
