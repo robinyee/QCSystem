@@ -16,13 +16,61 @@ public class UartCom {
     private int STOP_BITS = 1;
     private int CHUNK_SIZE = 1024;
     private UartDevice mUartDevice;
-    public static String backMsg;
+    private String backMsg;
 
     public UartCom(String UART_DEVICE_NAME, int BAUD_RATE, int DATA_BITS, int STOP_BITS) {
         this.UART_DEVICE_NAME = UART_DEVICE_NAME;
         this.BAUD_RATE = BAUD_RATE;
         this.DATA_BITS = DATA_BITS;
         this.STOP_BITS = STOP_BITS;
+    }
+
+    public String getUART_DEVICE_NAME() {
+        return UART_DEVICE_NAME;
+    }
+
+    public void setUART_DEVICE_NAME(String UART_DEVICE_NAME) {
+        this.UART_DEVICE_NAME = UART_DEVICE_NAME;
+    }
+
+    public int getBAUD_RATE() {
+        return BAUD_RATE;
+    }
+
+    public void setBAUD_RATE(int BAUD_RATE) {
+        this.BAUD_RATE = BAUD_RATE;
+    }
+
+    public int getDATA_BITS() {
+        return DATA_BITS;
+    }
+
+    public void setDATA_BITS(int DATA_BITS) {
+        this.DATA_BITS = DATA_BITS;
+    }
+
+    public int getSTOP_BITS() {
+        return STOP_BITS;
+    }
+
+    public void setSTOP_BITS(int STOP_BITS) {
+        this.STOP_BITS = STOP_BITS;
+    }
+
+    public int getCHUNK_SIZE() {
+        return CHUNK_SIZE;
+    }
+
+    public void setCHUNK_SIZE(int CHUNK_SIZE) {
+        this.CHUNK_SIZE = CHUNK_SIZE;
+    }
+
+    public String getBackMsg() {
+        return backMsg;
+    }
+
+    public void setBackMsg(String backMsg) {
+        this.backMsg = backMsg;
     }
 
     public void openUart() {
@@ -138,7 +186,7 @@ public class UartCom {
     /**
      * 校验和
      *
-     * @param msg    需要计算校验和的byte数组
+     * @param msg 需要计算校验和的byte数组
      * @param length 校验和位数
      * @return 计算出的校验和数组
      */
