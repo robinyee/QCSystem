@@ -9,7 +9,7 @@ import com.google.android.things.pio.UartDeviceCallback;
 import java.io.IOException;
 
 public class UartCom {
-    private String TAG = "UartTest";
+    private String TAG = "UartCom";
     private String UART_DEVICE_NAME = "UART0";
     private int BAUD_RATE = 115200;
     private int DATA_BITS = 8;
