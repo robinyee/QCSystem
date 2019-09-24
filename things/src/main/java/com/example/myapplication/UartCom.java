@@ -138,7 +138,7 @@ public class UartCom {
         byte newBytes[] = new byte[bytes.length - num];
         byte sumBytes[] = new byte[num];
         System.arraycopy(bytes, 0, newBytes, 0, bytes.length - num);
-        System.arraycopy(bytes, bytes.length - num - 1, sumBytes, 0, num);
+        System.arraycopy(bytes, bytes.length - num, sumBytes, 0, num);
         byte result[] = SumCheck(newBytes, num);
         if(result.equals(sumBytes)) {
             return true;
