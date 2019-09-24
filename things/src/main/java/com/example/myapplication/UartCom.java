@@ -14,7 +14,7 @@ public class UartCom {
     private int BAUD_RATE = 115200;
     private int DATA_BITS = 8;
     private int STOP_BITS = 1;
-    private int CHUNK_SIZE = 512;
+    private int CHUNK_SIZE = 1024;
     private UartDevice mUartDevice;
 
     public UartCom(String UART_DEVICE_NAME, int BAUD_RATE, int DATA_BITS, int STOP_BITS) {
@@ -52,9 +52,9 @@ public class UartCom {
                 while ((read = mUartDevice.read(buffer, buffer.length)) > 0) {
                     String text = new String(buffer, 0, read);
                     Log.w(TAG, "read from PC:" + text);
-                    byte[] srtbyte = text.getBytes();
+                    //byte[] srtbyte = text.getBytes();
                     //mUartDevice.write(buffer, read);
-                    mUartDevice.write(srtbyte, srtbyte.length);
+                    //mUartDevice.write(srtbyte, srtbyte.length);
                 }
             } catch (IOException e) {
                 Log.w(TAG, "Unable to transfer data over UART", e);
