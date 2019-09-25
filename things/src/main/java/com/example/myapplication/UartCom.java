@@ -129,7 +129,7 @@ public class UartCom {
     /**
      * 校验接收的数据是否正确
      *
-     * @param bytes 需要发送的byte数组
+     * @param bytes 接收的byte数组
      * @param num   校验和位数
      * @return 返回校验结果
      */
