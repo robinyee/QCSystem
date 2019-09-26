@@ -19,6 +19,7 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     private TimeManager timeManager = TimeManager.getInstance();
+    public static UartCom com1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +38,17 @@ public class MainActivity extends AppCompatActivity {
         //打开并初始化Gpio端口
         SysGpio.gpioInit();
 
+        //打开串口通讯
+        com1 = new UartCom("UART0", 115200, 8, 1);
+        com1.openUart();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SysGpio.onClose();
+        SysGpio.onClose();  //关闭Gpio输入输出
+        com1.closeUart();   //关闭com1串口通信
     }
 
     private void loadTabPager() {

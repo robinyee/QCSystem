@@ -80,6 +80,12 @@ public class TabService extends Fragment {
         message = handlerUpdate.obtainMessage(UI_UPDATE);
         handlerUpdate.sendMessageDelayed(message, 1000);
 
+        //打开串口通讯
+        //UartCom com1 = new UartCom("UART0", 115200, 8, 1);
+        //com1.openUart();
+        MainActivity.com1.sendMsg("hello");  //测试串口通信，发送数据
+
+
         //SwitchD1按钮点击
         aSwitchD1.setOnClickListener(new View.OnClickListener() {
             @Override

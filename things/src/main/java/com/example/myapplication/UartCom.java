@@ -85,7 +85,7 @@ public class UartCom {
             mUartDevice.setStopBits(STOP_BITS);
             //注册数据监听，在有数据可读的时候回调
             mUartDevice.registerUartDeviceCallback(mUartDeviceCallback);
-            Log.w(TAG, "Opened the UART0");
+            Log.w(TAG, "打开端口：" + this.UART_DEVICE_NAME);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -152,6 +152,7 @@ public class UartCom {
         byte[] srtbyte = text.getBytes();
         try {
             mUartDevice.write(srtbyte, srtbyte.length);
+            Log.w(TAG, "已发送数据：" + text);
         } catch (IOException e) {
             e.printStackTrace();
         }
