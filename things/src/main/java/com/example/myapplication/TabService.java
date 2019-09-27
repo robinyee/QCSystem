@@ -21,8 +21,8 @@ import java.io.IOException;
 import static android.content.ContentValues.TAG;
 
 public class TabService extends Fragment {
-    private Switch aSwitchD1, aSwitchD2, aSwitchD3, aSwitchD4, aSwitchD5, aSwitchD6, aSwitchD7, aSwitchD8,
-            aSwitchD9, aSwitchD10, aSwitchD11, aSwitchD12, aSwitchLED, aSwitchV24;
+    private Switch aSwitchD1, aSwitchD2, aSwitchD3, aSwitchD4, aSwitchD5, aSwitchD6, aSwitchD7, aSwitchD8, aSwitchD9,
+            aSwitchD10, aSwitchD11, aSwitchD12, aSwitchLED, aSwitchV24, aSwitchDC1, aSwitchRE1, aSwitchDC2, aSwitchRE2;
     private Switch aSwitchS1, aSwitchS2, aSwitchS3, aSwitchS4, aSwitchS5, aSwitchS6, aSwitchS7, aSwitchS8,
             aSwitchS9, aSwitchS10, aSwitchS11, aSwitchS12;
 
@@ -61,6 +61,10 @@ public class TabService extends Fragment {
         aSwitchD12 = (Switch) view.findViewById(R.id.d12);
         aSwitchLED = (Switch) view.findViewById(R.id.led);
         aSwitchV24 = (Switch) view.findViewById(R.id.v24);
+        aSwitchDC1 = (Switch) view.findViewById(R.id.dc1);
+        aSwitchRE1 = (Switch) view.findViewById(R.id.dc1_r);
+        aSwitchDC2 = (Switch) view.findViewById(R.id.dc2);
+        aSwitchRE2 = (Switch) view.findViewById(R.id.dc2_r);
 
         //流程控制Switch按钮赋值
         aSwitchS1 = (Switch) view.findViewById(R.id.s1);
@@ -248,6 +252,54 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOut24V.setValue(aSwitchV24.isChecked());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //SwitchDC1按钮点击
+        aSwitchDC1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    SysGpio.mGpioOutDC1.setValue(aSwitchDC1.isChecked());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //SwitchRE1按钮点击
+        aSwitchRE1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    SysGpio.mGpioOutRE1.setValue(aSwitchRE1.isChecked());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //SwitchDC2按钮点击
+        aSwitchDC2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    SysGpio.mGpioOutDC2.setValue(aSwitchDC2.isChecked());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //SwitchRE1按钮点击
+        aSwitchRE2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    SysGpio.mGpioOutRE2.setValue(aSwitchRE2.isChecked());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

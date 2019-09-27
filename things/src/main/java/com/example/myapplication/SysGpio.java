@@ -15,8 +15,8 @@ import static android.content.ContentValues.TAG;
 
 public class SysGpio {
     static PeripheralManager manager;
-    static Gpio mGpioOutD1, mGpioOutD2, mGpioOutD3, mGpioOutD4, mGpioOutD5, mGpioOutD6, mGpioOutD7, mGpioOutD8,
-            mGpioOutD9, mGpioOutD10, mGpioOutD11, mGpioOutD12, mGpioOutLED, mGpioOut24V;
+    static Gpio mGpioOutD1, mGpioOutD2, mGpioOutD3, mGpioOutD4, mGpioOutD5, mGpioOutD6, mGpioOutD7, mGpioOutD8, mGpioOutD9,
+            mGpioOutD10, mGpioOutD11, mGpioOutD12, mGpioOutLED, mGpioOut24V, mGpioOutDC1, mGpioOutRE1, mGpioOutDC2, mGpioOutRE2;
 
     //仪器控制页面状态
     static boolean statusS1 = false;       //S1状态
@@ -47,6 +47,10 @@ public class SysGpio {
     private static final String GPIO_OUT_D12 = "BCM8";  //D12
     private static final String GPIO_OUT_LED = "BCM21";  //LED 3.5V LED灯开关量输出
     private static final String GPIO_OUT_24V = "BCM6";  //24V 24V供电
+    private static final String GPIO_OUT_DC1 = "BCM7";  //DC1正转
+    private static final String GPIO_OUT_RE1 = "BCM5";  //DC1反转
+    private static final String GPIO_OUT_DC2 = "BCM12";  //DC2正转
+    private static final String GPIO_OUT_RE2 = "BCM13";  //DC2反转
 
 
     public static void gpioInit() {
@@ -67,6 +71,10 @@ public class SysGpio {
             mGpioOutD12 = manager.openGpio(GPIO_OUT_D12);
             mGpioOutLED = manager.openGpio(GPIO_OUT_LED);
             mGpioOut24V = manager.openGpio(GPIO_OUT_24V);
+            mGpioOutDC1 = manager.openGpio(GPIO_OUT_DC1);
+            mGpioOutRE1 = manager.openGpio(GPIO_OUT_RE1);
+            mGpioOutDC2 = manager.openGpio(GPIO_OUT_DC2);
+            mGpioOutRE2 = manager.openGpio(GPIO_OUT_RE2);
 
             //初始化Gpio端口的状态
             mGpioOutD1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
@@ -83,6 +91,10 @@ public class SysGpio {
             mGpioOutD12.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
             mGpioOutLED.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
             mGpioOut24V.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutDC1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutRE1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutDC2.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutRE2.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -182,10 +194,14 @@ public class SysGpio {
             mGpioOutD11 = null;
             mGpioOutD12.close();
             mGpioOutD12 = null;
-            mGpioOutLED.close();
-            mGpioOutLED = null;
-            mGpioOut24V.close();
-            mGpioOut24V = null;
+            mGpioOutDC1.close();
+            mGpioOutDC1 = null;
+            mGpioOutRE1.close();
+            mGpioOutRE1 = null;
+            mGpioOutDC2.close();
+            mGpioOutDC2 = null;
+            mGpioOutRE2.close();
+            mGpioOutRE2 = null;
         } catch (IOException e) {
             e.printStackTrace();
         }

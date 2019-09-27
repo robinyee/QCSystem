@@ -48,7 +48,6 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:checked="true"
                         android:theme="@style/MySwitch"
                         android:text="D1" />
                     <Switch
@@ -134,6 +133,34 @@
                 </TableRow>
                 <TableRow
                     android:layout_marginTop="10dp">
+                    <Switch
+                        android:id="@+id/dc1"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:theme="@style/MySwitch"
+                        android:text="DC1"/>
+                    <Switch
+                        android:id="@+id/dc1_r"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:theme="@style/MySwitch"
+                        android:text="RE1"/>
+                    <Switch
+                        android:id="@+id/dc2"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:theme="@style/MySwitch"
+                        android:text="DC2"/>
+                    <Switch
+                        android:id="@+id/dc2_r"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:theme="@style/MySwitch"
+                        android:text="RE2"/>
                     <Switch
                         android:id="@+id/led"
                         android:layout_width="80dp"
