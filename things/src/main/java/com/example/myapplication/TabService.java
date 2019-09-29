@@ -264,6 +264,10 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutDC1.setValue(aSwitchDC1.isChecked());
+                    if(SysGpio.mGpioOutDC1.getValue()) {
+                        SysGpio.mGpioOutRE1.setValue(false);
+                        aSwitchRE1.setChecked(false);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -276,6 +280,10 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutRE1.setValue(aSwitchRE1.isChecked());
+                    if(SysGpio.mGpioOutRE1.getValue()) {
+                        SysGpio.mGpioOutDC1.setValue(false);
+                        aSwitchDC1.setChecked(false);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -288,6 +296,10 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutDC2.setValue(aSwitchDC2.isChecked());
+                    if(SysGpio.mGpioOutDC2.getValue()) {
+                        SysGpio.mGpioOutRE2.setValue(false);
+                        aSwitchRE2.setChecked(false);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -300,6 +312,10 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutRE2.setValue(aSwitchRE2.isChecked());
+                    if(SysGpio.mGpioOutRE2.getValue()) {
+                        SysGpio.mGpioOutDC2.setValue(false);
+                        aSwitchDC2.setChecked(false);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

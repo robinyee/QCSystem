@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         SysGpio.gpioInit();
 
         //打开串口通讯
-        com1 = new UartCom("UART0", 115200, 8, 1);
+        com1 = new UartCom("USB1-1.4:1.0", 9600, 8, 1);// "USB1-1.4:1.0"为U转串接口
         com1.openUart();
 
     }

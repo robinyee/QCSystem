@@ -108,28 +108,28 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="D9"/>
+                        android:text="P1"/>
                     <Switch
                         android:id="@+id/d10"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="D10"/>
+                        android:text="P2"/>
                     <Switch
                         android:id="@+id/d11"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="D11"/>
+                        android:text="H1"/>
                     <Switch
                         android:id="@+id/d12"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="D12"/>
+                        android:text="B1"/>
                 </TableRow>
                 <TableRow
                     android:layout_marginTop="10dp">
@@ -139,28 +139,28 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="DC1"/>
+                        android:text="M1F"/>
                     <Switch
                         android:id="@+id/dc1_r"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="RE1"/>
+                        android:text="M1R"/>
                     <Switch
                         android:id="@+id/dc2"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="DC2"/>
+                        android:text="M2F"/>
                     <Switch
                         android:id="@+id/dc2_r"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="RE2"/>
+                        android:text="M2R"/>
                     <Switch
                         android:id="@+id/led"
                         android:layout_width="80dp"
