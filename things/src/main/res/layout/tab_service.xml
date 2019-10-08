@@ -103,28 +103,28 @@
                         android:theme="@style/MySwitch"
                         android:text="D8"/>
                     <Switch
-                        android:id="@+id/d9"
+                        android:id="@+id/p1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
                         android:text="P1"/>
                     <Switch
-                        android:id="@+id/d10"
+                        android:id="@+id/p2"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
                         android:text="P2"/>
                     <Switch
-                        android:id="@+id/d11"
+                        android:id="@+id/h1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
                         android:text="H1"/>
                     <Switch
-                        android:id="@+id/d12"
+                        android:id="@+id/b1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"

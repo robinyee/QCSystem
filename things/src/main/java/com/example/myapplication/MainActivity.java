@@ -19,7 +19,7 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     private TimeManager timeManager = TimeManager.getInstance();
-    public static UartCom com1;
+    public static UartCom com0, com1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +35,24 @@ public class MainActivity extends AppCompatActivity {
             setSysTime();
         }
 
-        //打开并初始化Gpio端口
-        SysGpio.gpioInit();
+        //打开串口通讯
+        com0 = new UartCom("UART0", 9600, 8, 1);// "UART0"为TLL串口
+        com0.openUart();
+        //byte bytes[] = new byte[]{(byte) 0x01, (byte) 0x03, (byte) 0x00, (byte) 0x10, (byte) 0x00, (byte) 0x01, (byte) 0x85, (byte) 0xCF};
+        //com0.sendBytes(bytes, false, 0);
 
+        /*
         //打开串口通讯
         com1 = new UartCom("USB1-1.4:1.0", 9600, 8, 1);// "USB1-1.4:1.0"为U转串接口
         com1.openUart();
+
+         */
+
+
+        //打开并初始化Gpio端口
+        SysGpio.gpioInit();
+
+
 
     }
 

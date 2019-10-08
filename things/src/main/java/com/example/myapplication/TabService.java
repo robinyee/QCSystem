@@ -21,8 +21,8 @@ import java.io.IOException;
 import static android.content.ContentValues.TAG;
 
 public class TabService extends Fragment {
-    private Switch aSwitchD1, aSwitchD2, aSwitchD3, aSwitchD4, aSwitchD5, aSwitchD6, aSwitchD7, aSwitchD8, aSwitchD9,
-            aSwitchD10, aSwitchD11, aSwitchD12, aSwitchLED, aSwitchV24, aSwitchDC1, aSwitchRE1, aSwitchDC2, aSwitchRE2;
+    private Switch aSwitchD1, aSwitchD2, aSwitchD3, aSwitchD4, aSwitchD5, aSwitchD6, aSwitchD7, aSwitchD8, aSwitchP1,
+            aSwitchP2, aSwitchH1, aSwitchB1, aSwitchLED, aSwitchV24, aSwitchDC1, aSwitchRE1, aSwitchDC2, aSwitchRE2;
     private Switch aSwitchS1, aSwitchS2, aSwitchS3, aSwitchS4, aSwitchS5, aSwitchS6, aSwitchS7, aSwitchS8,
             aSwitchS9, aSwitchS10, aSwitchS11, aSwitchS12;
 
@@ -55,10 +55,10 @@ public class TabService extends Fragment {
         aSwitchD6 = (Switch) view.findViewById(R.id.d6);
         aSwitchD7 = (Switch) view.findViewById(R.id.d7);
         aSwitchD8 = (Switch) view.findViewById(R.id.d8);
-        aSwitchD9 = (Switch) view.findViewById(R.id.d9);
-        aSwitchD10 = (Switch) view.findViewById(R.id.d10);
-        aSwitchD11 = (Switch) view.findViewById(R.id.d11);
-        aSwitchD12 = (Switch) view.findViewById(R.id.d12);
+        aSwitchP1 = (Switch) view.findViewById(R.id.p1);
+        aSwitchP2 = (Switch) view.findViewById(R.id.p2);
+        aSwitchH1 = (Switch) view.findViewById(R.id.h1);
+        aSwitchB1 = (Switch) view.findViewById(R.id.b1);
         aSwitchLED = (Switch) view.findViewById(R.id.led);
         aSwitchV24 = (Switch) view.findViewById(R.id.v24);
         aSwitchDC1 = (Switch) view.findViewById(R.id.dc1);
@@ -87,7 +87,7 @@ public class TabService extends Fragment {
         //打开串口通讯
         //UartCom com1 = new UartCom("UART0", 115200, 8, 1);
         //com1.openUart();
-        MainActivity.com1.sendMsg("hello");  //测试串口通信，发送数据
+        //MainActivity.com1.sendMsg("hello");  //测试串口通信，发送数据
 
 
         //SwitchD1按钮点击
@@ -186,48 +186,48 @@ public class TabService extends Fragment {
             }
         });
 
-        //SwitchD9按钮点击
-        aSwitchD9.setOnClickListener(new View.OnClickListener() {
+        //SwitchP1按钮点击
+        aSwitchP1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    SysGpio.mGpioOutD9.setValue(aSwitchD9.isChecked());
+                    SysGpio.mGpioOutP1.setValue(aSwitchP1.isChecked());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        //SwitchD10按钮点击
-        aSwitchD10.setOnClickListener(new View.OnClickListener() {
+        //SwitchP2按钮点击
+        aSwitchP2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    SysGpio.mGpioOutD10.setValue(aSwitchD10.isChecked());
+                    SysGpio.mGpioOutP2.setValue(aSwitchP2.isChecked());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        //SwitchD11按钮点击
-        aSwitchD11.setOnClickListener(new View.OnClickListener() {
+        //SwitchH1按钮点击
+        aSwitchH1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    SysGpio.mGpioOutD11.setValue(aSwitchD11.isChecked());
+                    SysGpio.mGpioOutH1.setValue(aSwitchH1.isChecked());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        //SwitchD12按钮点击
-        aSwitchD12.setOnClickListener(new View.OnClickListener() {
+        //SwitchB1按钮点击
+        aSwitchB1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    SysGpio.mGpioOutD12.setValue(aSwitchD12.isChecked());
+                    SysGpio.mGpioOutB1.setValue(aSwitchB1.isChecked());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -342,6 +342,23 @@ public class TabService extends Fragment {
             }
         });
 
+        //SwitchS5按钮点击
+        aSwitchS5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS5.isChecked() && !SysGpio.statusS5) {
+                    SysGpio.statusS5 = true;
+                    //读取温度
+                    SysGpio.readTempFlag = true;
+                    SysGpio.readTemp();
+                } else {
+                    SysGpio.readTempFlag = false;
+                    SysGpio.statusS5 = false;
+                }
+            }
+        });
+
+
         return view;
     }
 
@@ -358,10 +375,10 @@ public class TabService extends Fragment {
             aSwitchD6.setChecked(SysGpio.mGpioOutD6.getValue());
             aSwitchD7.setChecked(SysGpio.mGpioOutD7.getValue());
             aSwitchD8.setChecked(SysGpio.mGpioOutD8.getValue());
-            aSwitchD9.setChecked(SysGpio.mGpioOutD9.getValue());
-            aSwitchD10.setChecked(SysGpio.mGpioOutD10.getValue());
-            aSwitchD11.setChecked(SysGpio.mGpioOutD11.getValue());
-            aSwitchD12.setChecked(SysGpio.mGpioOutD12.getValue());
+            aSwitchP1.setChecked(SysGpio.mGpioOutP1.getValue());
+            aSwitchP2.setChecked(SysGpio.mGpioOutP2.getValue());
+            aSwitchH1.setChecked(SysGpio.mGpioOutH1.getValue());
+            aSwitchB1.setChecked(SysGpio.mGpioOutB1.getValue());
             aSwitchLED.setChecked(SysGpio.mGpioOutLED.getValue());
             aSwitchV24.setChecked(SysGpio.mGpioOut24V.getValue());
 

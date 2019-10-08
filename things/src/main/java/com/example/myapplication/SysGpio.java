@@ -15,8 +15,9 @@ import static android.content.ContentValues.TAG;
 
 public class SysGpio {
     static PeripheralManager manager;
-    static Gpio mGpioOutD1, mGpioOutD2, mGpioOutD3, mGpioOutD4, mGpioOutD5, mGpioOutD6, mGpioOutD7, mGpioOutD8, mGpioOutD9,
-            mGpioOutD10, mGpioOutD11, mGpioOutD12, mGpioOutLED, mGpioOut24V, mGpioOutDC1, mGpioOutRE1, mGpioOutDC2, mGpioOutRE2;
+    static Gpio mGpioOutD1, mGpioOutD2, mGpioOutD3, mGpioOutD4, mGpioOutD5, mGpioOutD6, mGpioOutD7, mGpioOutD8, mGpioOutP1,
+            mGpioOutP2, mGpioOutH1, mGpioOutB1, mGpioOutLED, mGpioOut24V, mGpioOutDC1, mGpioOutRE1, mGpioOutDC2, mGpioOutRE2;
+    static boolean readTempFlag = false; //是否持续读取温度
 
     //仪器控制页面状态
     static boolean statusS1 = false;       //S1状态
@@ -41,10 +42,10 @@ public class SysGpio {
     private static final String GPIO_OUT_D6 = "BCM23";  //D6
     private static final String GPIO_OUT_D7 = "BCM24";  //D7
     private static final String GPIO_OUT_D8 = "BCM10";  //D8
-    private static final String GPIO_OUT_D9 = "BCM9";  //D9
-    private static final String GPIO_OUT_D10 = "BCM25";  //D10
-    private static final String GPIO_OUT_D11 = "BCM11";  //D11
-    private static final String GPIO_OUT_D12 = "BCM8";  //D12
+    private static final String GPIO_OUT_P1 = "BCM9";   //P1
+    private static final String GPIO_OUT_P2 = "BCM25";  //P2
+    private static final String GPIO_OUT_H1 = "BCM11";  //H1
+    private static final String GPIO_OUT_B1 = "BCM8";   //B1
     private static final String GPIO_OUT_LED = "BCM21";  //LED 3.5V LED灯开关量输出
     private static final String GPIO_OUT_24V = "BCM6";  //24V 24V供电
     private static final String GPIO_OUT_DC1 = "BCM7";  //DC1正转
@@ -65,10 +66,10 @@ public class SysGpio {
             mGpioOutD6 = manager.openGpio(GPIO_OUT_D6);
             mGpioOutD7 = manager.openGpio(GPIO_OUT_D7);
             mGpioOutD8 = manager.openGpio(GPIO_OUT_D8);
-            mGpioOutD9 = manager.openGpio(GPIO_OUT_D9);
-            mGpioOutD10 = manager.openGpio(GPIO_OUT_D10);
-            mGpioOutD11 = manager.openGpio(GPIO_OUT_D11);
-            mGpioOutD12 = manager.openGpio(GPIO_OUT_D12);
+            mGpioOutP1 = manager.openGpio(GPIO_OUT_P1);
+            mGpioOutP2 = manager.openGpio(GPIO_OUT_P2);
+            mGpioOutH1 = manager.openGpio(GPIO_OUT_H1);
+            mGpioOutB1 = manager.openGpio(GPIO_OUT_B1);
             mGpioOutLED = manager.openGpio(GPIO_OUT_LED);
             mGpioOut24V = manager.openGpio(GPIO_OUT_24V);
             mGpioOutDC1 = manager.openGpio(GPIO_OUT_DC1);
@@ -85,10 +86,10 @@ public class SysGpio {
             mGpioOutD6.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
             mGpioOutD7.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
             mGpioOutD8.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
-            mGpioOutD9.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
-            mGpioOutD10.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
-            mGpioOutD11.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
-            mGpioOutD12.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutP1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutP2.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutH1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutB1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
             mGpioOutLED.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
             mGpioOut24V.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
             mGpioOutDC1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
@@ -111,6 +112,33 @@ public class SysGpio {
         }
     }
 
+    //读取温度
+    public static void readTemp() {
+        Log.d(TAG, "run: 开始读取温度");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "run: 开始读取温度");
+                do {
+                    byte bytes3[] = new byte[]{(byte) 0xCC, (byte) 0x03, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
+                    MainActivity.com0.sendBytes(bytes3, true, 2);
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    byte bytes4[] = new byte[]{(byte) 0xCC, (byte) 0x03, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
+                    MainActivity.com0.sendBytes(bytes4, true, 2);
+                    try {
+                        Thread.sleep(800);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } while (readTempFlag);
+            }
+        }).start();
+    }
+
     //S1进水样流程
     public static void s1_JSY(final int num, final int time) {
 
@@ -121,12 +149,18 @@ public class SysGpio {
                 //handler.sendEmptyMessage(MESSAGE_S1_ON);
                 statusS1 = true;
                 try {
-                    SysGpio.mGpioOutD3.setValue(true);
-                    Log.d(TAG, "run: D3状态" + SysGpio.mGpioOutD3.getValue());
+                    SysGpio.mGpioOutP2.setValue(true);
+                    Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
                     Log.d(TAG, "run: 发送串口启动进样泵指令" + num);
-                    Thread.sleep(time);
-                    SysGpio.mGpioOutD3.setValue(false);
-                    Log.d(TAG, "run: D3状态" + SysGpio.mGpioOutD3.getValue());
+                    //注射泵状态查询
+                    byte bytes1[] = new byte[]{(byte) 0xCC, (byte) 0x02, (byte) 0x4A, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
+                    MainActivity.com0.sendBytes(bytes1, true, 2);
+                    Thread.sleep(1000);
+                    //注射泵抽取液体
+                    byte bytes2[] = new byte[]{(byte) 0xCC, (byte) 0x02, (byte) 0x41, (byte) 0x00, (byte) 0x32, (byte) 0xDD};
+                    MainActivity.com0.sendBytes(bytes2, true, 2);
+                    Thread.sleep(20000);
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -147,15 +181,16 @@ public class SysGpio {
                 //handler.sendEmptyMessage(MESSAGE_S2_ON);
                 statusS2 = true;
                 try {
-                    SysGpio.mGpioOutD9.setValue(true);
-                    Log.d(TAG, "run: D9状态" + SysGpio.mGpioOutD9.getValue());
-                    s1_JSY(240, 3000);  //运行s1进水样流程
-                    Thread.sleep(3000);
+                    SysGpio.mGpioOutP2.setValue(true);
+                    Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
+                    //注射泵状态查询
+                    byte bytes1[] = new byte[]{(byte) 0xCC, (byte) 0x02, (byte) 0x4A, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
+                    MainActivity.com0.sendBytes(bytes1, true, 2);
                     Thread.sleep(1000);
-                    s1_JSY(250, 3000);  //运行s1进水样流程
-                    Thread.sleep(3000);
-                    SysGpio.mGpioOutD9.setValue(false);
-                    Log.d(TAG, "run: D9状态" + SysGpio.mGpioOutD9.getValue());
+                    //注射泵复位
+                    byte bytes2[] = new byte[]{(byte) 0xCC, (byte) 0x02, (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
+                    MainActivity.com0.sendBytes(bytes2, true, 2);
+                    Thread.sleep(20000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -186,14 +221,14 @@ public class SysGpio {
             mGpioOutD7 = null;
             mGpioOutD8.close();
             mGpioOutD8 = null;
-            mGpioOutD9.close();
-            mGpioOutD9 = null;
-            mGpioOutD10.close();
-            mGpioOutD10 = null;
-            mGpioOutD11.close();
-            mGpioOutD11 = null;
-            mGpioOutD12.close();
-            mGpioOutD12 = null;
+            mGpioOutP1.close();
+            mGpioOutP1 = null;
+            mGpioOutP2.close();
+            mGpioOutP2 = null;
+            mGpioOutH1.close();
+            mGpioOutH1 = null;
+            mGpioOutB1.close();
+            mGpioOutB1 = null;
             mGpioOutDC1.close();
             mGpioOutDC1 = null;
             mGpioOutRE1.close();

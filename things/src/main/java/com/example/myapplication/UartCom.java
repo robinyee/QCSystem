@@ -85,10 +85,10 @@ public class UartCom {
             mUartDevice.setStopBits(STOP_BITS);
             //注册数据监听，在有数据可读的时候回调
             mUartDevice.registerUartDeviceCallback(mUartDeviceCallback);
-            Log.w(TAG, "打开端口成功-" + this.UART_DEVICE_NAME);
+            Log.w(TAG, "打开端口成功:" + this.UART_DEVICE_NAME);
         } catch (IOException e) {
             e.printStackTrace();
-            Log.w(TAG, "打开端口失败-" + this.UART_DEVICE_NAME);
+            Log.w(TAG, "打开端口失败:" + this.UART_DEVICE_NAME);
         }
     }
 
@@ -103,7 +103,9 @@ public class UartCom {
                 while ((read = mUartDevice.read(buffer, buffer.length)) > 0) {
                     String text = new String(buffer, 0, read);
                     msg = msg + text;
-                    Log.w(TAG, "read from PC:" + text);
+                    //Log.w(TAG, "read from PC:" + text);
+                    Log.v(TAG, "接收的数据:" + buffer[0] + " " + buffer[1]  + " " + buffer[2] + " " + buffer[3] + " " + buffer[4]
+                            + " " + buffer[5]  + " " + buffer[6] + " " + buffer[7]);
                     //byte[] srtbyte = text.getBytes();
                     //mUartDevice.write(buffer, read);
                     //mUartDevice.write(srtbyte, srtbyte.length);
@@ -126,6 +128,11 @@ public class UartCom {
             Log.w(TAG, uart + ": Error event " + error);
         }
     };
+
+    public void sendCMD(byte devId, byte cmd, int num){
+
+    }
+
 
     /**
      * 校验接收的数据是否正确
@@ -178,6 +185,9 @@ public class UartCom {
         }
         try {
             mUartDevice.write(bytes, bytes.length);
+            Log.v(TAG, "已发送数据:" + bytes[0] + " " + bytes[1]  + " " + bytes[2] + " " + bytes[3] + " " + bytes[4]
+                    + " " + bytes[5]  + " " + bytes[6] + " " + bytes[7]);
+
             return bytes.length;
         } catch (IOException e) {
             e.printStackTrace();
