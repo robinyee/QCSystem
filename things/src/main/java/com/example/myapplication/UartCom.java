@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.nfc.Tag;
 import android.util.Log;
 
 import com.google.android.things.pio.PeripheralManager;
@@ -14,7 +15,7 @@ public class UartCom {
     private int BAUD_RATE = 115200;
     private int DATA_BITS = 8;
     private int STOP_BITS = 1;
-    private int CHUNK_SIZE = 1024;
+    private int CHUNK_SIZE = 256;
     private UartDevice mUartDevice;
     private String backMsg;
 
@@ -98,27 +99,42 @@ public class UartCom {
             try {
                 //读取PC终端发来的数据 ，并原封返回给PC
                 byte[] buffer = new byte[CHUNK_SIZE];
+                byte[] data = new byte[CHUNK_SIZE];
                 int read;
+                int num = 0;
                 String msg = null;
                 while ((read = mUartDevice.read(buffer, buffer.length)) > 0) {
+                    System.arraycopy(buffer, 0, data, num, read);
+                    num = num + read;
+                    Log.v(TAG,"本次读取的数据长度：" + read);
+                    Thread.sleep(10);
+                    /*
                     String text = new String(buffer, 0, read);
                     msg = msg + text;
+
+                    Log.v(TAG,"接收到的数据：" + text);
+
+                    */
                     //Log.w(TAG, "read from PC:" + text);
-                    Log.v(TAG, "接收的数据:" + buffer[0] + " " + buffer[1]  + " " + buffer[2] + " " + buffer[3] + " " + buffer[4]
-                            + " " + buffer[5]  + " " + buffer[6] + " " + buffer[7]);
+                    //Log.v(TAG, "接收的数据:" + buffer[0] + " " + buffer[1]  + " " + buffer[2] + " " + buffer[3] + " " + buffer[4] + " " + buffer[5]  + " " + buffer[6] + " " + buffer[7]);
                     //byte[] srtbyte = text.getBytes();
                     //mUartDevice.write(buffer, read);
                     //mUartDevice.write(srtbyte, srtbyte.length);
                 }
-                //校验返回的数据是否出错
-                if (msg != null) {
-                    boolean result = checkData(msg.getBytes(), 2);
-                    if (result) {
-                        backMsg = msg;
-                    }
+                //显示数据包的数据
+                Log.v(TAG,"数据包长度：" + num);
+                for(int i = 0; i < num; i++){
+                    Log.v(TAG,i + ":" + data[i]);
                 }
+                //去除数据数组的空值，解析数据
+                byte[] backData = new byte[num];
+                System.arraycopy(data, 0, backData, 0, num);
+                byteArrayToData(backData, num);   //提取数据
+
             } catch (IOException e) {
                 Log.w(TAG, "Unable to transfer data over UART", e);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
             return true;
         }
@@ -129,8 +145,61 @@ public class UartCom {
         }
     };
 
-    public void sendCMD(byte devId, byte cmd, int num){
+    //接收的byte[]数据解析
+    public void byteArrayToData(byte[] b, int num) {
+        if(num == 12) {
+            if (b[0] == (byte) 0xcc && b[11] == (byte) 0xdd) {
+                Log.w(TAG, "扩展板数据");
+                Log.w(TAG, "数据长度：" + b.length);
+                if (b[1] == 0x03 && num == 12) {
+                    Log.w(TAG, "扩展版数据");
+                    SysData.tempIn = b[4] & 0xFF | (b[3] & 0xFF) << 8;
+                    Log.w(TAG, "反应液温度：" + SysData.tempIn);
+                    SysData.tempOut = b[6] & 0xFF | (b[5] & 0xFF) << 8;
+                    Log.w(TAG, "加热器温度：" + SysData.tempOut);
+                    SysData.adLight = b[8] & 0xFF | (b[7] & 0xFF) << 8;
+                    Log.w(TAG, "反应器光电值：" + SysData.adLight);
+                    SysData.adBack = b[10] & 0xFF | (b[9] & 0xFF) << 8;
+                    Log.w(TAG, "备用模拟量值：" + SysData.adBack);
+                }
+            }
+        }
+        if(num == 8) {
+            //校验返回的数据是否出错
+            boolean result = checkData(b, 2);
+            Log.w(TAG, "数据检验：" + result);
+            if (result) {
+                int i = (int) b[1];
+                SysData.Pump[i] = b[2];  //写入泵的状态
+                Log.w(TAG, i + "号泵状态：" + SysData.Pump[i]);
+            }
+        }
+    }
 
+    //采集模拟量值
+    public void getAd(){
+        byte bytes[] = new byte[]{(byte) 0xCC, (byte) 0x03, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
+        sendBytes(bytes, true, 2);
+    }
+
+    //生成注射泵指令代码并发送
+    public void pumpCmd(int devId, String cmdStr, int num){
+        byte[] cmdLine = new byte[] {(byte) 0xcc, (byte) devId, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0xdd};
+        switch (cmdStr) {
+            case "status" : cmdLine[2] = (byte) 0x4a;
+                break;
+            case "pull" : cmdLine[2] = (byte) 0x41;
+                break;
+            case "push" : cmdLine[2] = (byte) 0x42;
+                break;
+            case "back" : cmdLine[2] = (byte) 0x45;
+                break;
+        }
+        if(num > 0){
+            cmdLine[3] = (byte) num;
+            cmdLine[4] = (byte) (num>>8);
+        }
+        sendBytes(cmdLine, true, 2);
     }
 
 
@@ -148,11 +217,15 @@ public class UartCom {
         System.arraycopy(bytes, 0, newBytes, 0, bytes.length - num);
         System.arraycopy(bytes, bytes.length - num, sumBytes, 0, num);
         byte result[] = SumCheck(newBytes, num);
-        if (result.equals(sumBytes)) {
-            return true;
-        } else {
-            return false;
+        Log.w(TAG, "校验结果：" + result[0] + " " + result[1]);
+        for(int i=0; i<num; i++){
+            if(result[i] != sumBytes[i]) {
+                Log.w(TAG, "校验出错" );
+                return false;
+            }
         }
+        Log.w(TAG, "校验正确" );
+        return true;
     }
 
     //发送字符串

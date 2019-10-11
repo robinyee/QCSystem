@@ -337,7 +337,7 @@ public class TabService extends Fragment {
             @Override
             public void onClick(View view) {
                 if (aSwitchS2.isChecked() && !SysGpio.statusS2) {
-                    SysGpio.c1_SZFX();
+                    SysGpio.s2_JLS(200,3000);
                 }
             }
         });
@@ -350,15 +350,13 @@ public class TabService extends Fragment {
                     SysGpio.statusS5 = true;
                     //读取温度
                     SysGpio.readTempFlag = true;
-                    SysGpio.readTemp();
+                    SysGpio.readAd();
                 } else {
                     SysGpio.readTempFlag = false;
                     SysGpio.statusS5 = false;
                 }
             }
         });
-
-
         return view;
     }
 

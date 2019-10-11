@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.things.pio.Gpio;
 import com.google.android.things.pio.PeripheralManager;
@@ -112,28 +113,21 @@ public class SysGpio {
         }
     }
 
-    //读取温度
-    public static void readTemp() {
-        Log.d(TAG, "run: 开始读取温度");
+    //读取模拟量值
+    public static void readAd() {
+        //Log.d(TAG, "run: 开始读取模拟量数据");
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "run: 开始读取温度");
+                Log.d(TAG, "run: 开始读取模拟量数据");
                 do {
-                    byte bytes3[] = new byte[]{(byte) 0xCC, (byte) 0x03, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
-                    MainActivity.com0.sendBytes(bytes3, true, 2);
+                    MainActivity.com0.getAd();
                     try {
-                        Thread.sleep(200);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    byte bytes4[] = new byte[]{(byte) 0xCC, (byte) 0x03, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
-                    MainActivity.com0.sendBytes(bytes4, true, 2);
-                    try {
-                        Thread.sleep(800);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
                 } while (readTempFlag);
             }
         }).start();
@@ -151,16 +145,19 @@ public class SysGpio {
                 try {
                     SysGpio.mGpioOutP2.setValue(true);
                     Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
-                    Log.d(TAG, "run: 发送串口启动进样泵指令" + num);
+                    Log.d(TAG, "run: 发送串口启动进样泵指令" );
                     //注射泵状态查询
-                    byte bytes1[] = new byte[]{(byte) 0xCC, (byte) 0x02, (byte) 0x4A, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
-                    MainActivity.com0.sendBytes(bytes1, true, 2);
+                    MainActivity.com0.pumpCmd(2, "status", 0);
                     Thread.sleep(1000);
-                    //注射泵抽取液体
-                    byte bytes2[] = new byte[]{(byte) 0xCC, (byte) 0x02, (byte) 0x41, (byte) 0x00, (byte) 0x32, (byte) 0xDD};
-                    MainActivity.com0.sendBytes(bytes2, true, 2);
-                    Thread.sleep(20000);
-
+                    //注射泵2状态正常时执行
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "pull", 12800);
+                        Thread.sleep(20000);
+                    }
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -169,6 +166,82 @@ public class SysGpio {
                 //handler.sendEmptyMessage(MESSAGE_S1_OFF);
                 statusS1 = false;
                 Log.d(TAG, "run: 进水样线程结束");
+            }
+        }).start();
+    }
+
+    //S2加硫酸流程
+    public static void s2_JLS(final int num, final int time) {
+
+        new Thread(new Runnable() {
+
+            public void run() {
+                Log.d(TAG, "run: 加硫酸线程开始");
+                //handler.sendEmptyMessage(MESSAGE_S1_ON);
+                statusS1 = true;
+                try {
+                    SysGpio.mGpioOutP2.setValue(true);
+                    Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
+                    Log.d(TAG, "run: 发送串口启动进样泵指令" + num);
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    //注射泵2状态正常时执行
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "back", 0);
+                        Thread.sleep(20000);
+                    }
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //handler.sendEmptyMessage(MESSAGE_S1_OFF);
+                statusS1 = false;
+                Log.d(TAG, "run: 加硫酸线程结束");
+            }
+        }).start();
+    }
+
+    //S3加高锰酸钾流程
+    public static void s3_JGMSJ(final int num, final int time) {
+
+        new Thread(new Runnable() {
+
+            public void run() {
+                Log.d(TAG, "run: 加高锰酸钾线程开始");
+                //handler.sendEmptyMessage(MESSAGE_S1_ON);
+                statusS1 = true;
+                try {
+                    SysGpio.mGpioOutP2.setValue(true);
+                    Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
+                    Log.d(TAG, "run: 发送串口启动进样泵指令" );
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    //注射泵2状态正常时执行
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "pull", 12800);
+                        Thread.sleep(20000);
+                    }
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //handler.sendEmptyMessage(MESSAGE_S1_OFF);
+                statusS1 = false;
+                Log.d(TAG, "run: 加高锰酸钾线程结束");
+
             }
         }).start();
     }
