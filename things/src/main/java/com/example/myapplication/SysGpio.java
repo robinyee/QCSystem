@@ -143,20 +143,20 @@ public class SysGpio {
                 //handler.sendEmptyMessage(MESSAGE_S1_ON);
                 statusS1 = true;
                 try {
-                    SysGpio.mGpioOutP2.setValue(true);
-                    Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
+                    SysGpio.mGpioOutP1.setValue(true);
+                    Log.d(TAG, "run: P1状态" + SysGpio.mGpioOutP1.getValue());
                     Log.d(TAG, "run: 发送串口启动进样泵指令" );
                     //注射泵状态查询
-                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    MainActivity.com0.pumpCmd(1, "status", 0);
                     Thread.sleep(1000);
-                    //注射泵2状态正常时执行
-                    if(SysData.Pump[2] == 0x00) {
+                    //注射泵1状态正常时执行
+                    if(SysData.Pump[1] == 0x00) {
                         //注射泵抽取液体
-                        MainActivity.com0.pumpCmd(2, "pull", 12800);
-                        Thread.sleep(20000);
+                        MainActivity.com0.pumpCmd(1, "turn", 65);
+                        Thread.sleep(41000);
                     }
                     //注射泵状态查询
-                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    MainActivity.com0.pumpCmd(1, "status", 0);
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -177,32 +177,73 @@ public class SysGpio {
 
             public void run() {
                 Log.d(TAG, "run: 加硫酸线程开始");
-                //handler.sendEmptyMessage(MESSAGE_S1_ON);
-                statusS1 = true;
+                statusS2 = true;
                 try {
                     SysGpio.mGpioOutP2.setValue(true);
                     Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
-                    Log.d(TAG, "run: 发送串口启动进样泵指令" + num);
+                    SysGpio.mGpioOutD2.setValue(true);
+                    Log.d(TAG, "run: D2状态" + SysGpio.mGpioOutD2.getValue());
+                    SysGpio.mGpioOutD3.setValue(true);
+                    Log.d(TAG, "run: D3状态" + SysGpio.mGpioOutD3.getValue());
+                    //Log.d(TAG, "run: 发送串口启动进样泵指令" + num);
                     //注射泵状态查询
                     MainActivity.com0.pumpCmd(2, "status", 0);
                     Thread.sleep(1000);
                     //注射泵2状态正常时执行
                     if(SysData.Pump[2] == 0x00) {
                         //注射泵抽取液体
-                        MainActivity.com0.pumpCmd(2, "back", 0);
-                        Thread.sleep(20000);
+                        MainActivity.com0.pumpCmd(2, "pull", 9600);     //抽取硫酸试剂
+                        Thread.sleep(15000);
                     }
                     //注射泵状态查询
                     MainActivity.com0.pumpCmd(2, "status", 0);
                     Thread.sleep(1000);
-
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "push", 2400);     //压出硫酸试剂
+                        Thread.sleep(4000);
+                    }
+                    SysGpio.mGpioOutD6.setValue(true);                                       //打开D6电磁阀
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "push", 3200);     //压出硫酸试剂
+                        Thread.sleep(7000);
+                    }
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    //注射泵2状态正常时执行
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "pull", 1200);     //吸回管道剩余硫酸试剂
+                        Thread.sleep(3000);
+                    }
+                    SysGpio.mGpioOutD6.setValue(false);                                       //关闭D6电磁阀
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "back", 0);     //压出硫酸试剂,返回0位
+                        Thread.sleep(10000);
+                    }
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    SysGpio.mGpioOutD2.setValue(false);
+                    Log.d(TAG, "run: D2状态" + SysGpio.mGpioOutD2.getValue());
+                    SysGpio.mGpioOutD3.setValue(false);
+                    Log.d(TAG, "run: D3状态" + SysGpio.mGpioOutD3.getValue());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 //handler.sendEmptyMessage(MESSAGE_S1_OFF);
-                statusS1 = false;
+                statusS2 = false;
                 Log.d(TAG, "run: 加硫酸线程结束");
             }
         }).start();
@@ -216,19 +257,53 @@ public class SysGpio {
             public void run() {
                 Log.d(TAG, "run: 加高锰酸钾线程开始");
                 //handler.sendEmptyMessage(MESSAGE_S1_ON);
-                statusS1 = true;
+                statusS3 = true;
                 try {
                     SysGpio.mGpioOutP2.setValue(true);
                     Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
-                    Log.d(TAG, "run: 发送串口启动进样泵指令" );
+                    //Log.d(TAG, "run: 发送串口启动进样泵指令" );
                     //注射泵状态查询
                     MainActivity.com0.pumpCmd(2, "status", 0);
                     Thread.sleep(1000);
                     //注射泵2状态正常时执行
                     if(SysData.Pump[2] == 0x00) {
                         //注射泵抽取液体
-                        MainActivity.com0.pumpCmd(2, "pull", 12800);
+                        MainActivity.com0.pumpCmd(2, "pull", 12800);     //抽取高锰酸钾试剂
                         Thread.sleep(20000);
+                    }
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "push", 6400);     //压出高锰酸钾试剂
+                        Thread.sleep(10000);
+                    }
+                    SysGpio.mGpioOutD2.setValue(true);                                       //打开D2电磁阀
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "push", 5200);     //压出高锰酸钾试剂，进入反应器的高锰酸钾体积
+                        Thread.sleep(10000);
+                    }
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "pull", 1600);     //注射泵吸气
+                        Thread.sleep(3000);
+                    }
+                    SysGpio.mGpioOutD2.setValue(false);                                       //关闭D2电磁阀
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "back", 0);     //压出高锰酸钾试剂,返回0位
+                        Thread.sleep(3000);
                     }
                     //注射泵状态查询
                     MainActivity.com0.pumpCmd(2, "status", 0);
@@ -239,12 +314,227 @@ public class SysGpio {
                     e.printStackTrace();
                 }
                 //handler.sendEmptyMessage(MESSAGE_S1_OFF);
-                statusS1 = false;
+                statusS3 = false;
                 Log.d(TAG, "run: 加高锰酸钾线程结束");
 
             }
         }).start();
     }
+
+
+    //S4加草酸钠流程
+    public static void s4_JCSN(final int num, final int time) {
+
+        new Thread(new Runnable() {
+
+            public void run() {
+                Log.d(TAG, "run: 加草酸钠线程开始");
+                statusS4 = true;
+                try {
+                    SysGpio.mGpioOutP2.setValue(true);
+                    Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
+                    SysGpio.mGpioOutD2.setValue(true);
+                    Log.d(TAG, "run: D2状态" + SysGpio.mGpioOutD2.getValue());
+                    SysGpio.mGpioOutD3.setValue(true);
+                    Log.d(TAG, "run: D3状态" + SysGpio.mGpioOutD3.getValue());
+                    SysGpio.mGpioOutD4.setValue(true);
+                    Log.d(TAG, "run: D4状态" + SysGpio.mGpioOutD4.getValue());
+                    //Log.d(TAG, "run: 发送串口启动进样泵指令" + num);
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    //注射泵2状态正常时执行
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "pull", 12000);     //抽取草酸钠试剂
+                        Thread.sleep(20000);
+                    }
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "push", 2400);     //压出草酸钠试剂
+                        Thread.sleep(4000);
+                    }
+                    SysGpio.mGpioOutD5.setValue(true);                                       //打开D5电磁阀
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "push", 5690);     //压出草酸钠试剂
+                        Thread.sleep(14000);
+                    }
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    //注射泵2状态正常时执行
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "pull", 2400);      //吸回管道剩余草酸钠试剂
+                        Thread.sleep(5000);
+                    }
+                    SysGpio.mGpioOutD5.setValue(false);                                       //关闭D5电磁阀
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "back", 0);          //压出草酸钠试剂,返回0位
+                        Thread.sleep(10000);
+                    }
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+                    SysGpio.mGpioOutD2.setValue(false);
+                    Log.d(TAG, "run: D2状态" + SysGpio.mGpioOutD2.getValue());
+                    SysGpio.mGpioOutD3.setValue(false);
+                    Log.d(TAG, "run: D3状态" + SysGpio.mGpioOutD3.getValue());
+                    SysGpio.mGpioOutD4.setValue(false);
+                    Log.d(TAG, "run: D4状态" + SysGpio.mGpioOutD4.getValue());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //handler.sendEmptyMessage(MESSAGE_S1_OFF);
+                statusS4 = false;
+                Log.d(TAG, "run: 加草酸钠线程结束");
+            }
+        }).start();
+    }
+
+    //S3滴定流程
+    public static void s6_DD(final int num, final int time) {
+
+        new Thread(new Runnable() {
+
+            public void run() {
+                Log.d(TAG, "run: 滴定线程开始");
+                statusS6 = true;
+                //等待获取模拟量的值
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //记录初始光电值
+                SysData.startAdLight = SysData.adLight;
+                //重置滴定量
+                SysData.didingNum = 0;
+                int ddNum = 0;
+                //停止持续读取温度和模拟量
+                SysGpio.readTempFlag = false;
+
+                try {
+                    SysGpio.mGpioOutP2.setValue(true);
+                    Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
+                    //Log.d(TAG, "run: 发送串口启动进样泵指令" );
+                    //注射泵状态查询
+                    MainActivity.com0.pumpCmd(2, "status", 0);
+                    Thread.sleep(1000);
+
+                    //注射泵2状态正常时执行
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "pull", 12800);     //抽取高锰酸钾试剂
+                        Thread.sleep(20000);
+                    }
+
+                    do {
+                        //注射泵状态查询
+                        MainActivity.com0.pumpCmd(2, "status", 0);
+                        Thread.sleep(200);
+                    } while(SysData.Pump[2] != 0x00);
+
+                    //注射泵2状态正常时执行
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "push", 4000);     //抽取高锰酸钾试剂
+                        Thread.sleep(6000);
+                    }
+
+                    SysGpio.mGpioOutD2.setValue(true);                                       //打开D2电磁阀
+
+                    //光电值没有降低到原始值-10之前持续滴定
+                    while ((SysData.startAdLight - SysData.adLight) < 10 && SysData.didingNum < 150) {
+
+                        do {
+                            //注射泵状态查询
+                            MainActivity.com0.pumpCmd(2, "status", 0);
+                            Thread.sleep(200);
+                        } while(SysData.Pump[2] != 0x00);
+
+                        if(SysData.Pump[2] == 0x00) {
+                            //注射泵抽取液体
+                            MainActivity.com0.pumpCmd(2, "push", 50);     //压出高锰酸钾试剂，进入反应器的高锰酸钾体积
+                            Thread.sleep(200);
+                        }
+                        ddNum += 1;
+                        SysData.didingNum = (ddNum > 4) ? ddNum - 4 : 0;
+                        if(ddNum >= 150){
+                            SysData.errorMsg = "滴定超时";
+                            //break;
+                        }
+                        //读取模拟量值
+                        MainActivity.com0.getAd();
+                        Thread.sleep(600);
+                        //如果光电值降低10以上，等待30S
+                        if((SysData.startAdLight - SysData.adLight) >= 10){
+                            //读取温度
+                            SysGpio.readTempFlag = true;
+                            SysGpio.readAd();
+                            Thread.sleep(30000);
+                        }
+                        SysGpio.readTempFlag = false;  //停止循环读取温度
+                    }
+
+                    do {
+                        //注射泵状态查询
+                        MainActivity.com0.pumpCmd(2, "status", 0);
+                        Thread.sleep(200);
+                    } while(SysData.Pump[2] != 0x00);
+
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "pull", 1600);     //注射泵吸气
+                        Thread.sleep(3000);
+                    }
+                    SysGpio.mGpioOutD2.setValue(false);   //关闭D2电磁阀
+
+                    do {
+                        //注射泵状态查询
+                        MainActivity.com0.pumpCmd(2, "status", 0);
+                        Thread.sleep(200);
+                    } while(SysData.Pump[2] != 0x00);
+
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(2, "back", 0);     //压出高锰酸钾试剂,返回0位
+                        Thread.sleep(10000);
+                    }
+
+                    do {
+                        //注射泵状态查询
+                        MainActivity.com0.pumpCmd(2, "status", 0);
+                        Thread.sleep(200);
+                    } while(SysData.Pump[2] != 0x00);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                statusS6 = false;
+                Log.d(TAG, "run: 滴定线程结束");
+
+            }
+        }).start();
+    }
+
+
 
     //水质分析流程 Demo
     public static void c1_SZFX() {

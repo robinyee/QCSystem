@@ -6,10 +6,13 @@ public class SysData {
     static boolean isGetNetTime = false;    //是否已经获取到网络时间
     static boolean isRun = false;           //仪器是否正在运行
 
-    static int tempIn, tempOut;             //温度值，in反应器内温度，out加热器温度
+    static double tempIn, tempOut;             //温度值，in反应器内温度，out加热器温度
     static int adLight, adBack;             //adLight光电值，adBack备用模拟量
     static byte[] Pump = new byte[10];      //记录各泵的状态，十六进制数据，0x00-状态正常，
                                             // 0x01-帧错误，0x02-参数错误，0x03-光耦错误，0x04-电机忙，0xfe-任务挂起，0xff-未知错误
+    static int startAdLight;                //存储滴定前的光电值
+    static int didingNum;                   //滴定的高锰酸钾的数量
+    static String errorMsg;                 //记录仪器出错信息
 
     //仪器控制页面状态
     static boolean statusD1 = false;       //D1状态

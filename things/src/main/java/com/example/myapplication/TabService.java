@@ -26,7 +26,6 @@ public class TabService extends Fragment {
     private Switch aSwitchS1, aSwitchS2, aSwitchS3, aSwitchS4, aSwitchS5, aSwitchS6, aSwitchS7, aSwitchS8,
             aSwitchS9, aSwitchS10, aSwitchS11, aSwitchS12;
 
-
     //获取线程发送的Msg信息，更新对于UI界面
     static final int UI_UPDATE = 100;
     private Message message;
@@ -42,6 +41,45 @@ public class TabService extends Fragment {
             handlerUpdate.sendMessageDelayed(message, 100);
         }
     };
+
+    //刷新界面输出状态
+    public void uiUpdate() {
+        try {
+
+            //基本输出
+            aSwitchD1.setChecked(SysGpio.mGpioOutD1.getValue());
+            aSwitchD2.setChecked(SysGpio.mGpioOutD2.getValue());
+            aSwitchD3.setChecked(SysGpio.mGpioOutD3.getValue());
+            aSwitchD4.setChecked(SysGpio.mGpioOutD4.getValue());
+            aSwitchD5.setChecked(SysGpio.mGpioOutD5.getValue());
+            aSwitchD6.setChecked(SysGpio.mGpioOutD6.getValue());
+            aSwitchD7.setChecked(SysGpio.mGpioOutD7.getValue());
+            aSwitchD8.setChecked(SysGpio.mGpioOutD8.getValue());
+            aSwitchP1.setChecked(SysGpio.mGpioOutP1.getValue());
+            aSwitchP2.setChecked(SysGpio.mGpioOutP2.getValue());
+            aSwitchH1.setChecked(SysGpio.mGpioOutH1.getValue());
+            aSwitchB1.setChecked(SysGpio.mGpioOutB1.getValue());
+            aSwitchLED.setChecked(SysGpio.mGpioOutLED.getValue());
+            aSwitchV24.setChecked(SysGpio.mGpioOut24V.getValue());
+
+            //流程控制
+            aSwitchS1.setChecked(SysGpio.statusS1);
+            aSwitchS2.setChecked(SysGpio.statusS2);
+            aSwitchS3.setChecked(SysGpio.statusS3);
+            aSwitchS4.setChecked(SysGpio.statusS4);
+            aSwitchS5.setChecked(SysGpio.statusS5);
+            aSwitchS6.setChecked(SysGpio.statusS6);
+            aSwitchS7.setChecked(SysGpio.statusS7);
+            aSwitchS8.setChecked(SysGpio.statusS8);
+            aSwitchS9.setChecked(SysGpio.statusS9);
+            aSwitchS10.setChecked(SysGpio.statusS10);
+            aSwitchS11.setChecked(SysGpio.statusS11);
+            aSwitchS12.setChecked(SysGpio.statusS12);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -342,6 +380,26 @@ public class TabService extends Fragment {
             }
         });
 
+        //SwitchS3按钮点击
+        aSwitchS3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS3.isChecked() && !SysGpio.statusS3) {
+                    SysGpio.s3_JGMSJ(200,3000);
+                }
+            }
+        });
+
+        //SwitchS4按钮点击
+        aSwitchS4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS4.isChecked() && !SysGpio.statusS4) {
+                    SysGpio.s4_JCSN(200,3000);
+                }
+            }
+        });
+
         //SwitchS5按钮点击
         aSwitchS5.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -357,47 +415,39 @@ public class TabService extends Fragment {
                 }
             }
         });
+
+        //SwitchS6按钮点击
+        aSwitchS6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS6.isChecked() && !SysGpio.statusS6) {
+                    //SysGpio.statusS6 = true;
+                    //读取温度
+                    SysGpio.readTempFlag = true;
+                    SysGpio.readAd();
+                    SysGpio.s6_DD(200, 3000);
+                } else {
+                    SysGpio.readTempFlag = false;
+                    //SysGpio.statusS6 = false;
+                }
+            }
+        });
+
+        //SwitchS7按钮点击
+        aSwitchS7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS7.isChecked() && !SysGpio.statusS7) {
+                    SysGpio.c1_SZFX();
+                }
+            }
+        });
+
         return view;
     }
 
 
-    //刷新界面输出状态
-    public void uiUpdate() {
-        try {
-            //基本输出
-            aSwitchD1.setChecked(SysGpio.mGpioOutD1.getValue());
-            aSwitchD2.setChecked(SysGpio.mGpioOutD2.getValue());
-            aSwitchD3.setChecked(SysGpio.mGpioOutD3.getValue());
-            aSwitchD4.setChecked(SysGpio.mGpioOutD4.getValue());
-            aSwitchD5.setChecked(SysGpio.mGpioOutD5.getValue());
-            aSwitchD6.setChecked(SysGpio.mGpioOutD6.getValue());
-            aSwitchD7.setChecked(SysGpio.mGpioOutD7.getValue());
-            aSwitchD8.setChecked(SysGpio.mGpioOutD8.getValue());
-            aSwitchP1.setChecked(SysGpio.mGpioOutP1.getValue());
-            aSwitchP2.setChecked(SysGpio.mGpioOutP2.getValue());
-            aSwitchH1.setChecked(SysGpio.mGpioOutH1.getValue());
-            aSwitchB1.setChecked(SysGpio.mGpioOutB1.getValue());
-            aSwitchLED.setChecked(SysGpio.mGpioOutLED.getValue());
-            aSwitchV24.setChecked(SysGpio.mGpioOut24V.getValue());
 
-            //流程控制
-            aSwitchS1.setChecked(SysGpio.statusS1);
-            aSwitchS2.setChecked(SysGpio.statusS2);
-            aSwitchS3.setChecked(SysGpio.statusS3);
-            aSwitchS4.setChecked(SysGpio.statusS4);
-            aSwitchS5.setChecked(SysGpio.statusS5);
-            aSwitchS6.setChecked(SysGpio.statusS6);
-            aSwitchS7.setChecked(SysGpio.statusS7);
-            aSwitchS8.setChecked(SysGpio.statusS8);
-            aSwitchS9.setChecked(SysGpio.statusS9);
-            aSwitchS10.setChecked(SysGpio.statusS10);
-            aSwitchS11.setChecked(SysGpio.statusS11);
-            aSwitchS12.setChecked(SysGpio.statusS12);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onResume() {

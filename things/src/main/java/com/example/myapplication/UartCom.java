@@ -151,11 +151,14 @@ public class UartCom {
             if (b[0] == (byte) 0xcc && b[11] == (byte) 0xdd) {
                 Log.w(TAG, "扩展板数据");
                 Log.w(TAG, "数据长度：" + b.length);
+                int temp_in, temp_out;
                 if (b[1] == 0x03 && num == 12) {
                     Log.w(TAG, "扩展版数据");
-                    SysData.tempIn = b[4] & 0xFF | (b[3] & 0xFF) << 8;
+                    temp_in = b[4] & 0xFF | (b[3] & 0xFF) << 8;
+                    SysData.tempIn = ((double) temp_in) / 10;
                     Log.w(TAG, "反应液温度：" + SysData.tempIn);
-                    SysData.tempOut = b[6] & 0xFF | (b[5] & 0xFF) << 8;
+                    temp_out = b[6] & 0xFF | (b[5] & 0xFF) << 8;
+                    SysData.tempOut = ((double) temp_out) / 10;
                     Log.w(TAG, "加热器温度：" + SysData.tempOut);
                     SysData.adLight = b[8] & 0xFF | (b[7] & 0xFF) << 8;
                     Log.w(TAG, "反应器光电值：" + SysData.adLight);
@@ -193,6 +196,12 @@ public class UartCom {
             case "push" : cmdLine[2] = (byte) 0x42;
                 break;
             case "back" : cmdLine[2] = (byte) 0x45;
+                break;
+            case "start" : cmdLine[2] = (byte) 0x47;
+                break;
+            case "stop" : cmdLine[2] = (byte) 0x49;
+                break;
+            case "turn" : cmdLine[2] = (byte) 0x46;
                 break;
         }
         if(num > 0){
