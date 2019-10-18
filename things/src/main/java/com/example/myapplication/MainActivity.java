@@ -6,13 +6,23 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.things.device.TimeManager;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.DatePicker;
 import android.widget.TableLayout;
+import android.widget.TimePicker;
 
 import com.instacart.library.truetime.TrueTime;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -26,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        //启动后台服务
+        Intent intent = new Intent(this, SysService.class);
+        Bundle bundle = new Bundle();
+        startService(intent);
+        Log.i("MainActivity", "启动后台服务");
 
         //加载Tab页面
         loadTabPager();
@@ -45,13 +61,30 @@ public class MainActivity extends AppCompatActivity {
         com1.openUart();
          */
 
-
         //打开并初始化Gpio端口
         SysGpio.gpioInit();
 
-
-
+        //获取无线网络IP地址
+        String ipText = getLocalIpStr(getApplicationContext());
+        Resources res = getResources();
+        String urlString = "http://" + ipText + ":8080";
+        SysData.wifiIpAdd = urlString;
     }
+
+    //获取IP地址
+    public static String getLocalIpStr(Context context){
+        WifiManager wifiManager=(WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo=wifiManager.getConnectionInfo();
+        return  intToIpAddr(wifiInfo.getIpAddress());
+    }
+
+    private static String intToIpAddr(int ip){
+        return (ip & 0xFF)+"."
+                + ((ip>>8)&0xFF) + "."
+                + ((ip>>16)&0xFF) + "."
+                + ((ip>>24)&0xFF);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -131,5 +164,50 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
+    }
+
+    //设置日期对话框
+    public void showDateDialog(){
+
+        final Calendar calendar = Calendar.getInstance();
+        DatePickerDialog dialogDate = new DatePickerDialog(MainActivity.this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        Date newDate;
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        newDate = calendar.getTime();
+                        //timeManager.setTime(newDate.getTime());
+                        showTimeDialog();
+                    }
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        dialogDate.show();
+    }
+
+    //设置时间对话框
+    public void showTimeDialog(){
+
+        final Calendar calendar = Calendar.getInstance();
+        TimePickerDialog dialogTime = new TimePickerDialog(MainActivity.this,
+                new TimePickerDialog.OnTimeSetListener(){
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        Date newDate;
+                        calendar.set(Calendar.HOUR, hourOfDay);
+                        calendar.set(Calendar.MINUTE, minute);
+                        newDate = calendar.getTime();
+                        //timeManager.setTime(newDate.getTime());
+                        //setSysTime();
+                    }
+                },
+                calendar.get(Calendar.HOUR),
+                calendar.get(Calendar.MINUTE),
+                true);
+        dialogTime.show();
     }
 }

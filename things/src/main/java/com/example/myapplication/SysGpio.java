@@ -907,11 +907,13 @@ public class SysGpio {
                     e.printStackTrace();
                 }
 
-                //停止搅拌、关闭泵、关闭led灯和电源
+                //停止搅拌程序
+                SysData.jiaoBanType = 0;
+
+                //关闭泵、关闭led灯和电源
                 try {
                     SysGpio.mGpioOutP1.setValue(false);
                     SysGpio.mGpioOutP2.setValue(false);
-                    SysGpio.mGpioOutDC1.setValue(false);
                     SysGpio.mGpioOutLED.setValue(false);
                     SysGpio.mGpioOut24V.setValue(false);
                 } catch (IOException e) {

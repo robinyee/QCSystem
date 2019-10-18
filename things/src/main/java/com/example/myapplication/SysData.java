@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import java.text.SimpleDateFormat;
+
 public class SysData {
 
     //Home页面状态
@@ -19,6 +21,7 @@ public class SysData {
     static int timeXiaoJie = 1500;        //消解时长，单位：秒
     static int jiaoBanType = 0;             //搅拌方式 0-停止搅拌，1-间歇搅拌，2-持续搅拌
     static int progressRate = 0;            //分析进度
+    static String wifiIpAdd = "";           //无线网络ip地址
 
     //仪器控制页面状态
     static boolean statusD1 = false;       //D1状态

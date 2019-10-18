@@ -48,7 +48,7 @@
                     android:text="实时光度值"/>
                 <TextView
                     android:id="@+id/adlight"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="0"/>
@@ -59,7 +59,7 @@
                     android:text="初始光度值"/>
                 <TextView
                     android:id="@+id/adlight1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="0"/>
@@ -73,7 +73,7 @@
                     android:text="反应温度"/>
                 <TextView
                     android:id="@+id/tempin"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="0"/>
@@ -84,7 +84,7 @@
                     android:text="加热器温度"/>
                 <TextView
                     android:id="@+id/tempout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="0"/>
@@ -98,7 +98,7 @@
                     android:text="滴定量"/>
                 <TextView
                     android:id="@+id/didingnum"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="0"/>
@@ -108,7 +108,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="计算值"/>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="0"/>
@@ -122,7 +122,7 @@
                     android:text="消解开始时间"/>
                 <TextView
                     android:id="@+id/xiaojiestart"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="0"/>
@@ -133,7 +133,7 @@
                     android:text="消解剩余时间"/>
                 <TextView
                     android:id="@+id/xiaojielave"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="0"/>
@@ -157,37 +157,150 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TableRow
-                android:layout_marginTop="10dp">
+            <TableRow>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="水样"/>
+
+                <EditText
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:hint="输入水样步数"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="步"/>
+
+                <EditText
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:hint="输入水样体积"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="毫升"/>
             </TableRow>
-            <TableRow
-                android:layout_marginTop="10dp">
+            <TableRow>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="硫酸"/>
+                <EditText
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:hint="输入硫酸步数"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="步"/>
+
+                <EditText
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:hint="输入硫酸体积"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="毫升"/>
             </TableRow>
-            <TableRow
-                android:layout_marginTop="10dp">
+            <TableRow>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="草酸钠"/>
+                <EditText
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:hint="输入草酸钠步数"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="步"/>
+
+                <EditText
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:hint="输入草酸钠体积"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="毫升"/>
             </TableRow>
-            <TableRow
-                android:layout_marginTop="10dp">
+            <TableRow>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="高锰酸钾"/>
+                <EditText
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:hint="输入高锰酸钾步数"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="步"/>
+
+                <EditText
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:hint="输入高锰酸钾体积"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="毫升"/>
             </TableRow>
             <TableRow
                 android:layout_marginTop="10dp">
@@ -196,6 +309,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="消解温度"/>
+                <EditText
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:hint="输入消解温度"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="摄氏度"/>
             </TableRow>
             <TableRow
                 android:layout_marginTop="10dp">
@@ -204,6 +331,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="消解时间"/>
+                <EditText
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:hint="输入消解时间"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="秒"/>
             </TableRow>
         </TableLayout>
         <ImageView
@@ -212,19 +353,75 @@
             android:background="@drawable/line2"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="系统设置"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp" />
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TableRow
                 android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="系统时间"/>
+                <TextView
+                    android:id="@+id/sysTime"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text=""/>
                 <Button
                     android:id="@+id/systemsetup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="系统设置"/>
+                    android:layout_marginLeft="20dp"
+                    android:text="设置"/>
+            </TableRow>
+        </TableLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/line2"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="远程控制"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp" />
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow
+                android:layout_marginTop="10dp">
+                <ImageView
+                    android:id="@+id/imageViewZXing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"/>
+            </TableRow>
+        </TableLayout>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow
+                android:layout_marginTop="0dp">
+                <TextView
+                    android:id="@+id/wifiip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_marginLeft="20dp"/>
             </TableRow>
         </TableLayout>
     </LinearLayout>
     </ScrollView>
-
 </RelativeLayout>
