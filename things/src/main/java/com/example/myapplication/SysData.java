@@ -13,6 +13,12 @@ public class SysData {
     static int startAdLight;                //存储滴定前的光电值
     static int didingNum;                   //滴定的高锰酸钾的数量
     static String errorMsg;                 //记录仪器出错信息
+    static double tempSet = 92;             //温度控制目标值
+    static long startXiaojie;                //消解开始时间
+    static long endXiaoJie;                  //消解结束时间
+    static int timeXiaoJie = 1500;        //消解时长，单位：秒
+    static int jiaoBanType = 0;             //搅拌方式 0-停止搅拌，1-间歇搅拌，2-持续搅拌
+    static int progressRate = 0;            //分析进度
 
     //仪器控制页面状态
     static boolean statusD1 = false;       //D1状态

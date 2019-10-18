@@ -113,6 +113,31 @@
                     android:layout_marginLeft="20dp"
                     android:text="0"/>
             </TableRow>
+            <TableRow
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="消解开始时间"/>
+                <TextView
+                    android:id="@+id/xiaojiestart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="0"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="消解剩余时间"/>
+                <TextView
+                    android:id="@+id/xiaojielave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="0"/>
+            </TableRow>
         </TableLayout>
 
         <ImageView
@@ -187,6 +212,18 @@
             android:background="@drawable/line2"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"/>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow
+                android:layout_marginTop="10dp">
+                <Button
+                    android:id="@+id/systemsetup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="系统设置"/>
+            </TableRow>
+        </TableLayout>
     </LinearLayout>
     </ScrollView>
 

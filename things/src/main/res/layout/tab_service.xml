@@ -250,14 +250,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="计量"/>
+                        android:text="水质测定"/>
                     <Switch
                         android:id="@+id/s8"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="计算"/>
+                        android:text="仪表复位"/>
 
                 </TableRow>
                 <TableRow

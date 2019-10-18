@@ -360,85 +360,82 @@ public class TabService extends Fragment {
             }
         });
 
-        //SwitchS1按钮点击
+        //SwitchS1进水样按钮点击
         aSwitchS1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS1.isChecked() && !SysGpio.statusS1) {
-                    SysGpio.s1_JSY(200, 3000);
+                    SysGpio.s1_JiaShuiYang();
                 }
             }
         });
 
-        //SwitchS2按钮点击
+        //SwitchS2加硫酸按钮点击
         aSwitchS2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS2.isChecked() && !SysGpio.statusS2) {
-                    SysGpio.s2_JLS(200,3000);
+                    SysGpio.s2_JiaLiuSuan();
                 }
             }
         });
 
-        //SwitchS3按钮点击
+        //SwitchS3加高锰酸钾按钮点击
         aSwitchS3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS3.isChecked() && !SysGpio.statusS3) {
-                    SysGpio.s3_JGMSJ(200,3000);
+                    SysGpio.s3_JiaGaoMengSuanJIa();
                 }
             }
         });
 
-        //SwitchS4按钮点击
+        //SwitchS4加草酸钠按钮点击
         aSwitchS4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS4.isChecked() && !SysGpio.statusS4) {
-                    SysGpio.s4_JCSN(200,3000);
+                    SysGpio.s4_JiaCaoSuanNa();
                 }
             }
         });
 
-        //SwitchS5按钮点击
+        //SwitchS5消解按钮点击
         aSwitchS5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS5.isChecked() && !SysGpio.statusS5) {
-                    SysGpio.statusS5 = true;
-                    //读取温度
-                    SysGpio.readTempFlag = true;
-                    SysGpio.readAd();
-                } else {
-                    SysGpio.readTempFlag = false;
-                    SysGpio.statusS5 = false;
+                    SysGpio.s5_XiaoJie();
                 }
             }
         });
 
-        //SwitchS6按钮点击
+        //SwitchS6滴定按钮点击
         aSwitchS6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS6.isChecked() && !SysGpio.statusS6) {
-                    //SysGpio.statusS6 = true;
-                    //读取温度
-                    SysGpio.readTempFlag = true;
-                    SysGpio.readAd();
-                    SysGpio.s6_DD(200, 3000);
-                } else {
-                    SysGpio.readTempFlag = false;
-                    //SysGpio.statusS6 = false;
+                    SysGpio.s6_DiDing();
                 }
             }
         });
 
-        //SwitchS7按钮点击
+        //SwitchS7水质测定按钮点击
         aSwitchS7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS7.isChecked() && !SysGpio.statusS7) {
-                    SysGpio.c1_SZFX();
+                    SysGpio.s7_ShuiZhiCeDing();
+                }
+            }
+        });
+
+        //SwitchS8仪器复位按钮点击
+        aSwitchS8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS8.isChecked() && !SysGpio.statusS8) {
+                    SysGpio.s8_Reset();
                 }
             }
         });
