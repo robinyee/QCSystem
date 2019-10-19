@@ -65,7 +65,7 @@ public class TabData extends Fragment {
             listData.add(i + ". | 2019年1月20日 2:30 | COD " + i + ".00 mg/L");
         }
         String[] stringData = listData.toArray(new String[0]);
-        //listview.setAdapter(new dataAdapter(this, stringData));
+        listview.setAdapter(new DataAdapter(getView().getContext(), stringData));
 
 
         return view;
