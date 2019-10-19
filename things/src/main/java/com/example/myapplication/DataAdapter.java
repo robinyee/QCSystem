@@ -43,13 +43,12 @@ class DataAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
         View vi = convertView;
-        /*
+
         if (vi == null)
             vi = inflater.inflate(R.layout.row_data, null);
 
-         */
-        TextView text = (TextView) vi.findViewById(R.id.text);
-        text.setText(data[position]);
+        TextView item = (TextView) vi.findViewById(R.id.item);
+        item.setText(data[position]);
         return vi;
     }
 }

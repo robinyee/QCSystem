@@ -62,11 +62,10 @@ public class TabData extends Fragment {
         listview = (ListView) view.findViewById(R.id.datalist);
         listData = new ArrayList<String>();
         for (int i = 1; i <= 100; i++) {
-            listData.add(i + ". | 2019年1月20日 2:30 | COD " + i + ".00 mg/L");
+            listData.add(i + "        2019年1月20日 2:30         COD " + i + ".00 mg/L");
         }
         String[] stringData = listData.toArray(new String[0]);
-        listview.setAdapter(new DataAdapter(getView().getContext(), stringData));
-
+        listview.setAdapter(new DataAdapter(view.getContext(), stringData));
 
         return view;
     }
