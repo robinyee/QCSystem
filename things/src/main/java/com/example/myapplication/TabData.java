@@ -53,7 +53,6 @@ public class TabData extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.tab_data, container, false);
 
-        /*
         //显示趋势图
         mChartView = (LineChartView) view.findViewById(R.id.chart);
         initView();
@@ -67,11 +66,11 @@ public class TabData extends Fragment {
         }
         String[] stringData = listData.toArray(new String[0]);
         //listview.setAdapter(new dataAdapter(this, stringData));
-        */
+
 
         return view;
     }
-/*
+
     @Override
     public void onResume() {
         super.onResume();
@@ -164,7 +163,7 @@ public class TabData extends Fragment {
      * @param right
      * @return
      */
-/*
+
     private Viewport initViewPort(float left, float right) {
         Viewport port = new Viewport();
         port.top = 10;
@@ -180,7 +179,7 @@ public class TabData extends Fragment {
      * @param right
      * @return
      */
-/*
+
     private Viewport initMaxViewPort(float right) {
         Viewport port = new Viewport();
         port.top = 10;
@@ -193,7 +192,7 @@ public class TabData extends Fragment {
     /**
      * 触摸监听类
      */
-/*
+
     private class ValueTouchListener implements LineChartOnValueSelectListener {
         @Override
         public void onValueSelected(int lineIndex, int pointIndex, PointValue value) {
@@ -207,10 +206,10 @@ public class TabData extends Fragment {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
             */
-/*        }
+        }
         @Override
         public void onValueDeselected() {
 
         }
-    } */
+    }
 }
