@@ -433,7 +433,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putLong("startTime", SysData.startTime);
         editor.putLong("endTime", SysData.endTime);
         //提交保存
-        editor.commit();
+        editor.apply();
     }
 
     //读取仪表参数

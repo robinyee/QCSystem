@@ -227,12 +227,7 @@ public class TabSetup extends Fragment {
         editor.putInt("webPort", SysData.webPort);
 
         //提交保存
-        boolean result = editor.commit();
-        if(result) {
-            Log.i("SharedPreferences", "数据保存成功");
-        } else {
-            Log.i("SharedPreferences", "数据保存失败");
-        }
+        editor.apply();
     }
 
     //保存Edit数据
