@@ -299,7 +299,36 @@
                 android:background="@drawable/line2"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"/>
-
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="12sp"
+                        android:text="软件版本：1.0"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="12sp"
+                        android:text="硬件版本：1.0"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="12sp"
+                        android:text="发布日期：2109年10月"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="12sp"
+                        android:text="系统设计：叶文彬"/>
+                </TableRow>
+            </TableLayout>
         </LinearLayout>
     </ScrollView>
 

@@ -355,7 +355,7 @@ public class SysGpio {
                     MainActivity.com0.pumpCmd(2, "status", 0);
                     Thread.sleep(1000);
                     if(SysData.Pump[2] == 0x00) {
-                        //注射泵抽取液体
+                        //注射泵压出液体
                         MainActivity.com0.pumpCmd(2, "push", 2400);     //压出硫酸试剂
                         Thread.sleep(4000);
                     }
@@ -364,8 +364,8 @@ public class SysGpio {
                     MainActivity.com0.pumpCmd(2, "status", 0);
                     Thread.sleep(1000);
                     if(SysData.Pump[2] == 0x00) {
-                        //注射泵抽取液体
-                        MainActivity.com0.pumpCmd(2, "push", 3200);     //压出硫酸试剂
+                        //注射泵压出液体
+                        MainActivity.com0.pumpCmd(2, "push", SysData.liusuanStep);     //压出硫酸试剂
                         Thread.sleep(7000);
                     }
                     //注射泵状态查询
@@ -441,7 +441,7 @@ public class SysGpio {
                     Thread.sleep(1000);
                     if(SysData.Pump[2] == 0x00) {
                         //注射泵抽取液体
-                        MainActivity.com0.pumpCmd(2, "push", 5200);     //压出高锰酸钾试剂，进入反应器的高锰酸钾体积
+                        MainActivity.com0.pumpCmd(2, "push", SysData.gaomengsuanjiaStep);     //压出高锰酸钾试剂，进入反应器的高锰酸钾体积
                         Thread.sleep(10000);
                     }
                     //注射泵状态查询
@@ -543,7 +543,7 @@ public class SysGpio {
                     Thread.sleep(1000);
                     if(SysData.Pump[2] == 0x00) {
                         //注射泵抽取液体
-                        MainActivity.com0.pumpCmd(2, "push", 5690);     //压出草酸钠试剂
+                        MainActivity.com0.pumpCmd(2, "push", SysData.caosuannaStep);     //压出草酸钠试剂
                         Thread.sleep(14000);
                     }
                     //注射泵状态查询
@@ -595,13 +595,13 @@ public class SysGpio {
                 statusS5 = true;
                 //设置消解开始时间和结束时间
                 SysData.startXiaojie = System.currentTimeMillis(); //消解开始时间
-                SysData.endXiaoJie = System.currentTimeMillis() + (SysData.timeXiaoJie * 1000);  //消解结束时间
+                SysData.endXiaoJie = System.currentTimeMillis() + (SysData.xiaojieTime * 1000);  //消解结束时间
                 //循环读取温度
                 SysGpio.readTempFlag = true;
                 SysGpio.readAd();
                 //启动温度控制
                 SysGpio.tempControlFlag = true;
-                SysGpio.tempControl(SysData.tempSet);
+                SysGpio.tempControl(SysData.xiaojieTemp);
                 //启动搅拌程序
                 SysData.jiaoBanType = 1;
                 SysGpio.jiaoBanControl();
@@ -690,7 +690,7 @@ public class SysGpio {
 
                         if(SysData.Pump[2] == 0x00) {
                             //注射泵抽取液体
-                            MainActivity.com0.pumpCmd(2, "push", 50);     //压出高锰酸钾试剂，进入反应器的高锰酸钾体积
+                            MainActivity.com0.pumpCmd(2, "push", SysData.didingStep);     //压出高锰酸钾试剂，进入反应器的高锰酸钾体积
                             Thread.sleep(200);
                         }
                         ddNum += 1;
@@ -810,7 +810,7 @@ public class SysGpio {
                 SysGpio.readAd();
                 //启动温度控制
                 SysGpio.tempControlFlag = true;
-                SysGpio.tempControl(SysData.tempSet);
+                SysGpio.tempControl(SysData.xiaojieTemp);
                 //启动搅拌程序
                 SysData.jiaoBanType = 2;
                 SysGpio.jiaoBanControl();
@@ -821,7 +821,7 @@ public class SysGpio {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                } while(SysData.tempIn < SysData.tempSet);
+                } while(SysData.tempIn < SysData.xiaojieTemp);
 
                 //停止读取温度
                 SysGpio.readTempFlag = false;

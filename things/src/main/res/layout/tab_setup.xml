@@ -106,8 +106,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="计算值"/>
+                    android:text="滴定值"/>
                 <TextView
+                    android:id="@+id/didingSumVolume"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -133,6 +134,31 @@
                     android:text="消解剩余时间"/>
                 <TextView
                     android:id="@+id/xiaojielave"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="0"/>
+            </TableRow>
+            <TableRow
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="测定开始时间"/>
+                <TextView
+                    android:id="@+id/starttime"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="0"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="测定完成时间"/>
+                <TextView
+                    android:id="@+id/endtime"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -165,6 +191,7 @@
                     android:text="水样"/>
 
                 <EditText
+                    android:id="@+id/editShuiyangStep"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -180,6 +207,7 @@
                     android:text="步"/>
 
                 <EditText
+                    android:id="@+id/editShuiyangVolume"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -201,6 +229,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="硫酸"/>
                 <EditText
+                    android:id="@+id/editLiusuanStep"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -216,6 +245,7 @@
                     android:text="步"/>
 
                 <EditText
+                    android:id="@+id/editLiusuanVolume"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -237,6 +267,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="草酸钠"/>
                 <EditText
+                    android:id="@+id/editCaosuannaStep"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -252,6 +283,7 @@
                     android:text="步"/>
 
                 <EditText
+                    android:id="@+id/editCaosuannaVolume"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -273,6 +305,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="高锰酸钾"/>
                 <EditText
+                    android:id="@+id/editGaomengsuanjiaStep"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -286,13 +319,50 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:text="步"/>
-
                 <EditText
+                    android:id="@+id/editGaomengsuanjiaVolume"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:gravity="center"
                     android:hint="输入高锰酸钾体积"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="毫升"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="滴定精度"/>
+                <EditText
+                    android:id="@+id/editDidingStep"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:hint="输入一滴步数"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="步"/>
+                <EditText
+                    android:id="@+id/editDidingVolume"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:hint="输入一滴体积"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
                     android:textSize="14sp" />
@@ -310,6 +380,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="消解温度"/>
                 <EditText
+                    android:id="@+id/editXiaojieTemp"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -332,6 +403,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="消解时间"/>
                 <EditText
+                    android:id="@+id/editXiaojieTime"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -345,6 +417,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:text="秒"/>
+                <Button
+                    android:id="@+id/saveData"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="保存数据"/>
             </TableRow>
         </TableLayout>
         <ImageView
@@ -363,25 +441,95 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TableRow
-                android:layout_marginTop="10dp">
+            <TableRow>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="系统时间"/>
                 <TextView
-                    android:id="@+id/sysTime"
-                    android:layout_width="200dp"
+                    android:id="@+id/sysdate"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:text=""/>
+                <TextView
+                    android:id="@+id/systime"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
                     android:text=""/>
                 <Button
-                    android:id="@+id/systemsetup"
+                    android:id="@+id/setuptime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="设置"/>
+                    android:text="调整日期时间"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="WIFI设置"/>
+                <EditText
+                    android:id="@+id/editssid"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:hint="输入WIFI SSID"/>
+                <EditText
+                    android:id="@+id/editwifipassword"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:hint="输入PASSWORD"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+                <Button
+                    android:id="@+id/setupwifi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="连接到WIFI"/>
+            </TableRow>
+            <TableRow
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="WIFI状态"/>
+                <TextView
+                    android:id="@+id/wifissid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_span="2"
+                    android:text="" />
+            </TableRow>
+            <TableRow
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="IP地址"/>
+                <TextView
+                    android:id="@+id/localip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_span="2"
+                    android:text="" />
             </TableRow>
         </TableLayout>
         <ImageView
@@ -400,26 +548,78 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TableRow
-                android:layout_marginTop="10dp">
-                <ImageView
-                    android:id="@+id/imageViewZXing"
+            <TableRow>
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="WEB设置"/>
+                <EditText
+                    android:id="@+id/editlocalip"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:hint="输入本机IP地址"/>
+                <EditText
+                    android:id="@+id/editwebport"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:hint="输入WEB端口"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+                <Button
+                    android:id="@+id/setupweb"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="启动WEB服务"/>
+            </TableRow>
+            <TableRow
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="WEB访问"/>
+                <TextView
+                    android:id="@+id/httpaddr"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:text="http"
                     android:layout_marginLeft="20dp"/>
             </TableRow>
+            <TableRow
+                android:layout_marginTop="20dp">
+                <ImageView
+                    android:id="@+id/imageViewZXing"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_column="0"
+                    android:layout_marginLeft="0dp"/>
+            </TableRow>
         </TableLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/line2"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TableRow
-                android:layout_marginTop="0dp">
+            <TableRow>
                 <TextView
-                    android:id="@+id/wifiip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:layout_marginLeft="20dp"/>
+                    android:layout_marginLeft="20dp"
+                    android:text="江苏南水科技有限公司"/>
             </TableRow>
         </TableLayout>
     </LinearLayout>

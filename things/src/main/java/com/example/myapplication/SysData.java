@@ -1,27 +1,50 @@
 package com.example.myapplication;
 
-import java.text.SimpleDateFormat;
-
 public class SysData {
 
-    //Home页面状态
-    static boolean isGetNetTime = false;    //是否已经获取到网络时间
-    static boolean isRun = false;           //仪器是否正在运行
+    //仪器的参数
+    static int shuiyangStep = 65;               //水样泵旋转圈数
+    static double shuiyangVolume = 100.0;       //水样的液体体积
+    static int liusuanStep = 3200;              //加硫酸的步数
+    static double liusuanVolume = 5.0;          //加硫酸的体积
+    static int caosuannaStep = 5690;            //加草酸钠的步数
+    static double caosuannaVolume = 10.0;       //加草酸钠的体积
+    static int gaomengsuanjiaStep = 5200;       //加高锰酸钾的步数
+    static double gaomengsuanjiaVolume = 10.0;  //加高锰酸钾的体积
+    static double xiaojieTemp = 92;             //消解温度
+    static int xiaojieTime = 1500;              //消解时长
+    static int didingStep = 50;                 //每滴滴定步数
+    static double didingVolume = 0.1;           //每滴滴定体积
+    static int didingNum = 0;                   //滴定的滴数
+    static double didingSumVolume = 0;          //滴定的总体积
+    static double codVolue = 0;                 //测定的cod值
 
-    static double tempIn, tempOut;             //温度值，in反应器内温度，out加热器温度
-    static int adLight, adBack;             //adLight光电值，adBack备用模拟量
-    static byte[] Pump = new byte[10];      //记录各泵的状态，十六进制数据，0x00-状态正常，
-                                            // 0x01-帧错误，0x02-参数错误，0x03-光耦错误，0x04-电机忙，0xfe-任务挂起，0xff-未知错误
-    static int startAdLight;                //存储滴定前的光电值
-    static int didingNum;                   //滴定的高锰酸钾的数量
-    static String errorMsg;                 //记录仪器出错信息
-    static double tempSet = 92;             //温度控制目标值
-    static long startXiaojie;                //消解开始时间
-    static long endXiaoJie;                  //消解结束时间
-    static int timeXiaoJie = 1500;        //消解时长，单位：秒
-    static int jiaoBanType = 0;             //搅拌方式 0-停止搅拌，1-间歇搅拌，2-持续搅拌
-    static int progressRate = 0;            //分析进度
-    static String wifiIpAdd = "";           //无线网络ip地址
+    //仪器运行状态
+    static boolean isGetNetTime = false;        //是否已经获取到网络时间
+    static boolean isRun = false;               //仪器是否运行
+    static int progressRate = 0;                //分析进度
+    static String currentAction = "";           //仪器当前执行动作
+    static double tempIn, tempOut;              //温度值，in反应器内温度，out加热器温度
+    static int adLight, adBack;                 //adLight光电值，adBack备用模拟量
+    static byte[] Pump = new byte[10];          //记录各泵的状态，十六进制数据，0x00-状态正常，0x01-帧错误，0x02-参数错误，0x03-光耦错误，0x04-电机忙，0xfe-任务挂起，0xff-未知错误
+    static int startAdLight;                    //存储滴定前的光电值
+    static String errorMsg;                     //记录仪器出错信息
+    static long startXiaojie;                   //消解开始时间
+    static long endXiaoJie;                     //消解结束时间
+    static int jiaoBanType = 0;                 //搅拌方式 0-停止搅拌，1-间歇搅拌，2-持续搅拌
+    static long startTime;                      //测定开始时间
+    static long endTime;                        //测定结束时间
+
+    //系统参数
+    static String httpAddr = "";                //http访问地址
+    static String wifiIpAddr = "";              //无线网络ip地址
+    static String[] localIpAddr;                //可用网络ip地址
+    static String webIPAddr = "";               //web服务ip地址
+    static int webPort = 8080;                  //web服务端口
+    static String wifiSsid = "";                //无线网络ssid
+    static String wifiPass = "";                //无线网络密码
+    static boolean restartWebFlag = false;      //是否需要重启web服务
+    static boolean webServiceFlag = false;      //web服务是否启动
 
     //仪器控制页面状态
     static boolean statusD1 = false;       //D1状态

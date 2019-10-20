@@ -5,8 +5,11 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -14,14 +17,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -31,17 +37,23 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class TabSetup extends Fragment {
-
-    private TextView txtTempIn, txtTempOut, txtAdLight, txtAdLight1, txtDidingNum;
-    private TextView txtXiaoJieStart, txtXiaoJieLave, txtSysTime;
+    View view;
+    private TextView txtTempIn, txtTempOut, txtAdLight, txtAdLight1, txtDidingNum, txtDidingSumVolume;
+    private TextView txtXiaoJieStart, txtXiaoJieLave, txtSysDate, txtSysTime, wifiName;
     private long lave = 0; //剩余消解时间
-    private Button systemSetup;
+    private Button timeSetup, buttonSetupWeb, buttonSetupWifi, buttonSaveData;
     private TimeManager timeManager = TimeManager.getInstance();
-    private TextView wifiIp;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("H:mm:ss");
+    private TextView httpAddr, localIp;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH时mm分ss秒");
+    private EditText editSsid, editPass, editlocalip, editwebport;
+    private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
+    private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
 
     //获取线程发送的Msg信息，更新对于UI界面
     static final int UI_UPDATE = 100;
@@ -67,48 +79,215 @@ public class TabSetup extends Fragment {
         txtAdLight.setText(Integer.toString(SysData.adLight));
         txtAdLight1.setText(Integer.toString(SysData.startAdLight));
         txtDidingNum.setText(Integer.toString(SysData.didingNum)); //4为注射泵开始滴定到有高锰酸钾出来的数量
+        txtDidingSumVolume.setText(Double.toString(SysData.didingSumVolume));
         txtXiaoJieStart.setText(timeFormat.format(SysData.startXiaojie));
-        //txtXiaoJieStart.setText(Long.toString(SysData.startXiaojie));
         lave = (SysData.endXiaoJie > System.currentTimeMillis()) ? (SysData.endXiaoJie - System.currentTimeMillis()) / 1000 : 0;
         txtXiaoJieLave.setText(Long.toString(lave) + "秒");
-        txtSysTime.setText(dateFormat.format(System.currentTimeMillis()));
+        txtSysDate.setText(dateFormat.format(System.currentTimeMillis()));
+        txtSysTime.setText(timeFormat.format(System.currentTimeMillis()));
+
+        //网络改变重新生成二维码
+        if(SysData.restartWebFlag) {
+            //生成网址的二维码
+            creatQRCode(view);
+            SysData.restartWebFlag = false;
+        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tab_setup, container, false);
+        view = inflater.inflate(R.layout.tab_setup, container, false);
         //状态数据
         txtTempIn = view.findViewById(R.id.tempin);
         txtTempOut = view.findViewById(R.id.tempout);
         txtAdLight = view.findViewById(R.id.adlight);
         txtAdLight1 = view.findViewById(R.id.adlight1);
         txtDidingNum = view.findViewById(R.id.didingnum);
+        txtDidingSumVolume = view.findViewById(R.id.didingSumVolume);
         txtXiaoJieStart = view.findViewById(R.id.xiaojiestart);
         txtXiaoJieLave = view.findViewById(R.id.xiaojielave);
-        systemSetup = view.findViewById(R.id.systemsetup);
-        wifiIp = view.findViewById(R.id.wifiip);
-        txtSysTime = view.findViewById(R.id.sysTime);
+        timeSetup = view.findViewById(R.id.setuptime);
+        httpAddr = view.findViewById(R.id.httpaddr);
+        localIp = view.findViewById(R.id.localip);
+        txtSysDate = view.findViewById(R.id.sysdate);
+        txtSysTime = view.findViewById(R.id.systime);
+        wifiName = view.findViewById(R.id.wifissid);
+        buttonSetupWeb = view.findViewById(R.id.setupweb);
+        buttonSetupWifi = view.findViewById(R.id.setupwifi);
+        buttonSaveData = view.findViewById(R.id.saveData);
+        //网络参数
+        editSsid = view.findViewById(R.id.editssid);
+        editPass = view.findViewById(R.id.editwifipassword);
+        editlocalip = view.findViewById(R.id.editlocalip);
+        editwebport = view.findViewById(R.id.editwebport);
+        //仪表参数
+        editShuiyangStep = view.findViewById(R.id.editShuiyangStep);
+        editShuiyangVolume = view.findViewById(R.id.editShuiyangVolume);
+        editLiusuanStep = view.findViewById(R.id.editLiusuanStep);
+        editLiusuanVolume = view.findViewById(R.id.editLiusuanVolume);
+        editCaosuannaStep = view.findViewById(R.id.editCaosuannaStep);
+        editCaosuannaVolume = view.findViewById(R.id.editCaosuannaVolume);
+        editGaomengsuanjiaStep = view.findViewById(R.id.editGaomengsuanjiaStep);
+        editGaomengsuanjiaVolume = view.findViewById(R.id.editGaomengsuanjiaVolume);
+        editDidingStep = view.findViewById(R.id.editDidingStep);
+        editDidingVolume = view.findViewById(R.id.editDidingVolume);
+        editXiaojieTemp = view.findViewById(R.id.editXiaojieTemp);
+        editXiaojieTime = view.findViewById(R.id.editXiaojieTime);
 
-        //显示无线网络ip地址
-        wifiIp.setText("WEB访问：" + SysData.wifiIpAdd);
+        //填充Edit数据
+        setEditText();
+        //显示设备IP地址
+        String localIpAddr = "";
+        for(int i = 0; i < SysData.localIpAddr.length; i++) {
+            localIpAddr = "[" + (i+1) + "] " + SysData.localIpAddr[i] + " ";
+        }
+        localIp.setText(localIpAddr);
+        //显示已连接的wifi
+        wifiName.setText("已连接到\"" + SysData.wifiSsid + "\"");
+        //显示WEB访问地址
+        httpAddr.setText(SysData.httpAddr);
         //刷新界面信息
         message = handlerUpdate.obtainMessage(UI_UPDATE);
         handlerUpdate.sendMessageDelayed(message, 1000);
 
-        //点击系统设置按钮
-        systemSetup.setOnClickListener(new View.OnClickListener() {
+        //点击时间设置按钮
+        timeSetup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDateDialog();
             }
         });
 
+        //点击保存数据按钮
+        buttonSaveData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                saveEditText();
+                saveMeterParameter();
+            }
+        });
+
+        //点击web设置按钮
+        buttonSetupWeb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                SysData.webPort = Integer.parseInt(editwebport.getText().toString());
+                MainActivity.updateNet();
+                httpAddr.setText(SysData.httpAddr);
+                saveMeterParameter();
+                //重启web服务
+                MainActivity.stopWebService();
+                MainActivity.startWebService();
+                SysData.restartWebFlag = true;
+                /*
+                Intent intent = new Intent(getActivity(), SysService.class);
+                getActivity().stopService(intent);
+                Log.i("MainActivity", "停止后台服务");
+                */
+            }
+        });
+
         //生成网址的二维码
-        ImageView mImageView = (ImageView) view.findViewById(R.id.imageViewZXing);
-        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(SysData.wifiIpAdd, 120, 120);
-        mImageView.setImageBitmap(mBitmap);
+        creatQRCode(view);
 
         return view;
+    }
+
+    //保存仪表参数
+    public void saveMeterParameter() {
+        //打开文件
+        final SharedPreferences.Editor editor = getActivity().getSharedPreferences("Parameter", MODE_PRIVATE).edit();
+        //仪器的参数
+        editor.putInt("shuiyangStep", SysData.shuiyangStep);
+        editor.putLong("shuiyangVolume", Double.doubleToLongBits(SysData.shuiyangVolume));
+        //editor.putFloat("shuiyangVolume", (float) SysData.shuiyangVolume);
+        editor.putInt("liusuanStep", SysData.liusuanStep);
+        editor.putLong("liusuanVolume", Double.doubleToLongBits(SysData.liusuanVolume));
+        //editor.putFloat("liusuanVolume", (float) SysData.liusuanVolume);
+        editor.putInt("caosuannaStep", SysData.caosuannaStep);
+        editor.putLong("caosuannaVolume", Double.doubleToLongBits(SysData.caosuannaVolume));
+        //editor.putFloat("caosuannaVolume", (float) SysData.caosuannaVolume);
+        editor.putInt("gaomengsuanjiaStep", SysData.gaomengsuanjiaStep);
+        editor.putLong("gaomengsuanjiaVolume", Double.doubleToLongBits(SysData.gaomengsuanjiaVolume));
+        //editor.putFloat("gaomengsuanjiaVolume", (float) SysData.gaomengsuanjiaVolume);
+        editor.putLong("xiaojieTemp", Double.doubleToLongBits(SysData.xiaojieTemp));
+        //editor.putFloat("xiaojieTemp", (float) SysData.xiaojieTemp);
+        editor.putInt("xiaojieTime", SysData.xiaojieTime);
+        editor.putInt("didingStep", SysData.didingStep);
+        editor.putLong("didingVolume", Double.doubleToLongBits(SysData.didingVolume));
+        //editor.putFloat("didingVolume", (float) SysData.didingVolume);
+        editor.putInt("didingNum", SysData.didingNum);
+        editor.putLong("didingSumVolumee", Double.doubleToLongBits(SysData.didingSumVolume));
+        //editor.putFloat("didingSumVolume", (float) SysData.didingSumVolume);
+        editor.putLong("codVolue", Double.doubleToLongBits(SysData.codVolue));
+        //editor.putFloat("codVolue", (float) SysData.codVolue);
+        //系统参数
+        editor.putString("localIpAddr", SysData.localIpAddr[0]);
+        editor.putInt("webPort", SysData.webPort);
+
+        //提交保存
+        boolean result = editor.commit();
+        if(result) {
+            Log.i("SharedPreferences", "数据保存成功");
+        } else {
+            Log.i("SharedPreferences", "数据保存失败");
+        }
+    }
+
+    //保存Edit数据
+    private void saveEditText() {
+        //保存仪表参数的内容
+        SysData.shuiyangStep = Integer.parseInt(editShuiyangStep.getText().toString());
+        SysData.shuiyangVolume = Double.parseDouble(editShuiyangVolume.getText().toString());
+        SysData.liusuanStep = Integer.parseInt(editLiusuanStep.getText().toString());
+        SysData.liusuanVolume = Double.parseDouble(editLiusuanVolume.getText().toString());
+        SysData.caosuannaStep = Integer.parseInt(editCaosuannaStep.getText().toString());
+        SysData.caosuannaVolume = Double.parseDouble(editCaosuannaVolume.getText().toString());
+        SysData.gaomengsuanjiaStep = Integer.parseInt(editGaomengsuanjiaStep.getText().toString());
+        SysData.gaomengsuanjiaVolume = Double.parseDouble(editGaomengsuanjiaVolume.getText().toString());
+        SysData.didingStep = Integer.parseInt(editDidingStep.getText().toString());
+        SysData.didingVolume = Double.parseDouble(editDidingVolume.getText().toString());
+        SysData.xiaojieTemp = Double.parseDouble(editXiaojieTemp.getText().toString());
+        SysData.xiaojieTime = Integer.parseInt(editXiaojieTime.getText().toString());
+        /*
+        //保存EditText的内容 -- 系统自动获取无需保存
+        SysData.wifiSsid = editSsid.getText().toString();
+        SysData.wifiPass = editPass.getText().toString();
+        SysData.webIPAddr = editlocalip.getText().toString();
+        SysData.webPort = Integer.parseInt(editwebport.getText().toString());
+         */
+    }
+
+    //生成网址的二维码
+    private void creatQRCode(View view) {
+        //生成网址的二维码
+        ImageView mImageView = (ImageView) view.findViewById(R.id.imageViewZXing);
+        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(SysData.httpAddr, 90, 90);
+        mImageView.setImageBitmap(mBitmap);
+    }
+
+    //填充Edit数据
+    private void setEditText() {
+        //填充EditText的内容
+        editSsid.setText(SysData.wifiSsid);
+        editPass.setText("");
+        editlocalip.setText(SysData.webIPAddr);
+        editwebport.setText(String.valueOf(SysData.webPort));
+
+        //填充仪表参数的内容
+        editShuiyangStep.setText(String.valueOf(SysData.shuiyangStep));
+        editShuiyangVolume.setText(String.valueOf(SysData.shuiyangVolume));
+        editLiusuanStep.setText(String.valueOf(SysData.liusuanStep));
+        editLiusuanVolume.setText(String.valueOf(SysData.liusuanVolume));
+        editCaosuannaStep.setText(String.valueOf(SysData.caosuannaStep));
+        editCaosuannaVolume.setText(String.valueOf(SysData.caosuannaVolume));
+        editGaomengsuanjiaStep.setText(String.valueOf(SysData.gaomengsuanjiaStep));
+        editGaomengsuanjiaVolume.setText(String.valueOf(SysData.gaomengsuanjiaVolume));
+        editDidingStep.setText(String.valueOf(SysData.didingStep));
+        editDidingVolume.setText(String.valueOf(SysData.didingVolume));
+        editXiaojieTemp.setText(String.valueOf(SysData.xiaojieTemp));
+        editXiaojieTime.setText(String.valueOf(SysData.xiaojieTime));
     }
 
     //设置日期对话框
@@ -133,7 +312,6 @@ public class TabSetup extends Fragment {
                 calendar.get(Calendar.DAY_OF_MONTH));
         dialogDate.show();
     }
-
 
     //设置时间对话框
     private void showTimeDialog(){
