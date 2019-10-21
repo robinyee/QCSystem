@@ -13,6 +13,7 @@ import com.google.android.things.pio.PeripheralManager;
 import java.io.IOException;
 
 import static android.content.ContentValues.TAG;
+import static com.example.myapplication.SysData.calculationValue;
 
 public class SysGpio {
     static PeripheralManager manager;
@@ -756,6 +757,30 @@ public class SysGpio {
         }).start();
     }
 
+    //更新进度条
+    public static void updateProgress() {
+        new Thread(new Runnable() {
+            public void run() {
+                do {
+                    if (SysData.progressRate < 99) {
+                        SysData.progressRate += 1;
+                    }
+                    //暂停30秒
+                    try {
+                        Thread.sleep(30000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //时间超过90分钟，可能仪器故障
+                    if((System.currentTimeMillis() - SysData.startTime) / 1000 > 5400) {
+                        SysData.errorMsg = "仪器故障";
+                        break;
+                    }
+                } while (SysData.progressRate < 100);
+            }
+        }).start();
+    }
+
     //水质测定流程
     public static void s7_ShuiZhiCeDing() {
         new Thread(new Runnable() {
@@ -763,6 +788,14 @@ public class SysGpio {
             public void run() {
                 //启动水质测定程序
                 statusS7 = true;
+                //SysData.progressRate = 1;
+                updateProgress(); //自动更新进度条
+                SysData.statusMsg = "启动测定程序";
+                SysData.isRun = true;
+                SysData.startTime = System.currentTimeMillis();
+                SysData.endTime = 0;
+                SysData.codVolue = 0;
+                SysData.didingNum = 0;
 
                 //开启电源
                 try {
@@ -778,6 +811,9 @@ public class SysGpio {
                     e.printStackTrace();
                 }
 
+                //SysData.progressRate = 1;
+                SysData.statusMsg = "进水样";
+
                 //加水样流程
                 s1_JiaShuiYang(); //加水样
                 try {
@@ -788,22 +824,38 @@ public class SysGpio {
                 //等待加水样完成
                 do {
                     try {
+                        //时间超过5分钟，可能进样泵故障
+                        if((System.currentTimeMillis() - SysData.startTime) / 1000 > 300) {
+                            SysData.errorMsg = "进样泵故障";
+                            break;
+                        }
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 } while(statusS1 == true);
 
+                //SysData.progressRate = 5;
+                SysData.statusMsg = "加入硫酸";
+
                 //加硫酸流程
                 s2_JiaLiuSuan();
-                //等待加水样完成
+                //等待加硫酸完成
                 do {
                     try {
+                        //时间超过10分钟，可能试剂泵故障
+                        if((System.currentTimeMillis() - SysData.startTime) / 1000 > 600) {
+                            SysData.errorMsg = "试剂泵故障";
+                            break;
+                        }
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 } while(statusS2 == true);
+
+                //SysData.progressRate = 8;
+                SysData.statusMsg = "反应器加热";
 
                 //循环读取温度
                 SysGpio.readTempFlag = true;
@@ -817,6 +869,11 @@ public class SysGpio {
                 //等待温度到达消解温度
                 do {
                     try {
+                        //时间超过30分钟，可能加热器故障
+                        if((System.currentTimeMillis() - SysData.startTime) / 1000 > 1800) {
+                            SysData.errorMsg = "加热器故障";
+                            break;
+                        }
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -827,6 +884,9 @@ public class SysGpio {
                 SysGpio.readTempFlag = false;
                 //停止温度控制
                 SysGpio.tempControlFlag = false;
+
+                //SysData.progressRate = 8;
+                SysData.statusMsg = "加入高锰酸钾";
 
                 //加高锰酸钾流程
                 s3_JiaGaoMengSuanJIa();
@@ -842,6 +902,9 @@ public class SysGpio {
                 //停止搅拌程序
                 SysData.jiaoBanType = 0;
 
+                //SysData.progressRate = 10;
+                SysData.statusMsg = "正在消解";
+
                 //启动消解程序
                 s5_XiaoJie();
                 //等待消解完成
@@ -853,6 +916,8 @@ public class SysGpio {
                     }
                 } while(statusS5 == true);
 
+                SysData.statusMsg = "加入草酸钠";
+
                 //启动加草酸钠程序
                 s4_JiaCaoSuanNa();
                 //等待消解完成
@@ -863,6 +928,8 @@ public class SysGpio {
                         e.printStackTrace();
                     }
                 } while(statusS4 == true);
+
+                SysData.statusMsg = "准备滴定";
 
                 //循环读取温度
                 SysGpio.readTempFlag = true;
@@ -882,9 +949,11 @@ public class SysGpio {
                 //停止读取温度
                 SysGpio.readTempFlag = false;
 
+                SysData.statusMsg = "正在滴定";
+
                 //启动滴定程序
                 s6_DiDing();
-                //等待消解完成
+                //等待滴定完成
                 do {
                     try {
                         Thread.sleep(1000);
@@ -893,8 +962,12 @@ public class SysGpio {
                     }
                 } while(statusS6 == true);
 
+                //计算COD的值
+                SysData.calculationValue();
+
                 //停止温度控制
                 SysGpio.tempControlFlag = false;
+                SysData.statusMsg = "排放废液";
 
                 //启动排水
                 try {
@@ -909,6 +982,7 @@ public class SysGpio {
 
                 //停止搅拌程序
                 SysData.jiaoBanType = 0;
+                SysData.statusMsg = "完成水质测定";
 
                 //关闭泵、关闭led灯和电源
                 try {
@@ -919,6 +993,11 @@ public class SysGpio {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                SysData.statusMsg = "系统待机";
+                SysData.progressRate = 100;
+                SysData.isRun = false;
+                SysData.endTime = System.currentTimeMillis();
 
                 //完成水质测定程序
                 statusS7 = false;
@@ -932,6 +1011,7 @@ public class SysGpio {
 
             public void run() {
                 statusS8 = true;
+                SysData.statusMsg = "正在复位";
                 try {
                     SysGpio.mGpioOut24V.setValue(true);
                     SysGpio.mGpioOutLED.setValue(true);
@@ -969,7 +1049,9 @@ public class SysGpio {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                SysData.statusMsg = "复位完成";
                 statusS8 = false;
+                SysData.statusMsg = "系统待机";
             }
         }).start();
     }

@@ -268,21 +268,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="光度校准"/>
+                        android:text="空白实验"/>
                     <Switch
                         android:id="@+id/s10"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="温度校准"/>
+                        android:text="试剂标定"/>
                     <Switch
                         android:id="@+id/s11"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="计量校准"/>
+                        android:text="仪表校准"/>
                     <Switch
                         android:id="@+id/s12"
                         android:layout_width="130dp"

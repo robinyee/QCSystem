@@ -430,17 +430,57 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="COD值"/>
+                    android:text="试剂标定"/>
+                <EditText
+                    android:id="@+id/editKongbaiValue"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:hint="输入空白值"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="空白值"/>
+                <EditText
+                    android:id="@+id/editBiaodingValue"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:hint="输入标定值"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="标定值"/>
+            </TableRow>
+            <TableRow
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="草酸钠浓度"/>
 
                 <EditText
-                    android:id="@+id/editCODValue"
+                    android:id="@+id/editCaosuannaCon"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:focusable="false"
                     android:gravity="center"
                     android:imeOptions="actionDone"
-                    android:hint="测定的COD值"
+                    android:hint="输入草酸钠浓度"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
                     android:textSize="14sp" />
@@ -448,7 +488,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:text="mg/L"/>
+                    android:text="mol/L"/>
                 <Button
                     android:id="@+id/saveData"
                     android:layout_width="wrap_content"
@@ -632,15 +672,22 @@
                     android:layout_span="2"
                     android:text="http"
                     android:layout_marginLeft="20dp"/>
+
             </TableRow>
             <TableRow
                 android:layout_marginTop="20dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="手机扫码"/>
                 <ImageView
                     android:id="@+id/imageViewZXing"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:layout_column="0"
-                    android:layout_marginLeft="0dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_column="1"
+                    android:layout_marginLeft="20dp"/>
             </TableRow>
         </TableLayout>
         <ImageView

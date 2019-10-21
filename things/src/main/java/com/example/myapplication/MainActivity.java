@@ -59,8 +59,12 @@ public class MainActivity extends AppCompatActivity {
         readMeterParameter();
         //读取上次仪表状态
         readMeterStatus();
+        //清除保存的数据
         //clearPreferences();
 
+        //SysData.didingNum = 20;
+        //SysData.calculationValue();
+        //SysData.errorMsg = "加热超时";
         /*
         //启动后台服务
         Intent intent = new Intent(this, SysService.class);
@@ -112,6 +116,16 @@ public class MainActivity extends AppCompatActivity {
 
         //启动web服务
         startWebService();
+
+        //前次正在测试中断电，自动复位
+        if(SysData.isRun) {
+            SysGpio.s8_Reset();
+            SysData.isRun = false;
+            SysData.progressRate = 0;
+        }
+
+        //启动循环进程定时保存仪表状态信息
+        saveStatusRun();
     }
 
 
@@ -395,30 +409,45 @@ public class MainActivity extends AppCompatActivity {
         //仪器的参数
         SysData.shuiyangStep = sp.getInt("shuiyangStep", 65);
         SysData.shuiyangVolume = Double.longBitsToDouble(sp.getLong("shuiyangVolume", 0));
-        //SysData.shuiyangVolume = sp.getFloat("shuiyangVolume", 100);
         SysData.liusuanStep = sp.getInt("liusuanStep", 3200);
         SysData.liusuanVolume = Double.longBitsToDouble(sp.getLong("liusuanVolume", 0));
-        //SysData.liusuanVolume = sp.getFloat("liusuanVolume",  5);
         SysData.caosuannaStep = sp.getInt("caosuannaStep", 5690);
         SysData.caosuannaVolume = Double.longBitsToDouble(sp.getLong("caosuannaVolume", 0));
-        //SysData.caosuannaVolume = sp.getFloat("caosuannaVolume", 10);
         SysData.gaomengsuanjiaStep = sp.getInt("gaomengsuanjiaStep", 5200);
         SysData.gaomengsuanjiaVolume = Double.longBitsToDouble(sp.getLong("gaomengsuanjiaVolume", 0));
-        //SysData.gaomengsuanjiaVolume = sp.getFloat("gaomengsuanjiaVolume", 10);
         SysData.xiaojieTemp = Double.longBitsToDouble(sp.getLong("xiaojieTemp", 0));
-        //SysData.xiaojieTemp = sp.getFloat("xiaojieTemp",  92);
         SysData.xiaojieTime = sp.getInt("xiaojieTime", 1500);
         SysData.didingStep = sp.getInt("didingStep", 50);
         SysData.didingVolume = Double.longBitsToDouble(sp.getLong("didingVolume", 0));
-        //SysData.didingVolume = sp.getFloat("didingVolume", (float) 0.1);
         SysData.didingNum = sp.getInt("didingNum", 0);
         SysData.didingSumVolume = Double.longBitsToDouble(sp.getLong("didingSumVolume", 0));
-        //SysData.didingSumVolume = sp.getFloat("didingSumVolume", 0);
         SysData.codVolue = Double.longBitsToDouble(sp.getLong("codVolue", 0));
-        //SysData.codVolue = sp.getFloat("codVolue", 0);
+        SysData.kongbaiValue = Double.longBitsToDouble(sp.getLong("kongbaiValue", 0));
+        SysData.biaodingValue = Double.longBitsToDouble(sp.getLong("biaodingValue", 0));
+        SysData.caosuannaCon = Double.longBitsToDouble(sp.getLong("caosuannaCon", 0));
+
         //系统参数
         //SysData.localIpAddr[0] = sp.getString("localIpAddr", "");     //ip地址不需要存储
         SysData.webPort = sp.getInt("webPort", 0);
+    }
+
+    //保存仪表状态信息进程
+    private void saveStatusRun() {
+        Log.i("MainActivity", "保存仪表状态信息");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //定时保存仪表状态信息
+                do {
+                    saveMeterStatus();
+                    try {
+                        Thread.sleep(60000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } while (true);
+            }
+        }).start();
     }
 
     //保存运行状态参数
@@ -428,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
         //仪器的参数
         editor.putBoolean("isRun", SysData.isRun);
         editor.putInt("progressRate", SysData.progressRate);
-        editor.putString("currentAction", SysData.currentAction);
+        editor.putString("statusMsg", SysData.statusMsg);
         editor.putString("errorMsg", SysData.errorMsg);
         editor.putLong("startTime", SysData.startTime);
         editor.putLong("endTime", SysData.endTime);
@@ -443,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
         //仪器的参数
         SysData.isRun = sp.getBoolean("isRun", false);
         SysData.progressRate = sp.getInt("progressRate", 0);
-        SysData.currentAction = sp.getString("currentAction", "");
+        SysData.statusMsg = sp.getString("statusMsg", "");
         SysData.errorMsg = sp.getString("errorMsg", "");
         SysData.startTime = sp.getLong("startTime", 0);
         SysData.endTime = sp.getLong("endTime", 0);

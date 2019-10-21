@@ -1,8 +1,10 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -12,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,10 +30,12 @@ import java.util.TimerTask;
 
 public class TabHome extends Fragment {
 
-    private TextView textViewTime, textViewCODValue;
+    private TextView textViewTime, textViewCODValue, textViewStatus;
     private ProgressBar progressBar;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
     private Date curDate;
+    private ImageButton buttonStartup;
+    private ImageView imageWarning;
 
     //更新首页系统时间显示
     @SuppressLint("HandlerLeak")
@@ -64,12 +70,41 @@ public class TabHome extends Fragment {
 
         //定时更新系统时间显示
         textViewTime = (TextView) view.findViewById(R.id.textTime);
+        imageWarning = (ImageView) view.findViewById(R.id.imageWarning);
         textViewCODValue = (TextView) view.findViewById(R.id.textCodValue);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        textViewStatus = (TextView) view.findViewById(R.id.textStatus);
+        buttonStartup = (ImageButton) view.findViewById(R.id.startup);
+
         //显示界面数据
         updateUi();
+
         //发送消息刷新页面
         handler.sendEmptyMessageDelayed(0, 0);
+
+        //点击Startup按钮
+        buttonStartup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            if (!SysData.isRun) {
+                showStartDialog();
+            } else {
+                //showStopDialog();
+            }
+            }
+        });
+
+        //点击报警图标显示对话框
+        imageWarning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!SysData.errorMsg.equals("")) {
+                    showWarningDialog();
+                } else {
+                    //showStopDialog();
+                }
+            }
+        });
 
         return view;
     }
@@ -79,5 +114,81 @@ public class TabHome extends Fragment {
         textViewTime.setText(formatter.format(curDate)); //显示当前时间
         textViewCODValue.setText("CODmn " + SysData.codVolue + "mg/L");
         progressBar.setProgress(SysData.progressRate);
+        textViewStatus.setText(SysData.statusMsg);
+        if(!SysData.errorMsg.equals("")) {
+            imageWarning.setVisibility(View.VISIBLE);
+            Log.i("报警", "报警信息：" + SysData.errorMsg);
+        }
+    }
+
+
+    //按下启动测定时显示对话框
+    private void showStartDialog(){
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder altDialog = new AlertDialog.Builder(getActivity());
+        altDialog.setIcon(R.drawable.ic_warning_black_24dp);
+        altDialog.setTitle("提示");
+        altDialog.setMessage("要启动测定程序吗？");
+        altDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //启动测定流程
+                        SysGpio.s7_ShuiZhiCeDing();
+                        SysData.statusMsg = "启动测定程序";
+                        SysData.isRun = true;
+                        SysData.progressRate = 1;
+                        //buttonStartup.setImageResource(R.drawable.ic_stop_black_24dp);
+                        Log.i("MainActivity", "状态=" + SysData.statusMsg);
+                    }
+                });
+        altDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+
+                    }
+                });
+        // 显示
+        altDialog.show();
+    }
+
+    //按报警图片时显示对话框
+    private void showWarningDialog(){
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder altDialog = new AlertDialog.Builder(getActivity());
+        altDialog.setIcon(R.drawable.ic_warning_black_24dp);
+        altDialog.setTitle("报警");
+        altDialog.setMessage("报警信息：" + SysData.errorMsg + "\n是否清除报警？");
+        altDialog.setPositiveButton("清除",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+                        //清除报警信息
+                        SysData.errorMsg = "";
+                        imageWarning.setVisibility(View.INVISIBLE);
+                        Log.i("报警信息", "已清除");
+                    }
+                });
+        altDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+
+                    }
+                });
+        // 显示
+        altDialog.show();
     }
 }

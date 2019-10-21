@@ -44,7 +44,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class TabSetup extends Fragment {
     View view;
     private TextView txtTempIn, txtTempOut, txtAdLight, txtAdLight1, txtDidingNum, txtDidingSumVolume;
-    private TextView txtXiaoJieStart, txtXiaoJieLave, txtSysDate, txtSysTime, wifiName;
+    private TextView txtXiaoJieStart, txtXiaoJieLave, txtSysDate, txtSysTime, wifiName, txtStarttime, txtEndtime;
     private long lave = 0; //剩余消解时间
     private Button timeSetup, buttonSetupWeb, buttonSetupWifi, buttonSaveData;
     private TimeManager timeManager = TimeManager.getInstance();
@@ -54,6 +54,7 @@ public class TabSetup extends Fragment {
     private EditText editSsid, editPass, editlocalip, editwebport;
     private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
     private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
+    private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon;
 
     //获取线程发送的Msg信息，更新对于UI界面
     static final int UI_UPDATE = 100;
@@ -80,7 +81,9 @@ public class TabSetup extends Fragment {
         txtAdLight1.setText(Integer.toString(SysData.startAdLight));
         txtDidingNum.setText(Integer.toString(SysData.didingNum)); //4为注射泵开始滴定到有高锰酸钾出来的数量
         txtDidingSumVolume.setText(Double.toString(SysData.didingSumVolume));
-        txtXiaoJieStart.setText(timeFormat.format(SysData.startXiaojie));
+        if(SysData.startXiaojie != 0) txtXiaoJieStart.setText(timeFormat.format(SysData.startXiaojie));
+        if(SysData.startTime != 0) txtStarttime.setText(timeFormat.format(SysData.startTime));
+        if(SysData.endTime != 0) txtEndtime.setText(timeFormat.format(SysData.endTime));
         lave = (SysData.endXiaoJie > System.currentTimeMillis()) ? (SysData.endXiaoJie - System.currentTimeMillis()) / 1000 : 0;
         txtXiaoJieLave.setText(Long.toString(lave) + "秒");
         txtSysDate.setText(dateFormat.format(System.currentTimeMillis()));
@@ -107,6 +110,8 @@ public class TabSetup extends Fragment {
         txtDidingSumVolume = view.findViewById(R.id.didingSumVolume);
         txtXiaoJieStart = view.findViewById(R.id.xiaojiestart);
         txtXiaoJieLave = view.findViewById(R.id.xiaojielave);
+        txtStarttime = view.findViewById(R.id.starttime);
+        txtEndtime = view.findViewById(R.id.endtime);
         timeSetup = view.findViewById(R.id.setuptime);
         httpAddr = view.findViewById(R.id.httpaddr);
         localIp = view.findViewById(R.id.localip);
@@ -134,6 +139,9 @@ public class TabSetup extends Fragment {
         editDidingVolume = view.findViewById(R.id.editDidingVolume);
         editXiaojieTemp = view.findViewById(R.id.editXiaojieTemp);
         editXiaojieTime = view.findViewById(R.id.editXiaojieTime);
+        editKongbaiValue = view.findViewById(R.id.editKongbaiValue);
+        editBiaodingValue = view.findViewById(R.id.editBiaodingValue);
+        editCaosuannaCon = view.findViewById(R.id.editCaosuannaCon);
 
         //填充Edit数据
         setEditText();
@@ -201,27 +209,22 @@ public class TabSetup extends Fragment {
         //仪器的参数
         editor.putInt("shuiyangStep", SysData.shuiyangStep);
         editor.putLong("shuiyangVolume", Double.doubleToLongBits(SysData.shuiyangVolume));
-        //editor.putFloat("shuiyangVolume", (float) SysData.shuiyangVolume);
         editor.putInt("liusuanStep", SysData.liusuanStep);
         editor.putLong("liusuanVolume", Double.doubleToLongBits(SysData.liusuanVolume));
-        //editor.putFloat("liusuanVolume", (float) SysData.liusuanVolume);
         editor.putInt("caosuannaStep", SysData.caosuannaStep);
         editor.putLong("caosuannaVolume", Double.doubleToLongBits(SysData.caosuannaVolume));
-        //editor.putFloat("caosuannaVolume", (float) SysData.caosuannaVolume);
         editor.putInt("gaomengsuanjiaStep", SysData.gaomengsuanjiaStep);
         editor.putLong("gaomengsuanjiaVolume", Double.doubleToLongBits(SysData.gaomengsuanjiaVolume));
-        //editor.putFloat("gaomengsuanjiaVolume", (float) SysData.gaomengsuanjiaVolume);
         editor.putLong("xiaojieTemp", Double.doubleToLongBits(SysData.xiaojieTemp));
-        //editor.putFloat("xiaojieTemp", (float) SysData.xiaojieTemp);
         editor.putInt("xiaojieTime", SysData.xiaojieTime);
         editor.putInt("didingStep", SysData.didingStep);
         editor.putLong("didingVolume", Double.doubleToLongBits(SysData.didingVolume));
-        //editor.putFloat("didingVolume", (float) SysData.didingVolume);
         editor.putInt("didingNum", SysData.didingNum);
-        editor.putLong("didingSumVolumee", Double.doubleToLongBits(SysData.didingSumVolume));
-        //editor.putFloat("didingSumVolume", (float) SysData.didingSumVolume);
+        editor.putLong("didingSumVolume", Double.doubleToLongBits(SysData.didingSumVolume));
         editor.putLong("codVolue", Double.doubleToLongBits(SysData.codVolue));
-        //editor.putFloat("codVolue", (float) SysData.codVolue);
+        editor.putLong("kongbaiValue", Double.doubleToLongBits(SysData.kongbaiValue));
+        editor.putLong("biaodingValue", Double.doubleToLongBits(SysData.biaodingValue));
+        editor.putLong("caosuannaCon", Double.doubleToLongBits(SysData.caosuannaCon));
         //系统参数
         editor.putString("localIpAddr", SysData.localIpAddr[0]);
         editor.putInt("webPort", SysData.webPort);
@@ -245,6 +248,10 @@ public class TabSetup extends Fragment {
         SysData.didingVolume = Double.parseDouble(editDidingVolume.getText().toString());
         SysData.xiaojieTemp = Double.parseDouble(editXiaojieTemp.getText().toString());
         SysData.xiaojieTime = Integer.parseInt(editXiaojieTime.getText().toString());
+        SysData.kongbaiValue = Double.parseDouble(editKongbaiValue.getText().toString());
+        SysData.biaodingValue = Double.parseDouble(editBiaodingValue.getText().toString());
+        SysData.caosuannaCon = Double.parseDouble(editCaosuannaCon.getText().toString());
+
         /*
         //保存EditText的内容 -- 系统自动获取无需保存
         SysData.wifiSsid = editSsid.getText().toString();
@@ -258,7 +265,7 @@ public class TabSetup extends Fragment {
     private void creatQRCode(View view) {
         //生成网址的二维码
         ImageView mImageView = (ImageView) view.findViewById(R.id.imageViewZXing);
-        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(SysData.httpAddr, 90, 90);
+        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(SysData.httpAddr, 80, 80);
         mImageView.setImageBitmap(mBitmap);
     }
 
@@ -283,6 +290,9 @@ public class TabSetup extends Fragment {
         editDidingVolume.setText(String.valueOf(SysData.didingVolume));
         editXiaojieTemp.setText(String.valueOf(SysData.xiaojieTemp));
         editXiaojieTime.setText(String.valueOf(SysData.xiaojieTime));
+        editKongbaiValue.setText(String.valueOf(SysData.kongbaiValue));
+        editBiaodingValue.setText(String.valueOf(SysData.biaodingValue));
+        editCaosuannaCon.setText(String.valueOf(SysData.caosuannaCon));
     }
 
     //设置日期对话框
