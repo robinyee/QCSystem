@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -25,7 +26,8 @@ import java.util.TimerTask;
 
 public class TabHome extends Fragment {
 
-    private TextView textViewTime;
+    private TextView textViewTime, textViewCODValue;
+    private ProgressBar progressBar;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
     private Date curDate;
 
@@ -37,9 +39,8 @@ public class TabHome extends Fragment {
                 case 0:
                     // 移除所有的msg.what为0等消息，保证只有一个循环消息队列再跑
                     handler.removeMessages(0);
-                    // app的功能逻辑处理
-                    curDate = new Date(System.currentTimeMillis());
-                    textViewTime.setText(formatter.format(curDate)); //显示当前时间
+                    // 更新页面信息
+                    updateUi();
                     // 再次发出msg，循环更新
                     handler.sendEmptyMessageDelayed(0, 1000);
                     break;
@@ -63,11 +64,20 @@ public class TabHome extends Fragment {
 
         //定时更新系统时间显示
         textViewTime = (TextView) view.findViewById(R.id.textTime);
-        curDate = new Date(System.currentTimeMillis());
-        textViewTime.setText(formatter.format(curDate)); //显示当前时间
+        textViewCODValue = (TextView) view.findViewById(R.id.textCodValue);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        //显示界面数据
+        updateUi();
+        //发送消息刷新页面
         handler.sendEmptyMessageDelayed(0, 0);
 
         return view;
     }
 
+    private void updateUi() {
+        curDate = new Date(System.currentTimeMillis());
+        textViewTime.setText(formatter.format(curDate)); //显示当前时间
+        textViewCODValue.setText("CODmn " + SysData.codVolue + "mg/L");
+        progressBar.setProgress(SysData.progressRate);
+    }
 }

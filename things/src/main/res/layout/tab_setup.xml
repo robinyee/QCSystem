@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:padding="16dp"
     android:orientation="vertical">
 
@@ -192,13 +194,14 @@
 
                 <EditText
                     android:id="@+id/editShuiyangStep"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:inputType="number"
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入水样步数"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -208,10 +211,11 @@
 
                 <EditText
                     android:id="@+id/editShuiyangVolume"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入水样体积"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
@@ -230,13 +234,14 @@
                     android:text="硫酸"/>
                 <EditText
                     android:id="@+id/editLiusuanStep"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:inputType="number"
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入硫酸步数"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -246,10 +251,11 @@
 
                 <EditText
                     android:id="@+id/editLiusuanVolume"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入硫酸体积"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
@@ -268,13 +274,14 @@
                     android:text="草酸钠"/>
                 <EditText
                     android:id="@+id/editCaosuannaStep"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:inputType="number"
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入草酸钠步数"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -284,10 +291,11 @@
 
                 <EditText
                     android:id="@+id/editCaosuannaVolume"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入草酸钠体积"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
@@ -306,13 +314,14 @@
                     android:text="高锰酸钾"/>
                 <EditText
                     android:id="@+id/editGaomengsuanjiaStep"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:inputType="number"
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入高锰酸钾步数"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -321,10 +330,11 @@
                     android:text="步"/>
                 <EditText
                     android:id="@+id/editGaomengsuanjiaVolume"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入高锰酸钾体积"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
@@ -343,13 +353,14 @@
                     android:text="滴定精度"/>
                 <EditText
                     android:id="@+id/editDidingStep"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:inputType="number"
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入一滴步数"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -358,10 +369,11 @@
                     android:text="步"/>
                 <EditText
                     android:id="@+id/editDidingVolume"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入一滴体积"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
@@ -378,22 +390,39 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="消解温度"/>
+                    android:text="消解"/>
                 <EditText
                     android:id="@+id/editXiaojieTemp"
-                    android:layout_width="120dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入消解温度"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:text="摄氏度"/>
+                <EditText
+                    android:id="@+id/editXiaojieTime"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:hint="输入消解时间"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="秒"/>
             </TableRow>
             <TableRow
                 android:layout_marginTop="10dp">
@@ -401,22 +430,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="消解时间"/>
+                    android:text="COD值"/>
+
                 <EditText
-                    android:id="@+id/editXiaojieTime"
-                    android:layout_width="120dp"
+                    android:id="@+id/editCODValue"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textSize="14sp"
+                    android:focusable="false"
                     android:gravity="center"
-                    android:hint="输入消解时间"/>
+                    android:imeOptions="actionDone"
+                    android:hint="测定的COD值"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:text="秒"/>
+                    android:text="mg/L"/>
                 <Button
                     android:id="@+id/saveData"
                     android:layout_width="wrap_content"
@@ -482,6 +514,7 @@
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入WIFI SSID"/>
                 <EditText
                     android:id="@+id/editwifipassword"
@@ -489,8 +522,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:hint="输入PASSWORD"
                     android:singleLine="true"
+                    android:inputType="textPassword"
                     android:textSize="14sp" />
                 <Button
                     android:id="@+id/setupwifi"
@@ -562,7 +597,9 @@
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
-                    android:hint="输入本机IP地址"/>
+                    android:focusable="false"
+                    android:imeOptions="actionDone"
+                    android:hint="输入IP地址"/>
                 <EditText
                     android:id="@+id/editwebport"
                     android:layout_width="120dp"
@@ -570,7 +607,8 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="center"
                     android:inputType="number"
-                    android:hint="输入WEB端口"
+                    android:imeOptions="actionDone"
+                    android:hint="输入端口"
                     android:singleLine="true"
                     android:textSize="14sp" />
                 <Button
