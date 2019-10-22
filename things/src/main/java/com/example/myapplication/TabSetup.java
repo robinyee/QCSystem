@@ -148,7 +148,7 @@ public class TabSetup extends Fragment {
         //显示设备IP地址
         String localIpAddr = "";
         for(int i = 0; i < SysData.localIpAddr.length; i++) {
-            localIpAddr = "[" + (i+1) + "] " + SysData.localIpAddr[i] + " ";
+            localIpAddr = localIpAddr + "[" + (i+1) + "] " + SysData.localIpAddr[i] + "  ";
         }
         localIp.setText(localIpAddr);
         //显示已连接的wifi

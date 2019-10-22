@@ -141,7 +141,7 @@ public class TabHome extends Fragment {
                         SysGpio.s7_ShuiZhiCeDing();
                         SysData.statusMsg = "启动测定程序";
                         SysData.isRun = true;
-                        SysData.progressRate = 1;
+                        //SysData.progressRate = 1;
                         //buttonStartup.setImageResource(R.drawable.ic_stop_black_24dp);
                         Log.i("MainActivity", "状态=" + SysData.statusMsg);
                     }

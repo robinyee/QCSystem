@@ -17,14 +17,18 @@
         <lecho.lib.hellocharts.view.LineChartView
             android:id="@+id/chart"
             android:layout_width="wrap_content"
-            android:layout_height="280dp"
-            android:layout_margin="10dp"/>
+            android:layout_height="260dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"/>
 
         <LinearLayout
             android:id="@+id/linearLayout10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="0dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal">
 
             <Button
@@ -86,9 +90,9 @@
             android:layout_width="match_parent"
             android:layout_height="1840dp"
             android:scrollbars="none"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="40dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="40dp"
             android:layout_marginBottom="10dp" />
 
     </LinearLayout>
