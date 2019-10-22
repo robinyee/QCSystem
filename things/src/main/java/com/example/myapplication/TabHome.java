@@ -130,7 +130,7 @@ public class TabHome extends Fragment {
          * setXXX方法返回Dialog对象，因此可以链式设置属性
          */
         final AlertDialog.Builder altDialog = new AlertDialog.Builder(getActivity());
-        altDialog.setIcon(R.drawable.ic_warning_black_24dp);
+        altDialog.setIcon(R.drawable.ic_error_black_24dp);
         altDialog.setTitle("提示");
         altDialog.setMessage("要启动测定程序吗？");
         altDialog.setPositiveButton("确定",

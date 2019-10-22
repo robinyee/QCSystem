@@ -762,8 +762,8 @@ public class SysGpio {
         new Thread(new Runnable() {
             public void run() {
                 do {
-                    if (SysData.progressRate < 99) {
-                        SysData.progressRate += 1;
+                    if (SysData.progressRate < 95) {
+                        SysData.progressRate = (int) ((System.currentTimeMillis() - SysData.startTime) / 1000 / 30);
                     }
                     //暂停30秒
                     try {
@@ -794,7 +794,7 @@ public class SysGpio {
                 SysData.isRun = true;
                 SysData.startTime = System.currentTimeMillis();
                 SysData.endTime = 0;
-                SysData.codVolue = 0;
+                //SysData.codVolue = 0;  //测定过程中显示前次数据
                 SysData.didingNum = 0;
 
                 //开启电源
