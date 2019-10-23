@@ -631,6 +631,9 @@ public class SysGpio {
         new Thread(new Runnable() {
 
             public void run() {
+                //启动搅拌程序
+                SysData.jiaoBanType = 2;
+                SysGpio.jiaoBanControl();
                 //读取温度
                 SysGpio.readTempFlag = true;
                 SysGpio.readAd();
@@ -697,7 +700,7 @@ public class SysGpio {
                         ddNum += 1;
                         SysData.didingNum = (ddNum > 4) ? ddNum - 4 : 0;
                         if(ddNum >= 150){
-                            SysData.errorMsg = "滴定超时";
+                            SysData.errorMsg = "COD值超量程";
                             //break;
                         }
                         //读取模拟量值
@@ -750,6 +753,8 @@ public class SysGpio {
                     e.printStackTrace();
                 }
 
+                //停止搅拌程序
+                SysData.jiaoBanType = 0;
                 statusS6 = false;
                 Log.d(TAG, "run: 滴定线程结束");
 
@@ -788,14 +793,15 @@ public class SysGpio {
             public void run() {
                 //启动水质测定程序
                 statusS7 = true;
-                //SysData.progressRate = 1;
-                updateProgress(); //自动更新进度条
+                SysData.progressRate = 1;
+                updateProgress();   //自动更新进度条
                 SysData.statusMsg = "启动测定程序";
                 SysData.isRun = true;
                 SysData.startTime = System.currentTimeMillis();
                 SysData.endTime = 0;
                 //SysData.codVolue = 0;  //测定过程中显示前次数据
                 SysData.didingNum = 0;
+                SysData.jiaoBanType = 0;  //停止搅拌程序
 
                 //开启电源
                 try {
@@ -918,9 +924,13 @@ public class SysGpio {
 
                 SysData.statusMsg = "加入草酸钠";
 
+                //启动搅拌程序
+                SysData.jiaoBanType = 2;
+                SysGpio.jiaoBanControl();
+
                 //启动加草酸钠程序
                 s4_JiaCaoSuanNa();
-                //等待消解完成
+                //等待加草酸钠完成
                 do {
                     try {
                         Thread.sleep(1000);
@@ -937,9 +947,7 @@ public class SysGpio {
                 //启动温度控制
                 SysGpio.tempControlFlag = true;
                 SysGpio.tempControl(60);
-                //启动搅拌程序
-                SysData.jiaoBanType = 2;
-                SysGpio.jiaoBanControl();
+
                 //等待60S
                 try {
                     Thread.sleep(60000);
@@ -948,7 +956,8 @@ public class SysGpio {
                 }
                 //停止读取温度
                 SysGpio.readTempFlag = false;
-
+                //停止搅拌程序
+                SysData.jiaoBanType = 0;
                 SysData.statusMsg = "正在滴定";
 
                 //启动滴定程序
@@ -969,6 +978,10 @@ public class SysGpio {
                 SysGpio.tempControlFlag = false;
                 SysData.statusMsg = "排放废液";
 
+                //启动搅拌程序
+                SysData.jiaoBanType = 2;
+                SysGpio.jiaoBanControl();
+
                 //启动排水
                 try {
                     SysGpio.mGpioOutD8.setValue(true);
@@ -984,12 +997,20 @@ public class SysGpio {
                 SysData.jiaoBanType = 0;
                 SysData.statusMsg = "完成水质测定";
 
+                //等待2秒钟
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 //关闭泵、关闭led灯和电源
                 try {
                     SysGpio.mGpioOutP1.setValue(false);
                     SysGpio.mGpioOutP2.setValue(false);
                     SysGpio.mGpioOutLED.setValue(false);
                     SysGpio.mGpioOut24V.setValue(false);
+                    SysGpio.mGpioOutDC1.setValue(false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

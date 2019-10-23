@@ -61,6 +61,10 @@ public class TabService extends Fragment {
             aSwitchB1.setChecked(SysGpio.mGpioOutB1.getValue());
             aSwitchLED.setChecked(SysGpio.mGpioOutLED.getValue());
             aSwitchV24.setChecked(SysGpio.mGpioOut24V.getValue());
+            aSwitchDC1.setChecked(SysGpio.mGpioOutDC1.getValue());
+            aSwitchRE1.setChecked(SysGpio.mGpioOutRE1.getValue());
+            aSwitchDC2.setChecked(SysGpio.mGpioOutDC2.getValue());
+            aSwitchRE2.setChecked(SysGpio.mGpioOutRE2.getValue());
 
             //流程控制
             aSwitchS1.setChecked(SysGpio.statusS1);
@@ -344,7 +348,7 @@ public class TabService extends Fragment {
             }
         });
 
-        //SwitchRE1按钮点击
+        //SwitchRE2按钮点击
         aSwitchRE2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -442,8 +446,6 @@ public class TabService extends Fragment {
 
         return view;
     }
-
-
 
 
     @Override

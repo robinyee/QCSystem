@@ -112,7 +112,7 @@ public class TabHome extends Fragment {
     private void updateUi() {
         curDate = new Date(System.currentTimeMillis());
         textViewTime.setText(formatter.format(curDate)); //显示当前时间
-        textViewCODValue.setText("CODmn " + SysData.codVolue + "mg/L");
+        textViewCODValue.setText(" " + SysData.codVolue);
         progressBar.setProgress(SysData.progressRate);
         textViewStatus.setText(SysData.statusMsg);
         if(!SysData.errorMsg.equals("")) {

@@ -384,8 +384,7 @@
                     android:layout_marginLeft="4dp"
                     android:text="毫升"/>
             </TableRow>
-            <TableRow
-                android:layout_marginTop="10dp">
+            <TableRow>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -424,8 +423,7 @@
                     android:layout_marginLeft="4dp"
                     android:text="秒"/>
             </TableRow>
-            <TableRow
-                android:layout_marginTop="10dp">
+            <TableRow>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -464,8 +462,7 @@
                     android:layout_marginLeft="4dp"
                     android:text="标定值"/>
             </TableRow>
-            <TableRow
-                android:layout_marginTop="10dp">
+            <TableRow>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -221,7 +221,6 @@ public class TabSetup extends Fragment {
         editor.putLong("didingVolume", Double.doubleToLongBits(SysData.didingVolume));
         editor.putInt("didingNum", SysData.didingNum);
         editor.putLong("didingSumVolume", Double.doubleToLongBits(SysData.didingSumVolume));
-        editor.putLong("codVolue", Double.doubleToLongBits(SysData.codVolue));
         editor.putLong("kongbaiValue", Double.doubleToLongBits(SysData.kongbaiValue));
         editor.putLong("biaodingValue", Double.doubleToLongBits(SysData.biaodingValue));
         editor.putLong("caosuannaCon", Double.doubleToLongBits(SysData.caosuannaCon));

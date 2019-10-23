@@ -122,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
             SysGpio.s8_Reset();
             SysData.isRun = false;
             SysData.progressRate = 0;
+            //停止搅拌程序
+            SysData.jiaoBanType = 0;
         }
 
         //启动循环进程定时保存仪表状态信息
@@ -421,7 +423,6 @@ public class MainActivity extends AppCompatActivity {
         SysData.didingVolume = Double.longBitsToDouble(sp.getLong("didingVolume", 0));
         SysData.didingNum = sp.getInt("didingNum", 0);
         SysData.didingSumVolume = Double.longBitsToDouble(sp.getLong("didingSumVolume", 0));
-        SysData.codVolue = Double.longBitsToDouble(sp.getLong("codVolue", 0));
         SysData.kongbaiValue = Double.longBitsToDouble(sp.getLong("kongbaiValue", 0));
         SysData.biaodingValue = Double.longBitsToDouble(sp.getLong("biaodingValue", 0));
         SysData.caosuannaCon = Double.longBitsToDouble(sp.getLong("caosuannaCon", 0));
@@ -461,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("errorMsg", SysData.errorMsg);
         editor.putLong("startTime", SysData.startTime);
         editor.putLong("endTime", SysData.endTime);
+        editor.putLong("codVolue", Double.doubleToLongBits(SysData.codVolue));
         //提交保存
         editor.apply();
     }
@@ -476,6 +478,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.errorMsg = sp.getString("errorMsg", "");
         SysData.startTime = sp.getLong("startTime", 0);
         SysData.endTime = sp.getLong("endTime", 0);
+        SysData.codVolue = Double.longBitsToDouble(sp.getLong("codVolue", 0));
     }
 
     //清空Preferences中的数据
