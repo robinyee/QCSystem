@@ -122,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
             SysGpio.s8_Reset();
             SysData.isRun = false;
             SysData.progressRate = 0;
-            //停止搅拌程序
-            SysData.jiaoBanType = 0;
         }
 
         //启动循环进程定时保存仪表状态信息

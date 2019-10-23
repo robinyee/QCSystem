@@ -168,6 +168,13 @@ public class SysGpio {
                         }
                     }
                 }
+
+                try {
+                    SysGpio.mGpioOutDC1.setValue(false);   //停止搅拌
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         }).start();
     }
@@ -1010,7 +1017,6 @@ public class SysGpio {
                     SysGpio.mGpioOutP2.setValue(false);
                     SysGpio.mGpioOutLED.setValue(false);
                     SysGpio.mGpioOut24V.setValue(false);
-                    SysGpio.mGpioOutDC1.setValue(false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
