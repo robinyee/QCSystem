@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //获取网络ip地址
-    public String[] getLocalIpAddress() {
+    public static String[] getLocalIpAddress() {
         try {
             String[] ipStr = new String[10];
             int i = 0;
@@ -213,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         String wifiName = wifiInfo.getExtraInfo();
+
         if(wifiInfo != null && wifiName != null) {
             if (wifiName.startsWith("\"")) {
                 wifiName = wifiName.substring(1, wifiName.length());
@@ -223,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("MainActivity", "WIFI SSID：" + wifiName);
             return wifiName;
         }
+
         return "未知网络";
     }
 

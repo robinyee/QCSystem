@@ -563,12 +563,47 @@
                     android:singleLine="true"
                     android:inputType="textPassword"
                     android:textSize="14sp" />
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="加密方式"/>
+                <RadioGroup
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_span="2"
+                    android:id="@+id/radioGroupPassType">
+                    <RadioButton
+                        android:id="@+id/nopass"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="无密码"/>
+                    <RadioButton
+                        android:id="@+id/wep"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WEP"/>
+                    <RadioButton
+                        android:id="@+id/wpa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WPA"/>
+                    <RadioButton
+                        android:id="@+id/wpa2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WPA2"/>
+                </RadioGroup>
                 <Button
                     android:id="@+id/setupwifi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="连接到WIFI"/>
+
             </TableRow>
             <TableRow
                 android:layout_marginTop="10dp"
@@ -633,7 +668,6 @@
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
-                    android:focusable="false"
                     android:imeOptions="actionDone"
                     android:hint="输入IP地址"/>
                 <EditText

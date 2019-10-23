@@ -25,6 +25,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -55,6 +57,9 @@ public class TabSetup extends Fragment {
     private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
     private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
     private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon;
+    private RadioGroup radioGroup;
+    private int passType;
+    private WiFiUtil.Data data;
 
     //获取线程发送的Msg信息，更新对于UI界面
     static final int UI_UPDATE = 100;
@@ -64,8 +69,10 @@ public class TabSetup extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == UI_UPDATE) {
-                uiUpdate();
-                //Log.d(TAG, "run: 更新界面");
+                if(SysData.isRun) {
+                    uiUpdate();
+                    //Log.d(TAG, "run: 更新界面");
+                }
             }
             message = handlerUpdate.obtainMessage(UI_UPDATE);
             handlerUpdate.sendMessageDelayed(message, 1000);
@@ -88,14 +95,6 @@ public class TabSetup extends Fragment {
         txtXiaoJieLave.setText(Long.toString(lave) + "秒");
         txtSysDate.setText(dateFormat.format(System.currentTimeMillis()));
         txtSysTime.setText(timeFormat.format(System.currentTimeMillis()));
-
-        //网络改变重新生成二维码
-        if(SysData.restartWebFlag) {
-            //生成网址的二维码
-            creatQRCode(view);
-            SysData.restartWebFlag = false;
-        }
-
     }
 
     @Override
@@ -143,19 +142,14 @@ public class TabSetup extends Fragment {
         editBiaodingValue = view.findViewById(R.id.editBiaodingValue);
         editCaosuannaCon = view.findViewById(R.id.editCaosuannaCon);
 
+        //更新网络TextView信息
+        setNetTxtInfo();
+
         //填充Edit数据
         setEditText();
-        //显示设备IP地址
-        String localIpAddr = "";
-        for(int i = 0; i < SysData.localIpAddr.length; i++) {
-            localIpAddr = localIpAddr + "[" + (i+1) + "] " + SysData.localIpAddr[i] + "  ";
-        }
-        localIp.setText(localIpAddr);
-        //显示已连接的wifi
-        wifiName.setText("已连接到\"" + SysData.wifiSsid + "\"");
-        //显示WEB访问地址
-        httpAddr.setText(SysData.httpAddr);
+
         //刷新界面信息
+        uiUpdate();
         message = handlerUpdate.obtainMessage(UI_UPDATE);
         handlerUpdate.sendMessageDelayed(message, 1000);
 
@@ -173,6 +167,66 @@ public class TabSetup extends Fragment {
             public void onClick(final View view) {
                 saveEditText();
                 saveMeterParameter();
+                Toast.makeText(getActivity(), "数据已保存", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        radioGroup=(RadioGroup) view.findViewById(R.id.radioGroupPassType);;
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton rb=(RadioButton) view.findViewById(checkedId);
+                passType = rb.getId();
+                switch (passType){
+                    case R.id.nopass :
+                        data = WiFiUtil.Data.WIFI_CIPHER_NOPASS;
+                        break;
+                    case R.id.wep :
+                        data = WiFiUtil.Data.WIFI_CIPHER_WEP;
+                        break;
+                    case R.id.wpa :
+                        data = WiFiUtil.Data.WIFI_CIPHER_WPA;
+                        break;
+                    case R.id.wpa2 :
+                        data = WiFiUtil.Data.WIFI_CIPHER_WPA2;
+                        break;
+                }
+
+                //Toast.makeText(getActivity(), "加密方式:" + data, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //点击连接到wifi按钮
+        buttonSetupWifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                WiFiUtil wiFiUtil = WiFiUtil.getInstance(getActivity());
+                String ssid = editSsid.getText().toString();
+                String pass = editPass.getText().toString();
+                if(!ssid.equals("") && data != null) {
+                    int id = wiFiUtil.addWiFiNetwork(ssid, pass, data);
+                    Toast.makeText(getActivity(), "正在连接无线网络" + editSsid.getText().toString(), Toast.LENGTH_LONG).show();
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "信息填写不完整", Toast.LENGTH_LONG).show();
+                }
+
+                //获取无线网络SSID
+                String getSsid = MainActivity.getWifiSsid(getActivity());
+                SysData.wifiSsid = getSsid;
+
+                //获取网络ip地址
+                SysData.localIpAddr = MainActivity.getLocalIpAddress();
+
+                setNetTxtInfo();
+                SysData.webIPAddr = SysData.localIpAddr[0];
+                editSsid.setText(SysData.wifiSsid);
+                editlocalip.setText(SysData.webIPAddr);
             }
         });
 
@@ -180,19 +234,18 @@ public class TabSetup extends Fragment {
         buttonSetupWeb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                SysData.webPort = Integer.parseInt(editwebport.getText().toString());
-                MainActivity.updateNet();
-                httpAddr.setText(SysData.httpAddr);
-                saveMeterParameter();
                 //重启web服务
                 MainActivity.stopWebService();
                 MainActivity.startWebService();
+                saveMeterParameter();
                 SysData.restartWebFlag = true;
-                /*
-                Intent intent = new Intent(getActivity(), SysService.class);
-                getActivity().stopService(intent);
-                Log.i("MainActivity", "停止后台服务");
-                */
+                SysData.webPort = Integer.parseInt(editwebport.getText().toString());
+                MainActivity.updateNet();
+                //显示WEB访问地址
+                httpAddr.setText(SysData.httpAddr);
+                //生成网址的二维码
+                creatQRCode(getView());
+                Toast.makeText(getActivity(), "Web服务已开启", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -201,6 +254,22 @@ public class TabSetup extends Fragment {
 
         return view;
     }
+
+    //更新网络TextView信息
+    public void setNetTxtInfo() {
+        //显示设备IP地址
+        String localIpAddr = "";
+        for(int i = 0; i < SysData.localIpAddr.length; i++) {
+            localIpAddr = localIpAddr + "[" + (i+1) + "] " + SysData.localIpAddr[i] + "  ";
+        }
+        localIp.setText(localIpAddr);
+        //显示已连接的wifi
+        wifiName.setText("已连接到\"" + SysData.wifiSsid + "\"");
+
+        //显示WEB访问地址
+        httpAddr.setText(SysData.httpAddr);
+    }
+
 
     //保存仪表参数
     public void saveMeterParameter() {
