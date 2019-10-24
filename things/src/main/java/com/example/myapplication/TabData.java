@@ -3,9 +3,11 @@ package com.example.myapplication;
 import android.graphics.Color;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 public class TabData extends Fragment {
 
@@ -45,6 +48,7 @@ public class TabData extends Fragment {
 
     private ListView mainListView;
     private ArrayList<String> listData;
+    private Button btnRefresh, btnQuery, btnExport, btnDelete;
 
     ListView listview;
     View view;
@@ -53,21 +57,92 @@ public class TabData extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.tab_data, container, false);
 
-        //显示趋势图
-        mChartView = (LineChartView) view.findViewById(R.id.chart);
+        //初始化控件
+        mChartView = (LineChartView) view.findViewById(R.id.chart); //显示趋势图
+        listview = (ListView) view.findViewById(R.id.datalist); //显示数据列表
+        btnRefresh = view.findViewById(R.id.btnRefresh);
+        btnQuery = view.findViewById(R.id.btnQuery);
+        btnExport = view.findViewById(R.id.btnExport);
+        btnDelete = view.findViewById(R.id.btnDelete);
+
+        //点击刷新按钮
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("数据库", "读取数据");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<Result> results;
+                        //results = MainActivity.db.resultDao().getAll();
+                        results = MainActivity.db.resultDao().getNum(50, 0);
+                        for(Result result:results) {
+                            //result = results.get(0);
+                            Log.i("数据记录", "id:" + result.rid);
+                            Log.i("数据记录", "time:" + result.dateTime);
+                            Log.i("数据记录", "type:" + result.dataType);
+                            Log.i("数据记录", "value:" + result.dataValue);
+                        }
+
+                    }
+                }).start();
+            }
+        });
+
+        //点击导出按钮
+        btnExport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("数据库", "添加数据");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Result result = new Result();
+                        //result.rid = 0;
+                        result.dateTime = System.currentTimeMillis();
+                        result.dataType = "COD";
+                        result.dataValue = 2.05;
+                        MainActivity.db.resultDao().insert(result);
+
+                        //db.resultDao().delete(result);
+                        //db.resultDao().deleteByTime(System.currentTimeMillis());
+                    }
+                }).start();
+            }
+        });
+
+        //点击清空按钮
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("数据库", "删除数据");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Result result = new Result();
+                        //result.rid = 0;
+                        //MainActivity.db.resultDao().delete(result);
+                        MainActivity.db.resultDao().deleteByTime(System.currentTimeMillis());
+                    }
+                }).start();
+            }
+        });
+
+        //初始化折线图
         initView();
         timer = new Timer();
 
-        //显示数据列表
-        listview = (ListView) view.findViewById(R.id.datalist);
+        return view;
+    }
+
+    //生成模拟数据列表
+    public void addListTable() {
         listData = new ArrayList<String>();
         for (int i = 1; i <= 50; i++) {
             listData.add(i + "        2019年1月20日 2:30         COD " + i + ".00 mg/L");
         }
         String[] stringData = listData.toArray(new String[0]);
         listview.setAdapter(new DataAdapter(view.getContext(), stringData));
-
-        return view;
     }
 
     @Override

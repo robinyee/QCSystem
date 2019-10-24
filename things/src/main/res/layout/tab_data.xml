@@ -32,7 +32,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/buttonok1"
+                android:id="@+id/btnRefresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -45,7 +45,7 @@
                 android:text="刷新" />
 
             <Button
-                android:id="@+id/buttonok2"
+                android:id="@+id/btnQuery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -58,7 +58,7 @@
                 android:text="查询" />
 
             <Button
-                android:id="@+id/buttonok3"
+                android:id="@+id/btnExport"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -71,7 +71,7 @@
                 android:text="导出" />
 
             <Button
-                android:id="@+id/buttonok4"
+                android:id="@+id/btnDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"

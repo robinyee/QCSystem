@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -22,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.DatePicker;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -36,10 +38,12 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -47,12 +51,17 @@ public class MainActivity extends AppCompatActivity {
     private TimeManager timeManager = TimeManager.getInstance();
     public static UartCom com0, com1;
     public static WebServer webServer;
+    public static AppDatabase db;   //数据库
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        //打开数据库
+        db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "result").build();
 
         //clearPreferences();
         //读取系统参数
@@ -127,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         //启动循环进程定时保存仪表状态信息
         saveStatusRun();
     }
-
 
     //开启Web服务
     public static void startWebService() {
@@ -228,36 +236,6 @@ public class MainActivity extends AppCompatActivity {
         return "未知网络";
     }
 
-    //连接wifi网络-调试不成功
-    public static boolean wifiConnection(Context context, String wifiSSID, String password) {
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        String strQuotationSSID = "\"" + wifiSSID + "\"";
-        WifiInfo wifiInfo = wifi.getConnectionInfo();
-        if (wifiInfo != null && (wifiSSID.equals(wifiInfo.getSSID()) || strQuotationSSID.equals(wifiInfo.getSSID()))) {
-            Log.i("MainActivity", "WIFI连接：1");
-            return true;
-        }
-        wifi.startScan();
-        List<ScanResult> scanResults = wifi.getScanResults();
-        if (scanResults == null || scanResults.size() == 0) {
-            Log.i("MainActivity", "WIFI连接：2");
-            return false;
-        }
-        for (int nAllIndex = scanResults.size() - 1; nAllIndex >= 0; nAllIndex--) {
-            String strScanSSID = ((ScanResult) scanResults.get(nAllIndex)).SSID;
-            if (wifiSSID.equals(strScanSSID) || strQuotationSSID.equals(strScanSSID)) {
-                WifiConfiguration config = new WifiConfiguration();
-                config.SSID = strQuotationSSID;
-                config.preSharedKey = "\"" + password + "\"";
-                config.status = 3;
-                Log.i("MainActivity", "WIFI连接：3");
-                return wifi.enableNetwork(wifi.addNetwork(config), false);
-            }
-        }
-        Log.i("MainActivity", "WIFI连接：4");
-        return false;
-    }
-
     //获取IP地址
     public static String getLocalIpStr(Context context){
         WifiManager wifiManager=(WifiManager)context.getSystemService(Context.WIFI_SERVICE);
@@ -276,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
                 + ((ip>>16)&0xFF) + "."
                 + ((ip>>24)&0xFF);
     }
-
 
     @Override
     protected void onDestroy() {
