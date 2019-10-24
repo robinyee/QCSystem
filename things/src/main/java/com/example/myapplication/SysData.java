@@ -48,6 +48,7 @@ public class SysData {
     static String wifiPass = "";                //无线网络密码
     static boolean restartWebFlag = false;      //是否需要重启web服务
     static boolean webServiceFlag = false;      //web服务是否启动
+    static boolean stopFlag = false;            //紧急停止
 
     //仪器控制页面状态
     static boolean statusD1 = false;       //D1状态

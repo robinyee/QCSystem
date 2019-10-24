@@ -69,10 +69,16 @@ public class TabSetup extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == UI_UPDATE) {
+
+                uiUpdate();    //Log.d(TAG, "run: 更新界面");
+
+                /*
                 if(SysData.isRun) {
                     uiUpdate();
                     //Log.d(TAG, "run: 更新界面");
                 }
+
+                 */
             }
             message = handlerUpdate.obtainMessage(UI_UPDATE);
             handlerUpdate.sendMessageDelayed(message, 1000);
