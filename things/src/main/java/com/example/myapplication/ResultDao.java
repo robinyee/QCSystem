@@ -21,8 +21,8 @@ public interface ResultDao {
     @Query("SELECT * FROM result WHERE type IN (:resultTypes)")
     List<Result> loadAllByType(String[] resultTypes);
 
-    @Query("SELECT * FROM result WHERE time >= (:startTime) AND time <= (:endTime)")
-    Result findByTime(Long startTime, Long endTime);
+    @Query("SELECT * FROM result WHERE time >= (:startTime) AND time <= (:endTime) ORDER BY time DESC")
+    List<Result> findByTime(Long startTime, Long endTime);
 
     @Query("SELECT count(*) FROM result")
     int findResultCount();

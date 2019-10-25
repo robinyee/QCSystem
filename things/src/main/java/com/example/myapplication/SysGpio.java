@@ -1140,6 +1140,9 @@ public class SysGpio {
                 SysData.isRun = false;
                 SysData.endTime = System.currentTimeMillis();
 
+                //将数据保存至数据库
+                SysData.saveDataToDB();
+
                 //完成水质测定程序
                 statusS7 = false;
             }

@@ -1,13 +1,19 @@
 package com.example.myapplication;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,14 +28,21 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 import androidx.fragment.app.Fragment;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
-import static com.example.myapplication.MainActivity.readData;
+
+import static android.content.Context.MODE_APPEND;
 
 public class TabData extends Fragment {
 
@@ -53,6 +66,7 @@ public class TabData extends Fragment {
     private Button btnRefresh, btnQuery, btnExport, btnDelete;
     private Button btnFirstPage, btnPreviousPage, btnNextPage, btnLastPage;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+    private SimpleDateFormat dateFormatShort = new SimpleDateFormat("yyyy年MM月dd日");
 
     ListView listview;
     View view;
@@ -75,7 +89,7 @@ public class TabData extends Fragment {
 
         //查询数据
         SysData.currentPage = 1;
-        MainActivity.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+        SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
 
         //显示数据列表
         addListTable();
@@ -85,7 +99,7 @@ public class TabData extends Fragment {
             @Override
             public void onClick(View view) {
                 SysData.currentPage = 1;
-                MainActivity.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -97,6 +111,14 @@ public class TabData extends Fragment {
                 initView();
                 //绘制曲线
                 drawLine();
+            }
+        });
+
+        //点击查询按钮
+        btnQuery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDateDialog("start");  //显示清空数据库警告对话框
             }
         });
 
@@ -104,7 +126,36 @@ public class TabData extends Fragment {
         btnExport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.i("导出数据", "导出数据至CVS文件");
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<Result> rss;
+                        rss = MainActivity.db.resultDao().getAll();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                        SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd,HH:mm:ss");
+                        String fileName = "Data" + dateFormat.format(System.currentTimeMillis()) + ".csv";
+                        try {
+                            FileOutputStream fos = getContext().openFileOutput(fileName, Context.MODE_PRIVATE);
+                            for(Result result:rss) {
+                                fos.write((result.rid + "," + dateFormat2.format(result.dateTime)  + "," + result.dataType  + "," + result.dataValue + "\n").getBytes());
+                            }
+                            fos.close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+                //模拟添加数据
+                /*
                 Log.i("数据库", "添加数据");
+                //将数据保存至数据库
+                SysData.saveDataToDB();
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -112,13 +163,16 @@ public class TabData extends Fragment {
                         //result.rid = 0;
                         result.dateTime = System.currentTimeMillis();
                         result.dataType = "COD";
-                        result.dataValue = random.nextInt(10) + 1;
+                        DecimalFormat df = new DecimalFormat("#.00");
+                        result.dataValue = Double.valueOf(df.format(random.nextDouble()*10));
                         MainActivity.db.resultDao().insert(result);
 
                         //db.resultDao().delete(result);
                         //db.resultDao().deleteByTime(System.currentTimeMillis());
                     }
                 }).start();
+
+
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -126,7 +180,7 @@ public class TabData extends Fragment {
                 }
                 //重新查询数据
                 SysData.currentPage = 1;
-                MainActivity.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -138,6 +192,8 @@ public class TabData extends Fragment {
                 initView();
                 //绘制曲线
                 drawLine();
+
+                 */
             }
         });
 
@@ -145,34 +201,7 @@ public class TabData extends Fragment {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i("数据库", "删除数据");
-                        MainActivity.db.resultDao().deleteByTime(System.currentTimeMillis());
-                        SysData.currentPage = 1;
-                        MainActivity.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
-                    }
-                }).start();
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //重新查询数据
-                SysData.currentPage = 1;
-                MainActivity.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //显示数据列表
-                addListTable();
-                //初始化折线图
-                initView();
-                //绘制曲线
-                drawLine();
+                showDeleteDialog();  //显示清空数据库警告对话框
             }
         });
 
@@ -181,7 +210,7 @@ public class TabData extends Fragment {
             @Override
             public void onClick(View view) {
                 SysData.currentPage = 1;
-                MainActivity.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -189,6 +218,11 @@ public class TabData extends Fragment {
                 }
                 //显示数据列表
                 addListTable();
+                //初始化折线图
+                initView();
+                //绘制曲线
+                drawLine();
+
             }
         });
 
@@ -200,7 +234,7 @@ public class TabData extends Fragment {
                 if(SysData.currentPage < 1) {
                     SysData.currentPage = 1;
                 }
-                MainActivity.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -208,6 +242,11 @@ public class TabData extends Fragment {
                 }
                 //显示数据列表
                 addListTable();
+                //初始化折线图
+                initView();
+                //绘制曲线
+                drawLine();
+
             }
         });
 
@@ -219,7 +258,7 @@ public class TabData extends Fragment {
                 if(SysData.currentPage > (SysData.maxPage)) {
                     SysData.currentPage = SysData.maxPage;
                 }
-                MainActivity.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -227,6 +266,11 @@ public class TabData extends Fragment {
                 }
                 //显示数据列表
                 addListTable();
+                //初始化折线图
+                initView();
+                //绘制曲线
+                drawLine();
+
             }
         });
 
@@ -235,7 +279,7 @@ public class TabData extends Fragment {
             @Override
             public void onClick(View view) {
                 SysData.currentPage = SysData.maxPage;
-                MainActivity.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -243,21 +287,131 @@ public class TabData extends Fragment {
                 }
                 //显示数据列表
                 addListTable();
+                //初始化折线图
+                initView();
+                //绘制曲线
+                drawLine();
+
             }
         });
 
         //初始化折线图
         initView();
-        //timer = new Timer();
         //绘制曲线
         drawLine();
 
-
+        //timer = new Timer(); 定时器
 
         return view;
     }
 
-    //生成模拟数据列表
+    //设置日期对话框
+    private void showDateDialog(final String type){
+
+        final Calendar calendar = Calendar.getInstance();
+        DatePickerDialog dialogDate = new DatePickerDialog(getView().getContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        Date newDate;
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        newDate = calendar.getTime();
+
+                        if(type.equals("start")) {
+                            SysData.startDataTime = newDate.getTime();
+                            showDateDialog("end");
+                        }
+                        if (type.equals("end")) {
+                            SysData.endDataTime = newDate.getTime();
+                            Log.i("数据库", "按时间段查询数据");
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    SysData.results = MainActivity.db.resultDao().findByTime(SysData.startDataTime, SysData.endDataTime);
+                                }
+                            }).start();
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            //显示数据列表
+                            addListTable();
+                            //初始化折线图
+                            initView();
+                            //绘制曲线
+                            drawLine();
+                            Toast.makeText(getView().getContext(), "起始时间：" + dateFormatShort.format(SysData.startDataTime) + "\n截至时间：" +  dateFormatShort.format(SysData.endDataTime), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        dialogDate.show();
+    }
+
+    //按清空按钮时显示对话框
+    private void showDeleteDialog(){
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder altDialog = new AlertDialog.Builder(getActivity());
+        altDialog.setIcon(R.drawable.ic_warning_black_24dp);
+        altDialog.setTitle("警告");
+        altDialog.setMessage("清空数据：" + SysData.errorMsg + "\n数据删除后将不能恢复，是否清除所有数据？");
+        altDialog.setPositiveButton("清空",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.i("数据库", "删除数据");
+                                MainActivity.db.resultDao().deleteByTime(System.currentTimeMillis());
+                                SysData.currentPage = 1;
+                                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                            }
+                        }).start();
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //重新查询数据
+                        SysData.currentPage = 1;
+                        SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //显示数据列表
+                        addListTable();
+                        //初始化折线图
+                        initView();
+                        //绘制曲线
+                        drawLine();
+                        Log.i("数据库", "已清空数据");
+                    }
+                });
+        altDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+
+                    }
+                });
+        // 显示
+        altDialog.show();
+    }
+
+    //显示数据列表
     public void addListTable() {
         //将数据加入到ListView展示数据
         listData = new ArrayList<String>();
@@ -278,7 +432,7 @@ public class TabData extends Fragment {
     public void drawLine() {
         //结果数据绘制成折线图
         for (int i = SysData.results.size() - 1; i >= 0; i--) {
-            addPoint(SysData.results.size() - 1 - i, SysData.results.get(i).dataValue);
+            addPoint(SysData.results.size() - i, SysData.results.get(i).dataValue);
         }
     }
 
@@ -304,10 +458,10 @@ public class TabData extends Fragment {
 
         //根据点的横坐实时变幻坐标的视图范围
         Viewport port;
-        if (x > 30) {
-            port = initViewPort(x - 30, x);
+        if (x > 52) {
+            port = initViewPort(x - 52, x);
         } else {
-            port = initViewPort(0, 30);
+            port = initViewPort(0, 52);
         }
         lineChartView.setCurrentViewport(port);//当前窗口
 
@@ -379,19 +533,18 @@ public class TabData extends Fragment {
         lineChartData = initDatas(null);
         lineChartView.setLineChartData(lineChartData);
 
-        Viewport port = initViewPort(0, 30);
-        //Viewport port = initViewPort(System.currentTimeMillis()/1000 - 30 * 24 * 3600, System.currentTimeMillis()/1000);
+        Viewport port = initViewPort(0, 52);
         lineChartView.setCurrentViewportWithAnimation(port);
         lineChartView.setInteractive(false);
         lineChartView.setScrollEnabled(true);
         lineChartView.setValueTouchEnabled(true);
         lineChartView.setFocusableInTouchMode(true);
         lineChartView.setViewportCalculationEnabled(false);
-        lineChartView.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
+        lineChartView.setContainerScrollEnabled(false, ContainerScrollType.HORIZONTAL);
         lineChartView.startDataAnimation();
 
         lineChartView.setOnValueTouchListener(new ValueTouchListener());//为图表设置值得触摸事件
-        lineChartView.setZoomEnabled(true);//设置是否支持缩放
+        lineChartView.setZoomEnabled(false);//设置是否支持缩放
         //lineChartView.setOnValueTouchListener(LineChartOnValueSelectListener touchListener);//为图表设置值得触摸事件
         lineChartView.setInteractive(true);//设置图表是否可以与用户互动
         lineChartView.setValueSelectionEnabled(true);//设置图表数据是否选中进行显示
@@ -439,7 +592,7 @@ public class TabData extends Fragment {
         port.top = 10;
         port.bottom = 0;
         port.left = 0;
-        port.right = right + 30;
+        port.right = right + 52;
         return port;
     }
 

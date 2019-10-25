@@ -1,5 +1,9 @@
 package com.example.myapplication;
 
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class SysData {
@@ -58,6 +62,8 @@ public class SysData {
     static int countData = 0;                   //数据的总条数
     static int numPerpage = 50;                 //每页的数据条数
     static int maxPage = 1;                     //最大页数
+    static long startDataTime = 0;               //查询起始时间
+    static long endDataTime = 0;                 //查询结束时间
 
     //仪器控制页面状态
     static boolean statusD1 = false;       //D1状态
@@ -83,4 +89,44 @@ public class SysData {
         codVolue = (double)Math.round(codVolue*100)/100;  //取小数点后两位
         return codVolue;
     }
+
+    //保存测定值数据至数据库
+    public static void saveDataToDB() {
+        Log.i("数据库", "添加数据");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Result result = new Result();
+                result.dateTime = startTime;
+                result.dataType = "COD";
+                result.dataValue = codVolue;
+                MainActivity.db.resultDao().insert(result);
+            }
+        }).start();
+    }
+
+    //从数据库读取数据
+    public static void readData(final int num, final int start) {
+        Log.i("数据库", "读取数据");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Result> rss;
+                //results = MainActivity.db.resultDao().getAll();
+                countData = MainActivity.db.resultDao().findResultCount();
+                maxPage = countData / numPerpage + 1;
+                rss = MainActivity.db.resultDao().getNum(num, start);
+                for(Result result:rss) {
+                    //result = results.get(0);
+                    Log.i("数据记录", "id:" + result.rid);
+                    Log.i("数据记录", "time:" + result.dateTime);
+                    Log.i("数据记录", "type:" + result.dataType);
+                    Log.i("数据记录", "value:" + result.dataValue);
+                }
+                results = rss;
+            }
+        }).start();
+    }
+
+
 }
