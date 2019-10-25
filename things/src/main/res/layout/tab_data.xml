@@ -95,6 +95,68 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="10dp" />
 
+        <LinearLayout
+            android:id="@+id/linearLayout11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnFirstPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/list_selector_background"
+                android:drawableLeft="@drawable/ic_first_page_black_24dp"
+                android:text="第一页" />
+
+            <Button
+                android:id="@+id/btnPreviousPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/list_selector_background"
+                android:drawableLeft="@drawable/ic_chevron_left_green_24dp"
+                android:text="上一页" />
+
+            <Button
+                android:id="@+id/btnNextPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/list_selector_background"
+                android:drawableRight="@drawable/ic_chevron_right_black_24dp"
+                android:text="下一页" />
+
+            <Button
+                android:id="@+id/btnLastPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/list_selector_background"
+                android:drawableRight="@drawable/ic_last_page_black_24dp"
+                android:text="最后页" />
+
+        </LinearLayout>
+
     </LinearLayout>
     </ScrollView>
 

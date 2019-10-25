@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import java.util.List;
+
 public class SysData {
 
     //仪器的参数
@@ -49,6 +51,13 @@ public class SysData {
     static boolean restartWebFlag = false;      //是否需要重启web服务
     static boolean webServiceFlag = false;      //web服务是否启动
     static boolean stopFlag = false;            //紧急停止
+
+    //仪器数据
+    static List<Result> results = null;         //仪表测定结果数据
+    static int currentPage = 1;                 //当前浏览的页码
+    static int countData = 0;                   //数据的总条数
+    static int numPerpage = 50;                 //每页的数据条数
+    static int maxPage = 1;                     //最大页数
 
     //仪器控制页面状态
     static boolean statusD1 = false;       //D1状态

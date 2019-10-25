@@ -24,6 +24,9 @@ public interface ResultDao {
     @Query("SELECT * FROM result WHERE time >= (:startTime) AND time <= (:endTime)")
     Result findByTime(Long startTime, Long endTime);
 
+    @Query("SELECT count(*) FROM result")
+    int findResultCount();
+
     @Insert
     void insertAll(Result... results);
 

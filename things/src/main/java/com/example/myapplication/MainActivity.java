@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         //打开数据库
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "result").build();
+        readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
 
         //clearPreferences();
         //读取系统参数
@@ -135,6 +136,29 @@ public class MainActivity extends AppCompatActivity {
 
         //启动循环进程定时保存仪表状态信息
         saveStatusRun();
+    }
+
+    //从数据库读取数据
+    public static void readData(final int num, final int start) {
+        Log.i("数据库", "读取数据");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Result> results;
+                //results = MainActivity.db.resultDao().getAll();
+                SysData.countData = MainActivity.db.resultDao().findResultCount();
+                SysData.maxPage = SysData.countData / SysData.numPerpage + 1;
+                results = MainActivity.db.resultDao().getNum(num, start);
+                for(Result result:results) {
+                    //result = results.get(0);
+                    Log.i("数据记录", "id:" + result.rid);
+                    Log.i("数据记录", "time:" + result.dateTime);
+                    Log.i("数据记录", "type:" + result.dataType);
+                    Log.i("数据记录", "value:" + result.dataValue);
+                }
+                SysData.results = results;
+            }
+        }).start();
     }
 
     //开启Web服务
