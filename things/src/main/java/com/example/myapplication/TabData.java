@@ -43,6 +43,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.content.Context.MODE_APPEND;
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class TabData extends Fragment {
 
@@ -147,6 +148,7 @@ public class TabData extends Fragment {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
                     }
                 }).start();
 
