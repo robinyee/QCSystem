@@ -32,7 +32,7 @@ public class SysData {
     static boolean isGetNetTime = false;        //是否已经获取到网络时间
     static boolean isRun = false;               //仪器是否运行
     static int progressRate = 0;                //分析进度
-    static String statusMsg = "";           //仪器当前执行动作
+    static String statusMsg = "";               //仪器当前执行动作
     static double tempIn, tempOut;              //温度值，in反应器内温度，out加热器温度
     static int adLight, adBack;                 //adLight光电值，adBack备用模拟量
     static byte[] Pump = new byte[10];          //记录各泵的状态，十六进制数据，0x00-状态正常，0x01-帧错误，0x02-参数错误，0x03-光耦错误，0x04-电机忙，0xfe-任务挂起，0xff-未知错误
@@ -57,7 +57,7 @@ public class SysData {
     static boolean stopFlag = false;            //紧急停止
     static boolean isLoop = false;              //是否循环运行
     static long nextStartTime = 0;              //下次启动时间
-    static int startCycle = 0;                  //启动周期
+    static int startCycle = 1;                  //启动周期
 
     //仪器数据
     static List<Result> results = null;         //仪表测定结果数据

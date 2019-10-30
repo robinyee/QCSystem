@@ -305,6 +305,9 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                timeManager.setTimeFormat(TimeManager.FORMAT_24); //设置24小时格式
+                timeManager.setTimeZone("Asia/Shanghai"); //设置时区
+                timeManager.setAutoTimeEnabled(true);
                 Date date = null; //new Date(System.currentTimeMillis());  //初始时间从系统获取
                 int isOK = 0;
                 int max = 10;
@@ -332,9 +335,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } while (isOK < max || SysData.isGetNetTime == false);
 
-                timeManager.setTimeFormat(TimeManager.FORMAT_24); //设置24小时格式
-                timeManager.setTimeZone("Asia/Shanghai"); //设置时区
-                timeManager.setAutoTimeEnabled(true);
             }
         }).start();
 

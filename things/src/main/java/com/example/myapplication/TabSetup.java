@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -40,11 +41,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class TabSetup extends Fragment {
     View view;
+    Calendar calendar;
     private TextView txtTempIn, txtTempOut, txtAdLight, txtAdLight1, txtDidingNum, txtDidingSumVolume;
     private TextView txtXiaoJieStart, txtXiaoJieLave, txtSysDate, txtSysTime, wifiName, txtStarttime, txtEndtime;
     private long lave = 0; //剩余消解时间
@@ -53,13 +56,16 @@ public class TabSetup extends Fragment {
     private TextView httpAddr, localIp;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH时mm分ss秒");
+    private SimpleDateFormat autoFormat = new SimpleDateFormat("MM/dd HH:mm");
     private EditText editSsid, editPass, editlocalip, editwebport;
+    private EditText editNextStartTime, editStartCycle;
+    private Switch switchIsLoop;
     private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
     private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
     private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon;
     private RadioGroup radioGroup;
     private int passType;
-    private WiFiUtil.Data data;
+    private WiFiUtil.Data data = WiFiUtil.Data.WIFI_CIPHER_WPA2;
 
     //获取线程发送的Msg信息，更新对于UI界面
     static final int UI_UPDATE = 100;
@@ -71,14 +77,12 @@ public class TabSetup extends Fragment {
             if (msg.what == UI_UPDATE) {
 
                 uiUpdate();    //Log.d(TAG, "run: 更新界面");
-
                 /*
                 if(SysData.isRun) {
                     uiUpdate();
                     //Log.d(TAG, "run: 更新界面");
                 }
-
-                 */
+                */
             }
             message = handlerUpdate.obtainMessage(UI_UPDATE);
             handlerUpdate.sendMessageDelayed(message, 1000);
@@ -126,11 +130,14 @@ public class TabSetup extends Fragment {
         buttonSetupWeb = view.findViewById(R.id.setupweb);
         buttonSetupWifi = view.findViewById(R.id.setupwifi);
         buttonSaveData = view.findViewById(R.id.saveData);
-        //网络参数
+        //系统参数
         editSsid = view.findViewById(R.id.editssid);
         editPass = view.findViewById(R.id.editwifipassword);
         editlocalip = view.findViewById(R.id.editlocalip);
         editwebport = view.findViewById(R.id.editwebport);
+        editNextStartTime = view.findViewById(R.id.nextStartTime);
+        editStartCycle = view.findViewById(R.id.startCycle);
+        switchIsLoop = view.findViewById(R.id.isLoop);
         //仪表参数
         editShuiyangStep = view.findViewById(R.id.editShuiyangStep);
         editShuiyangVolume = view.findViewById(R.id.editShuiyangVolume);
@@ -163,7 +170,35 @@ public class TabSetup extends Fragment {
         timeSetup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDateDialog();
+                showDateDialog("SetTime");
+            }
+        });
+
+        //定时启动时间设定
+        editNextStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDateDialog("AutoTime");
+            }
+        });
+
+        //定时启动周期设定
+        editStartCycle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                SysData.startCycle = Integer.parseInt(editStartCycle.getText().toString());
+            }
+        });
+
+        //定时启动开启
+        switchIsLoop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!editStartCycle.getText().toString().equals("")) {
+                    SysData.startCycle = Integer.parseInt(editStartCycle.getText().toString());
+                }
+                SysData.isLoop = switchIsLoop.isChecked();
+                saveMeterParameter();  //保存设定的参数
             }
         });
 
@@ -178,7 +213,7 @@ public class TabSetup extends Fragment {
         });
 
 
-        radioGroup=(RadioGroup) view.findViewById(R.id.radioGroupPassType);;
+        radioGroup=(RadioGroup) view.findViewById(R.id.radioGroupPassType);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -199,7 +234,7 @@ public class TabSetup extends Fragment {
                         break;
                 }
 
-                //Toast.makeText(getActivity(), "加密方式:" + data, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "加密方式:" + data, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -353,6 +388,9 @@ public class TabSetup extends Fragment {
         editPass.setText("");
         editlocalip.setText(SysData.webIPAddr);
         editwebport.setText(String.valueOf(SysData.webPort));
+        editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
+        editStartCycle.setText(String.valueOf(SysData.startCycle));
+        switchIsLoop.setChecked(SysData.isLoop);
 
         //填充仪表参数的内容
         editShuiyangStep.setText(String.valueOf(SysData.shuiyangStep));
@@ -373,20 +411,17 @@ public class TabSetup extends Fragment {
     }
 
     //设置日期对话框
-    private void showDateDialog(){
-
-        final Calendar calendar = Calendar.getInstance();
+    private void showDateDialog(final String type){
+        calendar = Calendar.getInstance();
         DatePickerDialog dialogDate = new DatePickerDialog(getView().getContext(),
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        Date newDate;
+                        //Date newDate;
                         calendar.set(Calendar.YEAR, year);
                         calendar.set(Calendar.MONTH, month);
                         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        newDate = calendar.getTime();
-                        timeManager.setTime(newDate.getTime());
-                        showTimeDialog();
+                        showTimeDialog(type);
                     }
                 },
                 calendar.get(Calendar.YEAR),
@@ -396,21 +431,26 @@ public class TabSetup extends Fragment {
     }
 
     //设置时间对话框
-    private void showTimeDialog(){
-
-        final Calendar calendar = Calendar.getInstance();
+    private void showTimeDialog(final String type){
+        //final Calendar calendar = Calendar.getInstance();
         TimePickerDialog dialogTime = new TimePickerDialog(getView().getContext(),
                 new TimePickerDialog.OnTimeSetListener(){
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         Date newDate;
-                        calendar.set(Calendar.HOUR, hourOfDay);
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         calendar.set(Calendar.MINUTE, minute);
                         newDate = calendar.getTime();
-                        timeManager.setTime(newDate.getTime());
+                        if(type.equals("SetTime")) {
+                            timeManager.setTime(newDate.getTime());
+                        }
+                        if(type.equals("AutoTime")) {
+                            SysData.nextStartTime = newDate.getTime();
+                            editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
+                        }
                     }
                 },
-                calendar.get(Calendar.HOUR),
+                calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
                 true);
         dialogTime.show();
