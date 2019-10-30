@@ -302,6 +302,9 @@ public class TabSetup extends Fragment {
         //系统参数
         editor.putString("localIpAddr", SysData.localIpAddr[0]);
         editor.putInt("webPort", SysData.webPort);
+        editor.putBoolean("isLoop", SysData.isLoop);
+        editor.putLong("nextStartTime", SysData.nextStartTime);
+        editor.putInt("startCycle", SysData.startCycle);
 
         //提交保存
         editor.apply();

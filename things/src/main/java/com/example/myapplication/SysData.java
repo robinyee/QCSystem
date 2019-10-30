@@ -55,6 +55,9 @@ public class SysData {
     static boolean restartWebFlag = false;      //是否需要重启web服务
     static boolean webServiceFlag = false;      //web服务是否启动
     static boolean stopFlag = false;            //紧急停止
+    static boolean isLoop = false;              //是否循环运行
+    static long nextStartTime = 0;              //下次启动时间
+    static int startCycle = 0;                  //启动周期
 
     //仪器数据
     static List<Result> results = null;         //仪表测定结果数据

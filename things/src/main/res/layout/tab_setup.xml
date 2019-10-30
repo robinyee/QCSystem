@@ -538,6 +538,40 @@
             </TableRow>
             <TableRow>
                 <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="定时启动"/>
+                <EditText
+                    android:id="@+id/nextStartTime"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:hint="输入启动时间"/>
+                <EditText
+                    android:id="@+id/startCycle"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:hint="输入周期小时"/>
+                <Switch
+                    android:id="@+id/isLoop"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:theme="@style/MySwitch"
+                    android:text="定时开启" />
+            </TableRow>
+            <TableRow>
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"

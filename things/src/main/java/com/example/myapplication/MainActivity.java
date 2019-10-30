@@ -411,6 +411,10 @@ public class MainActivity extends AppCompatActivity {
         //系统参数
         //SysData.localIpAddr[0] = sp.getString("localIpAddr", "");     //ip地址不需要存储
         SysData.webPort = sp.getInt("webPort", 0);
+        SysData.isLoop = sp.getBoolean("isLoop", false);
+        SysData.nextStartTime = sp.getLong("nextStartTime", 0);
+        SysData.startCycle = sp.getInt("startCycle", 0);
+
     }
 
     //保存仪表状态信息进程
