@@ -560,6 +560,7 @@
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
+                    android:inputType="number"
                     android:imeOptions="actionDone"
                     android:hint="输入周期小时"/>
                 <Switch
