@@ -105,6 +105,7 @@ public class TabSetup extends Fragment {
         txtXiaoJieLave.setText(Long.toString(lave) + "秒");
         txtSysDate.setText(dateFormat.format(System.currentTimeMillis()));
         txtSysTime.setText(timeFormat.format(System.currentTimeMillis()));
+        editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
     }
 
     @Override
@@ -187,6 +188,7 @@ public class TabSetup extends Fragment {
             @Override
             public void onFocusChange(View view, boolean b) {
                 SysData.startCycle = Integer.parseInt(editStartCycle.getText().toString());
+                saveMeterParameter();  //保存设定的参数
             }
         });
 
@@ -440,6 +442,8 @@ public class TabSetup extends Fragment {
                         Date newDate;
                         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         calendar.set(Calendar.MINUTE, minute);
+                        calendar.set(Calendar.MINUTE, minute);
+                        calendar.set(Calendar.SECOND, 0);
                         newDate = calendar.getTime();
                         if(type.equals("SetTime")) {
                             timeManager.setTime(newDate.getTime());
@@ -447,6 +451,7 @@ public class TabSetup extends Fragment {
                         if(type.equals("AutoTime")) {
                             SysData.nextStartTime = newDate.getTime();
                             editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
+                            saveMeterParameter();  //保存设定的参数
                         }
                     }
                 },

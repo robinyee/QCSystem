@@ -920,6 +920,17 @@ public class SysGpio {
                     e.printStackTrace();
                 }
                 //等待加水样完成
+
+                //循环读取温度
+                SysGpio.readTempFlag = true;
+                SysGpio.readAd();
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                int maxAd = SysData.adLight;    //最大光电值
+                int minAd = SysData.adLight;    //最小光电值
                 do {
                     //紧急停止
                     if(SysData.stopFlag) {
@@ -936,9 +947,22 @@ public class SysGpio {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
+                    //获取最大和最小光电值
+                    maxAd = SysData.adLight > maxAd ? SysData.adLight : maxAd;
+                    minAd = SysData.adLight < minAd ? SysData.adLight : minAd;
+
                 } while(statusS1 == true);
 
+                //判断是否有水样进入
+                if((maxAd - minAd) < 10) {
+                    SysData.errorMsg = "进水样出错";
+                    return;
+                }
+                //停止读取模拟量
+                SysGpio.readTempFlag = false;
                 //SysData.progressRate = 5;
+
                 SysData.statusMsg = "加入硫酸";
 
                 //加硫酸流程

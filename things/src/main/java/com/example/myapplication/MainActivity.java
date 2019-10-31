@@ -417,17 +417,34 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //保存仪表状态信息进程
+    //主程序循环进程，定时保存仪器状态，定时启动测定程序
     private void saveStatusRun() {
         Log.i("MainActivity", "保存仪表状态信息");
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //定时保存仪表状态信息
                 do {
-                    saveMeterStatus();
+                    //保存运行状态数据
+                    if(SysData.isRun){
+                        try {
+                            Thread.sleep(10000);  //10秒后保存数据，能记录isRun的false状态
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        saveMeterStatus();  //仪器运行时定时保存仪器状态数据
+                    }
+                    long dtime = System.currentTimeMillis() - SysData.nextStartTime;
+                    //定时启动测定程序
+                    if(SysData.isLoop && !SysData.isRun && dtime > 0 && dtime < 2000) {
+                        //启动测定流程
+                        SysGpio.s7_ShuiZhiCeDing();
+                        SysData.statusMsg = "启动测定程序";
+                        SysData.isRun = true;
+                        SysData.nextStartTime = SysData.nextStartTime + SysData.startCycle * 3600 * 1000;
+                        Log.i("MainActivity", "当前时间：" + System.currentTimeMillis() + " 下次启动时间：" + SysData.nextStartTime);
+                    }
                     try {
-                        Thread.sleep(60000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -448,6 +465,9 @@ public class MainActivity extends AppCompatActivity {
         editor.putLong("startTime", SysData.startTime);
         editor.putLong("endTime", SysData.endTime);
         editor.putLong("codVolue", Double.doubleToLongBits(SysData.codVolue));
+        editor.putBoolean("isLoop", SysData.isLoop);
+        editor.putLong("nextStartTime", SysData.nextStartTime);
+        editor.putInt("startCycle", SysData.startCycle);
         //提交保存
         editor.apply();
     }
