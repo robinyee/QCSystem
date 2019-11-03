@@ -775,7 +775,7 @@ public class SysGpio {
                             Thread.sleep(200);
                         }
                         ddNum += 1;
-                        SysData.didingNum = (ddNum > 12) ? ddNum - 12 : 0;      //从滴定开始到液体到达管口滴定的次数和滴定过量的滴数，空管滴数9滴，过量滴数3滴
+                        SysData.didingNum = (ddNum > SysData.didingDeviation) ? ddNum - SysData.didingDeviation : 0;      //从滴定开始到液体到达管口滴定的次数和滴定过量的滴数，空管滴数9滴，过量滴数3滴
                         if(ddNum >= 300){
                             SysData.errorMsg = "COD值超量程";
                             //return;

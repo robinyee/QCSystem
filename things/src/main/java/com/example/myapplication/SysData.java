@@ -27,6 +27,7 @@ public class SysData {
     static double biaodingValue = 10.0;         //标定实验滴定高锰酸钾的量
     static double caosuannaCon = 0.01;          //草酸钠的浓度
     static double codVolue = 0;                 //测定的cod值
+    static int didingDeviation = 12;            //滴定误差，开始滴定到出液体加上滴定过量的值
 
     //仪器运行状态
     static boolean isGetNetTime = false;        //是否已经获取到网络时间
@@ -58,6 +59,9 @@ public class SysData {
     static boolean isLoop = false;              //是否循环运行
     static long nextStartTime = 0;              //下次启动时间
     static int startCycle = 1;                  //启动周期
+    static int numberTimes = 0;                 //启动次数
+    static boolean isUpdateTimes = false;       //是否需要更新自动启动信息
+    static String adminPassword = "nsy218";     //管理员密码
 
     //仪器数据
     static List<Result> results = null;         //仪表测定结果数据

@@ -137,6 +137,9 @@ public class MainActivity extends AppCompatActivity {
         //启动循环进程定时保存仪表状态信息
         saveStatusRun();
 
+        //自动运行测定程序
+        autoRun();
+
         Log.i("外部存储", "是否有权限写外部存储：" + isExternalStorageWritable());
     }
 
@@ -406,17 +409,17 @@ public class MainActivity extends AppCompatActivity {
         SysData.kongbaiValue = Double.longBitsToDouble(sp.getLong("kongbaiValue", 0));
         SysData.biaodingValue = Double.longBitsToDouble(sp.getLong("biaodingValue", 0));
         SysData.caosuannaCon = Double.longBitsToDouble(sp.getLong("caosuannaCon", 0));
-
+        SysData.didingDeviation = sp.getInt("didingDeviation", 12);
         //系统参数
         //SysData.localIpAddr[0] = sp.getString("localIpAddr", "");     //ip地址不需要存储
         SysData.webPort = sp.getInt("webPort", 0);
         SysData.isLoop = sp.getBoolean("isLoop", false);
         SysData.nextStartTime = sp.getLong("nextStartTime", 0);
         SysData.startCycle = sp.getInt("startCycle", 0);
-
+        SysData.numberTimes = sp.getInt("numberTimes", 0);
     }
 
-    //主程序循环进程，定时保存仪器状态，定时启动测定程序
+    //主程序循环进程，定时保存仪器状态
     private void saveStatusRun() {
         Log.i("MainActivity", "保存仪表状态信息");
         new Thread(new Runnable() {
@@ -439,16 +442,30 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
+                } while (true);
+            }
+        }).start();
+    }
+
+    //主程序循环进程，定时启动测定程序
+    private void autoRun() {
+        Log.i("MainActivity", "保存仪表状态信息");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                do {
                     //定时启动程序
                     long dtime = System.currentTimeMillis() - SysData.nextStartTime;
                     //定时启动测定程序
-                    if(SysData.isLoop && !SysData.isRun && dtime > 0 && dtime < 2000) {
+                    if(SysData.isLoop && !SysData.isRun && dtime > 0 && dtime < 2000 && SysData.numberTimes > 0) {
                         //启动测定流程
                         SysGpio.s7_ShuiZhiCeDing();
                         SysData.statusMsg = "启动测定程序";
                         SysData.isRun = true;
                         SysData.nextStartTime = SysData.nextStartTime + SysData.startCycle * 3600 * 1000;
                         Log.i("MainActivity", "当前时间：" + System.currentTimeMillis() + " 下次启动时间：" + SysData.nextStartTime);
+                        SysData.numberTimes = (SysData.numberTimes >= 999) ? 999 : SysData.numberTimes - 1;
+                        SysData.isUpdateTimes = true;
                     }
                     try {
                         Thread.sleep(1000);

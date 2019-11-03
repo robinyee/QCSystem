@@ -1,9 +1,11 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -17,6 +19,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +28,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -51,21 +58,25 @@ public class TabSetup extends Fragment {
     private TextView txtTempIn, txtTempOut, txtAdLight, txtAdLight1, txtDidingNum, txtDidingSumVolume;
     private TextView txtXiaoJieStart, txtXiaoJieLave, txtSysDate, txtSysTime, wifiName, txtStarttime, txtEndtime;
     private long lave = 0; //剩余消解时间
-    private Button timeSetup, buttonSetupWeb, buttonSetupWifi, buttonSaveData;
+    private Button buttonSetupWeb, buttonSaveData,buttonSetupWifi, timeSetup;
+    //private ImageButton buttonSetupWifi, timeSetup;
     private TimeManager timeManager = TimeManager.getInstance();
     private TextView httpAddr, localIp;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH时mm分ss秒");
     private SimpleDateFormat autoFormat = new SimpleDateFormat("MM/dd HH:mm");
     private EditText editSsid, editPass, editlocalip, editwebport;
-    private EditText editNextStartTime, editStartCycle;
+    private EditText editNextStartTime, editStartCycle, editNumberTimes;
     private Switch switchIsLoop;
     private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
     private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
-    private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon;
+    private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon, editDidingDeviation;
     private RadioGroup radioGroup;
+    private TableLayout tableParameter;
     private int passType;
     private WiFiUtil.Data data = WiFiUtil.Data.WIFI_CIPHER_WPA2;
+    private ImageView moreParameter;
+    private boolean isGone = true;
 
     //获取线程发送的Msg信息，更新对于UI界面
     static final int UI_UPDATE = 100;
@@ -104,8 +115,13 @@ public class TabSetup extends Fragment {
         lave = (SysData.endXiaoJie > System.currentTimeMillis()) ? (SysData.endXiaoJie - System.currentTimeMillis()) / 1000 : 0;
         txtXiaoJieLave.setText(Long.toString(lave) + "秒");
         txtSysDate.setText(dateFormat.format(System.currentTimeMillis()));
-        txtSysTime.setText(timeFormat.format(System.currentTimeMillis()));
-        editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
+        //txtSysTime.setText(timeFormat.format(System.currentTimeMillis()));
+        //更新自动运行信息
+        if(SysData.isUpdateTimes) {
+            editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
+            editNumberTimes.setText(String.valueOf(SysData.numberTimes));
+            SysData.isUpdateTimes = false;
+        }
     }
 
     @Override
@@ -126,7 +142,7 @@ public class TabSetup extends Fragment {
         httpAddr = view.findViewById(R.id.httpaddr);
         localIp = view.findViewById(R.id.localip);
         txtSysDate = view.findViewById(R.id.sysdate);
-        txtSysTime = view.findViewById(R.id.systime);
+        //txtSysTime = view.findViewById(R.id.systime);
         wifiName = view.findViewById(R.id.wifissid);
         buttonSetupWeb = view.findViewById(R.id.setupweb);
         buttonSetupWifi = view.findViewById(R.id.setupwifi);
@@ -138,6 +154,7 @@ public class TabSetup extends Fragment {
         editwebport = view.findViewById(R.id.editwebport);
         editNextStartTime = view.findViewById(R.id.nextStartTime);
         editStartCycle = view.findViewById(R.id.startCycle);
+        editNumberTimes = view.findViewById(R.id.numberTimes);
         switchIsLoop = view.findViewById(R.id.isLoop);
         //仪表参数
         editShuiyangStep = view.findViewById(R.id.editShuiyangStep);
@@ -155,6 +172,10 @@ public class TabSetup extends Fragment {
         editKongbaiValue = view.findViewById(R.id.editKongbaiValue);
         editBiaodingValue = view.findViewById(R.id.editBiaodingValue);
         editCaosuannaCon = view.findViewById(R.id.editCaosuannaCon);
+        editDidingDeviation = view.findViewById(R.id.editDidingDeviation);
+        //更多参数显示
+        moreParameter = view.findViewById(R.id.moreParameter);
+        tableParameter = view.findViewById(R.id.tableParameter);
 
         //更新网络TextView信息
         setNetTxtInfo();
@@ -184,10 +205,47 @@ public class TabSetup extends Fragment {
         });
 
         //定时启动周期设定
-        editStartCycle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        editStartCycle.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                SysData.startCycle = Integer.parseInt(editStartCycle.getText().toString());
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editStartCycle.getText().toString().equals("")){
+                    SysData.startCycle = 0;
+                } else {
+                    SysData.startCycle = Integer.parseInt(editStartCycle.getText().toString());
+                }
+                saveMeterParameter();  //保存设定的参数
+            }
+        });
+
+        //定时启动次数设定
+        editNumberTimes.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editNumberTimes.getText().toString().equals("")){
+                    SysData.numberTimes = 0;
+                } else {
+                    SysData.numberTimes = Integer.parseInt(editNumberTimes.getText().toString());
+                }
                 saveMeterParameter();  //保存设定的参数
             }
         });
@@ -196,8 +254,9 @@ public class TabSetup extends Fragment {
         switchIsLoop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!editStartCycle.getText().toString().equals("")) {
+                if(!editStartCycle.getText().toString().equals("") && !editNumberTimes.getText().toString().equals("")) {
                     SysData.startCycle = Integer.parseInt(editStartCycle.getText().toString());
+                    SysData.numberTimes = Integer.parseInt(editNumberTimes.getText().toString());
                 }
                 SysData.isLoop = switchIsLoop.isChecked();
                 saveMeterParameter();  //保存设定的参数
@@ -214,7 +273,7 @@ public class TabSetup extends Fragment {
             }
         });
 
-
+        /*
         radioGroup=(RadioGroup) view.findViewById(R.id.radioGroupPassType);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
@@ -239,11 +298,14 @@ public class TabSetup extends Fragment {
                 Toast.makeText(getActivity(), "加密方式:" + data, Toast.LENGTH_SHORT).show();
             }
         });
+         */
 
         //点击连接到wifi按钮
         buttonSetupWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
+                showChoicePassTypeDialog();
+                /*
                 WiFiUtil wiFiUtil = WiFiUtil.getInstance(getActivity());
                 String ssid = editSsid.getText().toString();
                 String pass = editPass.getText().toString();
@@ -270,6 +332,8 @@ public class TabSetup extends Fragment {
                 SysData.webIPAddr = SysData.localIpAddr[0];
                 editSsid.setText(SysData.wifiSsid);
                 editlocalip.setText(SysData.webIPAddr);
+
+                 */
             }
         });
 
@@ -294,6 +358,22 @@ public class TabSetup extends Fragment {
 
         //生成网址的二维码
         creatQRCode(view);
+
+
+        //点击显示更多参数
+        moreParameter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isGone) {
+                    showPasswordDialog();
+                } else {
+                    tableParameter.setVisibility(View.GONE);
+                    moreParameter.setBackgroundResource(R.drawable.ic_expand_more_black_24dp);
+                    isGone = true;
+                }
+
+            }
+        });
 
         return view;
     }
@@ -336,13 +416,14 @@ public class TabSetup extends Fragment {
         editor.putLong("kongbaiValue", Double.doubleToLongBits(SysData.kongbaiValue));
         editor.putLong("biaodingValue", Double.doubleToLongBits(SysData.biaodingValue));
         editor.putLong("caosuannaCon", Double.doubleToLongBits(SysData.caosuannaCon));
+        editor.putInt("didingDeviation", SysData.didingDeviation);
         //系统参数
         editor.putString("localIpAddr", SysData.localIpAddr[0]);
         editor.putInt("webPort", SysData.webPort);
         editor.putBoolean("isLoop", SysData.isLoop);
         editor.putLong("nextStartTime", SysData.nextStartTime);
         editor.putInt("startCycle", SysData.startCycle);
-
+        editor.putInt("numberTimes", SysData.numberTimes);
         //提交保存
         editor.apply();
     }
@@ -365,7 +446,7 @@ public class TabSetup extends Fragment {
         SysData.kongbaiValue = Double.parseDouble(editKongbaiValue.getText().toString());
         SysData.biaodingValue = Double.parseDouble(editBiaodingValue.getText().toString());
         SysData.caosuannaCon = Double.parseDouble(editCaosuannaCon.getText().toString());
-
+        SysData.didingDeviation = Integer.parseInt(editDidingDeviation.getText().toString());
         /*
         //保存EditText的内容 -- 系统自动获取无需保存
         SysData.wifiSsid = editSsid.getText().toString();
@@ -386,12 +467,14 @@ public class TabSetup extends Fragment {
     //填充Edit数据
     private void setEditText() {
         //填充EditText的内容
-        editSsid.setText(SysData.wifiSsid);
+        //editSsid.setText(SysData.wifiSsid);
+        editSsid.setText("");
         editPass.setText("");
         editlocalip.setText(SysData.webIPAddr);
         editwebport.setText(String.valueOf(SysData.webPort));
         editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
         editStartCycle.setText(String.valueOf(SysData.startCycle));
+        editNumberTimes.setText(String.valueOf(SysData.numberTimes));
         switchIsLoop.setChecked(SysData.isLoop);
 
         //填充仪表参数的内容
@@ -410,6 +493,7 @@ public class TabSetup extends Fragment {
         editKongbaiValue.setText(String.valueOf(SysData.kongbaiValue));
         editBiaodingValue.setText(String.valueOf(SysData.biaodingValue));
         editCaosuannaCon.setText(String.valueOf(SysData.caosuannaCon));
+        editDidingDeviation.setText(String.valueOf(SysData.didingDeviation));
     }
 
     //设置日期对话框
@@ -461,4 +545,116 @@ public class TabSetup extends Fragment {
         dialogTime.show();
     }
 
+    //按下修改更多参数显示对话框
+    private void showPasswordDialog(){
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder altDialog = new AlertDialog.Builder(getActivity());
+        final EditText editText = new EditText(getContext());
+        altDialog.setIcon(R.drawable.ic_error_black_24dp);
+        altDialog.setTitle("管理员");
+        altDialog.setMessage("请输入管理员密码");
+        altDialog.setView(editText);
+        altDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String strPass = editText.getText().toString();
+                        if(strPass.equals(SysData.adminPassword)) {
+                            tableParameter.setVisibility(View.VISIBLE);
+                            moreParameter.setBackgroundResource(R.drawable.ic_expand_less_black_24dp);
+                            isGone = false;
+                            Toast.makeText(getActivity(), "密码正确", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "密码错误", Toast.LENGTH_SHORT).show();
+                        }
+                        Log.i("管理员", "输入的密码：" + strPass);
+                    }
+                });
+        altDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+
+                    }
+                });
+        // 显示
+        altDialog.show();
+    }
+
+    private void showChoicePassTypeDialog(){
+        final AlertDialog.Builder altDialog = new AlertDialog.Builder(getActivity());
+        final String[] items = { "无密码","WEP","WPA","WPA2" };
+        passType = 0;
+        final String ssid = editSsid.getText().toString();
+        final String pass = editPass.getText().toString();
+        altDialog.setIcon(R.drawable.ic_error_black_24dp);
+        altDialog.setTitle("选择WIFI加密方式");
+        //altDialog.setMessage("网络名称：" + ssid + "网络密码：" + pass + "，请选择WIFI加密方式？");
+        // 第二个参数是默认选项，此处设置为0
+        altDialog.setSingleChoiceItems(items, 0,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        passType = which;
+                        switch (passType){
+                            case 0 :
+                                data = WiFiUtil.Data.WIFI_CIPHER_NOPASS;
+                                break;
+                            case 1 :
+                                data = WiFiUtil.Data.WIFI_CIPHER_WEP;
+                                break;
+                            case 2 :
+                                data = WiFiUtil.Data.WIFI_CIPHER_WPA;
+                                break;
+                            case 3 :
+                                data = WiFiUtil.Data.WIFI_CIPHER_WPA2;
+                                break;
+                        }
+                    }
+                });
+        altDialog.setPositiveButton("连接到WIFI",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(ssid != SysData.wifiSsid && !ssid.equals("") && data != null) {
+                            WiFiUtil wiFiUtil = WiFiUtil.getInstance(getActivity());
+                            int id = wiFiUtil.addWiFiNetwork(ssid, pass, data);
+                            Toast.makeText(getActivity(), "正在连接无线网络" + editSsid.getText().toString(), Toast.LENGTH_LONG).show();
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), "网络已连接或网络名称为空", Toast.LENGTH_LONG).show();
+                        }
+
+                        //获取无线网络SSID
+                        String getSsid = MainActivity.getWifiSsid(getActivity());
+                        SysData.wifiSsid = getSsid;
+
+                        //获取网络ip地址
+                        SysData.localIpAddr = MainActivity.getLocalIpAddress();
+
+                        setNetTxtInfo();
+                        SysData.webIPAddr = SysData.localIpAddr[0];
+                        //editSsid.setText(SysData.wifiSsid);
+                        editlocalip.setText(SysData.webIPAddr);
+                    }
+                });
+        altDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+
+                    }
+                });
+        altDialog.show();
+    }
 }
