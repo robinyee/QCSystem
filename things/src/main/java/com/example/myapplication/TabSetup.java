@@ -223,6 +223,11 @@ public class TabSetup extends Fragment {
                 } else {
                     SysData.startCycle = Integer.parseInt(editStartCycle.getText().toString());
                 }
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 saveMeterParameter();  //保存设定的参数
             }
         });
@@ -245,6 +250,11 @@ public class TabSetup extends Fragment {
                     SysData.numberTimes = 0;
                 } else {
                     SysData.numberTimes = Integer.parseInt(editNumberTimes.getText().toString());
+                }
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 saveMeterParameter();  //保存设定的参数
             }
@@ -368,7 +378,7 @@ public class TabSetup extends Fragment {
                     showPasswordDialog();
                 } else {
                     tableParameter.setVisibility(View.GONE);
-                    moreParameter.setBackgroundResource(R.drawable.ic_expand_more_black_24dp);
+                    moreParameter.setImageResource(R.drawable.ic_expand_more_black_24dp);
                     isGone = true;
                 }
 
@@ -565,7 +575,7 @@ public class TabSetup extends Fragment {
                         String strPass = editText.getText().toString();
                         if(strPass.equals(SysData.adminPassword)) {
                             tableParameter.setVisibility(View.VISIBLE);
-                            moreParameter.setBackgroundResource(R.drawable.ic_expand_less_black_24dp);
+                            moreParameter.setImageResource(R.drawable.ic_expand_less_black_24dp);
                             isGone = false;
                             Toast.makeText(getActivity(), "密码正确", Toast.LENGTH_SHORT).show();
                         } else {
