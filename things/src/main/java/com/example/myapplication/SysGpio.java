@@ -783,7 +783,7 @@ public class SysGpio {
                         //读取模拟量值
                         MainActivity.com0.getAd();
                         Thread.sleep(1600);
-                        //如果光电值降低10以上，等待30S
+                        //如果光电值降低5以上，等待30S
                         if((SysData.startAdLight - SysData.adLight) >= 5){
                             //读取温度
                             SysGpio.readTempFlag = true;
