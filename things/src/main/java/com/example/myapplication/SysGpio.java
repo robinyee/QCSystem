@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import static android.content.ContentValues.TAG;
 import static com.example.myapplication.SysData.calculationValue;
+import static com.example.myapplication.SysData.isRun;
 
 public class SysGpio {
     static PeripheralManager manager;
@@ -868,6 +869,10 @@ public class SysGpio {
                         SysData.errorMsg = "仪器故障";
                         return;
                     }
+                    //待机状态
+                    if(!isRun) {
+                        SysData.progressRate = 0;
+                    }
                 } while (SysData.progressRate < 100);
             }
         }).start();
@@ -1258,6 +1263,7 @@ public class SysGpio {
                 SysData.stopFlag = false;
                 statusS8 = false;
                 SysData.statusMsg = "系统待机";
+                SysData.progressRate = 0;
                 SysData.isRun = false;
             }
         }).start();
