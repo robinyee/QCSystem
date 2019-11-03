@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
         //前次正在测试中断电，自动复位
         if(SysData.isRun) {
             SysGpio.s8_Reset();
-            SysData.isRun = false;
             SysData.progressRate = 0;
         }
 
@@ -426,13 +425,21 @@ public class MainActivity extends AppCompatActivity {
                 do {
                     //保存运行状态数据
                     if(SysData.isRun){
+                        saveMeterStatus();  //仪器运行时定时保存仪器状态数据
                         try {
                             Thread.sleep(10000);  //10秒后保存数据，能记录isRun的false状态
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                    } else {
                         saveMeterStatus();  //仪器运行时定时保存仪器状态数据
+                        try {
+                            Thread.sleep(60000);  //10秒后保存数据，能记录isRun的false状态
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    //定时启动程序
                     long dtime = System.currentTimeMillis() - SysData.nextStartTime;
                     //定时启动测定程序
                     if(SysData.isLoop && !SysData.isRun && dtime > 0 && dtime < 2000) {
@@ -470,6 +477,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("startCycle", SysData.startCycle);
         //提交保存
         editor.apply();
+        Log.i("存储", "仪表状态已保存");
     }
 
     //读取仪表参数

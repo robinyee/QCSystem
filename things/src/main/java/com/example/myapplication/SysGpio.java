@@ -775,14 +775,14 @@ public class SysGpio {
                             Thread.sleep(200);
                         }
                         ddNum += 1;
-                        SysData.didingNum = (ddNum > 4) ? ddNum - 4 : 0;
-                        if(ddNum >= 150){
+                        SysData.didingNum = (ddNum > 12) ? ddNum - 12 : 0;      //从滴定开始到液体到达管口滴定的次数和滴定过量的滴数，空管滴数9滴，过量滴数3滴
+                        if(ddNum >= 300){
                             SysData.errorMsg = "COD值超量程";
                             //return;
                         }
                         //读取模拟量值
                         MainActivity.com0.getAd();
-                        Thread.sleep(600);
+                        Thread.sleep(1600);
                         //如果光电值降低10以上，等待30S
                         if((SysData.startAdLight - SysData.adLight) >= 5){
                             //读取温度
@@ -791,7 +791,7 @@ public class SysGpio {
                             Thread.sleep(30000);
                         }
                         SysGpio.readTempFlag = false;  //停止循环读取温度
-                    } while ((SysData.startAdLight - SysData.adLight) < 5 && SysData.didingNum < 150);
+                    } while ((SysData.startAdLight - SysData.adLight) < 5 && SysData.didingNum < 300);     //最多滴定300滴
 
                     do {
                         //注射泵状态查询
@@ -922,10 +922,15 @@ public class SysGpio {
                 //等待加水样完成
 
                 //循环读取温度
+                try {
+                    Thread.sleep(2500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 SysGpio.readTempFlag = true;
                 SysGpio.readAd();
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -957,8 +962,15 @@ public class SysGpio {
                 //判断是否有水样进入
                 if((maxAd - minAd) < 10) {
                     SysData.errorMsg = "进水样出错";
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    s8_Reset();
                     return;
                 }
+                Log.d(TAG, "水质测定:Max=" + maxAd + ",水质测定:Min=" + minAd);
                 //停止读取模拟量
                 SysGpio.readTempFlag = false;
                 //SysData.progressRate = 5;
@@ -1130,7 +1142,7 @@ public class SysGpio {
                 //启动排水
                 try {
                     SysGpio.mGpioOutD8.setValue(true);
-                    Thread.sleep(120000);
+                    Thread.sleep(180000);
                     SysGpio.mGpioOutD8.setValue(false);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1180,7 +1192,6 @@ public class SysGpio {
             public void run() {
                 statusS8 = true;
                 statusS7 = false;
-                SysData.isRun = false;
                 SysData.statusMsg = "正在复位";
                 SysData.stopFlag = true;  //启动紧急停止
                 try {
@@ -1247,6 +1258,7 @@ public class SysGpio {
                 SysData.stopFlag = false;
                 statusS8 = false;
                 SysData.statusMsg = "系统待机";
+                SysData.isRun = false;
             }
         }).start();
     }
