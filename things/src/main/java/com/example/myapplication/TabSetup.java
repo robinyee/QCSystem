@@ -64,7 +64,7 @@ public class TabSetup extends Fragment {
     //private ImageButton buttonSetupWifi, timeSetup;
     private TimeManager timeManager = TimeManager.getInstance();
     private TextView httpAddr, localIp;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd/ HH:mm:ss");
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH时mm分ss秒");
     private SimpleDateFormat autoFormat = new SimpleDateFormat("MM/dd HH:mm");
     private EditText editSsid, editPass, editlocalip, editwebport;
@@ -243,7 +243,7 @@ public class TabSetup extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if (editNumberTimes.getText().toString().equals("")) {
                         SysData.numberTimes = 0;
-                    } else {
+                    } else if(!SysData.isUpdateTimes) {
                         SysData.numberTimes = Integer.parseInt(editNumberTimes.getText().toString());
                     }
                     try {
@@ -416,7 +416,6 @@ public class TabSetup extends Fragment {
                 //重启web服务
                 MainActivity.stopWebService();
                 MainActivity.startWebService();
-                saveMeterParameter();
                 SysData.restartWebFlag = true;
                 SysData.webPort = Integer.parseInt(editwebport.getText().toString());
                 MainActivity.updateNet();
@@ -424,6 +423,7 @@ public class TabSetup extends Fragment {
                 //httpAddr.setText(SysData.httpAddr);
                 //生成网址的二维码
                 creatQRCode(getView());
+                saveMeterParameter();
                 Toast.makeText(getActivity(), "Web服务已开启", Toast.LENGTH_SHORT).show();
             }
         });
