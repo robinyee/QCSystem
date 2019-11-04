@@ -22,9 +22,11 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -144,7 +146,7 @@ public class TabSetup extends Fragment {
         txtStarttime = view.findViewById(R.id.starttime);
         txtEndtime = view.findViewById(R.id.endtime);
         timeSetup = view.findViewById(R.id.setuptime);
-        httpAddr = view.findViewById(R.id.httpaddr);
+        //httpAddr = view.findViewById(R.id.httpaddr);
         localIp = view.findViewById(R.id.localip);
         txtSysDate = view.findViewById(R.id.sysdate);
         //txtSysTime = view.findViewById(R.id.systime);
@@ -210,6 +212,55 @@ public class TabSetup extends Fragment {
         });
 
         //定时启动周期设定
+        editStartCycle.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (editStartCycle.getText().toString().equals("")) {
+                        SysData.startCycle = 0;
+                    } else {
+                        SysData.startCycle = Integer.parseInt(editStartCycle.getText().toString());
+                    }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    saveMeterParameter();  //保存设定的参数
+                    Log.e("输入完成", "周期：" + SysData.startCycle);
+                    //return false;
+                }
+                return false;
+            }
+        });
+
+        //定时启动次数设定
+        editNumberTimes.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (editNumberTimes.getText().toString().equals("")) {
+                        SysData.numberTimes = 0;
+                    } else {
+                        SysData.numberTimes = Integer.parseInt(editNumberTimes.getText().toString());
+                    }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    saveMeterParameter();  //保存设定的参数
+                    Log.e("输入完成", "次数：" + SysData.numberTimes);
+                    //return false;
+                }
+                return false;
+            }
+        });
+
+        /*
+        //定时启动周期设定
         editStartCycle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -265,6 +316,8 @@ public class TabSetup extends Fragment {
             }
         });
 
+         */
+
         //定时启动开启
         switchIsLoop.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,9 +325,13 @@ public class TabSetup extends Fragment {
                 if(!editStartCycle.getText().toString().equals("") && !editNumberTimes.getText().toString().equals("")) {
                     SysData.startCycle = Integer.parseInt(editStartCycle.getText().toString());
                     SysData.numberTimes = Integer.parseInt(editNumberTimes.getText().toString());
+                    SysData.isLoop = switchIsLoop.isChecked();
+                    saveMeterParameter();  //保存设定的参数
+                } else {
+                    Toast.makeText(getActivity(), "周期或次数为空", Toast.LENGTH_SHORT).show();
+                    switchIsLoop.setChecked(false);
                 }
-                SysData.isLoop = switchIsLoop.isChecked();
-                saveMeterParameter();  //保存设定的参数
+
             }
         });
 
@@ -364,7 +421,7 @@ public class TabSetup extends Fragment {
                 SysData.webPort = Integer.parseInt(editwebport.getText().toString());
                 MainActivity.updateNet();
                 //显示WEB访问地址
-                httpAddr.setText(SysData.httpAddr);
+                //httpAddr.setText(SysData.httpAddr);
                 //生成网址的二维码
                 creatQRCode(getView());
                 Toast.makeText(getActivity(), "Web服务已开启", Toast.LENGTH_SHORT).show();
@@ -398,14 +455,14 @@ public class TabSetup extends Fragment {
         //显示设备IP地址
         String localIpAddr = "";
         for(int i = 0; i < SysData.localIpAddr.length; i++) {
-            localIpAddr = localIpAddr + "[" + (i+1) + "] " + SysData.localIpAddr[i] + "  ";
+            localIpAddr = localIpAddr + SysData.localIpAddr[i] + " ";
         }
         localIp.setText(localIpAddr);
         //显示已连接的wifi
-        wifiName.setText("已连接到\"" + SysData.wifiSsid + "\"");
+        wifiName.setText("" + SysData.wifiSsid + "");
 
         //显示WEB访问地址
-        httpAddr.setText(SysData.httpAddr);
+        //httpAddr.setText(SysData.httpAddr);
     }
 
 
@@ -475,7 +532,7 @@ public class TabSetup extends Fragment {
     private void creatQRCode(View view) {
         //生成网址的二维码
         ImageView mImageView = (ImageView) view.findViewById(R.id.imageViewZXing);
-        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(SysData.httpAddr, 80, 80);
+        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(SysData.httpAddr, 60, 60);
         mImageView.setImageBitmap(mBitmap);
     }
 

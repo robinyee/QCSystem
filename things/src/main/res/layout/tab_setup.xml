@@ -211,7 +211,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="自动运行"
+            android:text="系统设置"
             android:textColor="@color/colorPrimary"
             android:textSize="14sp" />
         <TableLayout
@@ -227,7 +227,7 @@
                     android:id="@+id/nextStartTime"
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="5dp"
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
@@ -243,7 +243,7 @@
                     android:id="@+id/startCycle"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
@@ -266,9 +266,9 @@
                     android:text="启动次数"/>
                 <EditText
                     android:id="@+id/numberTimes"
-                    android:layout_width="140dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="5dp"
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
@@ -284,10 +284,11 @@
                     android:id="@+id/isLoop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="10dp"
                     android:theme="@style/MySwitch"
                     android:text="定时开启" />
             </TableRow>
+            <!--
         </TableLayout>
         <ImageView
             android:layout_width="match_parent"
@@ -306,6 +307,7 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            -->
             <TableRow>
                 <TextView
                     android:layout_width="wrap_content"
@@ -314,9 +316,9 @@
                     android:text="SSID名称"/>
                 <EditText
                     android:id="@+id/editssid"
-                    android:layout_width="140dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="5dp"
                     android:singleLine="true"
                     android:textSize="14sp"
                     android:gravity="center"
@@ -331,21 +333,13 @@
                     android:id="@+id/editwifipassword"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:gravity="center"
                     android:imeOptions="actionDone"
                     android:hint="输入PASSWORD"
                     android:singleLine="true"
                     android:inputType="textPassword"
                     android:textSize="14sp" />
-            </TableRow>
-            <TableRow>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:text="连接WIFI"/>
                 <Button
                     android:id="@+id/setupwifi"
                     android:layout_width="wrap_content"
@@ -355,6 +349,59 @@
                     android:background="#ffffffff"
                     android:layout_marginLeft="20dp"
                     android:text="连接WIFI"/>
+            </TableRow>
+            <!--
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="连接WIFI"/>
+
+            </TableRow>
+            -->
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="WEB服务"/>
+                <EditText
+                    android:id="@+id/editlocalip"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:hint="输入IP地址"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="WEB端口"/>
+                <EditText
+                    android:id="@+id/editwebport"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:imeOptions="actionDone"
+                    android:hint="输入端口"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+                <Button
+                    android:id="@+id/setupweb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:drawableLeft="@drawable/ic_replay_black_24dp"
+                    android:layout_gravity="left"
+                    android:background="#ffffffff"
+                    android:text="启动WEB"/>
             </TableRow>
             <!--<TableRow>
 
@@ -404,39 +451,45 @@
                     android:text="连接到WIFI"/>
 
             </TableRow>-->
-            <TableRow
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
+            <TableRow>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="20dp"
                     android:text="WIFI状态"/>
                 <TextView
                     android:id="@+id/wifissid"
-                    android:layout_width="200dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_span="2"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center"
+                    android:layout_span="1"
                     android:text="" />
-            </TableRow>
-            <TableRow
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="20dp"
                     android:text="IP地址"/>
                 <TextView
                     android:id="@+id/localip"
-                    android:layout_width="200dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_span="2"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_span="1"
                     android:text="" />
+                <ImageView
+                    android:id="@+id/imageViewZXing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill"
+                    android:layout_marginLeft="20dp"/>
             </TableRow>
         </TableLayout>
+        <!--
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -453,43 +506,7 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TableRow>
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:text="WEB设置"/>
-                <EditText
-                    android:id="@+id/editlocalip"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:singleLine="true"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:imeOptions="actionDone"
-                    android:hint="输入IP地址"/>
-                <EditText
-                    android:id="@+id/editwebport"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:imeOptions="actionDone"
-                    android:hint="输入端口"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-                <Button
-                    android:id="@+id/setupweb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:drawableLeft="@drawable/ic_replay_black_24dp"
-                    android:layout_gravity="left"
-                    android:background="#ffffffff"
-                    android:text="重启"/>
-            </TableRow>
+
             <TableRow
                 android:layout_marginTop="10dp">
                 <TextView
@@ -522,6 +539,7 @@
                     android:layout_marginLeft="20dp"/>
             </TableRow>
         </TableLayout>
+        -->
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -906,6 +924,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
+                    android:layout_gravity="center_vertical"
                     android:text="江苏南水科技有限公司"/>
             </TableRow>
         </TableLayout>
