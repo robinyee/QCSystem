@@ -118,6 +118,11 @@ public class TabSetup extends Fragment {
         //txtSysTime.setText(timeFormat.format(System.currentTimeMillis()));
         //更新自动运行信息
         if(SysData.isUpdateTimes) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
             editNumberTimes.setText(String.valueOf(SysData.numberTimes));
             SysData.isUpdateTimes = false;
@@ -252,7 +257,7 @@ public class TabSetup extends Fragment {
                     SysData.numberTimes = Integer.parseInt(editNumberTimes.getText().toString());
                 }
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
