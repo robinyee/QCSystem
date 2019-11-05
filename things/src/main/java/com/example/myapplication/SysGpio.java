@@ -107,6 +107,55 @@ public class SysGpio {
 
     }
 
+    //关闭GPIO
+    public static void gpioClose() {
+        manager = PeripheralManager.getInstance();
+        try {
+            //关闭所有Gpio端口
+            mGpioOutD1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutD2.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutD3.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutD4.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutD5.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutD6.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutD7.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutD8.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutP1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutP2.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutH1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutB1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutLED.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOut24V.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutDC1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutRE1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutDC2.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            mGpioOutRE2.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
+            //关闭Gpio端口
+            if(mGpioOutD1 != null) mGpioOutD1.close();
+            if(mGpioOutD2 != null) mGpioOutD2.close();
+            if(mGpioOutD3 != null) mGpioOutD3.close();
+            if(mGpioOutD4 != null) mGpioOutD4.close();
+            if(mGpioOutD5 != null) mGpioOutD5.close();
+            if(mGpioOutD6 != null) mGpioOutD6.close();
+            if(mGpioOutD7 != null) mGpioOutD7.close();
+            if(mGpioOutD8 != null) mGpioOutD8.close();
+            if(mGpioOutP1 != null) mGpioOutP1.close();
+            if(mGpioOutP2 != null) mGpioOutP2.close();
+            if(mGpioOutH1 != null) mGpioOutH1.close();
+            if(mGpioOutB1 != null) mGpioOutB1.close();
+            if(mGpioOutLED != null) mGpioOutLED.close();
+            if(mGpioOut24V != null) mGpioOut24V.close();
+            if(mGpioOutDC1 != null) mGpioOutDC1.close();
+            if(mGpioOutRE1 != null) mGpioOutRE1.close();
+            if(mGpioOutDC2 != null) mGpioOutDC2.close();
+            if(mGpioOutRE2 != null) mGpioOutRE2.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(manager != null) manager = null;
+        Log.i("关闭GPIO", "GPIO已关闭并注销");
+    }
+
     //设置Gpio输出口的开关状态，端口名称，
     public static void setGpioOut(Gpio mGpioOut, boolean v) {
         try {
@@ -1267,46 +1316,6 @@ public class SysGpio {
                 SysData.isRun = false;
             }
         }).start();
-    }
-
-    //关闭端口
-    public static void onClose() {
-        try {
-            mGpioOutD1.close();
-            mGpioOutD1 = null;
-            mGpioOutD2.close();
-            mGpioOutD2 = null;
-            mGpioOutD3.close();
-            mGpioOutD3 = null;
-            mGpioOutD4.close();
-            mGpioOutD4 = null;
-            mGpioOutD5.close();
-            mGpioOutD5 = null;
-            mGpioOutD6.close();
-            mGpioOutD6 = null;
-            mGpioOutD7.close();
-            mGpioOutD7 = null;
-            mGpioOutD8.close();
-            mGpioOutD8 = null;
-            mGpioOutP1.close();
-            mGpioOutP1 = null;
-            mGpioOutP2.close();
-            mGpioOutP2 = null;
-            mGpioOutH1.close();
-            mGpioOutH1 = null;
-            mGpioOutB1.close();
-            mGpioOutB1 = null;
-            mGpioOutDC1.close();
-            mGpioOutDC1 = null;
-            mGpioOutRE1.close();
-            mGpioOutRE1 = null;
-            mGpioOutDC2.close();
-            mGpioOutDC2 = null;
-            mGpioOutRE2.close();
-            mGpioOutRE2 = null;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }

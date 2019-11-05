@@ -49,6 +49,7 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static MainActivity mainApplication;
     private TimeManager timeManager = TimeManager.getInstance();
     public static UartCom com0, com1;
     public static WebServer webServer;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        initData();   //初始化异常捕获
         setContentView(R.layout.activity_main);
 
         //打开数据库
@@ -141,6 +142,22 @@ public class MainActivity extends AppCompatActivity {
         autoRun();
 
         Log.i("外部存储", "是否有权限写外部存储：" + isExternalStorageWritable());
+    }
+
+    //初始化异常捕获并处理
+    private void initData() {
+        mainApplication = this;
+
+        //监视应用异常
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SysGpio.gpioClose(); //关闭GPIO并注销
+        com1.closeUart();   //关闭com1串口通信
     }
 
     //开启Web服务
@@ -259,13 +276,6 @@ public class MainActivity extends AppCompatActivity {
                 + ((ip>>8)&0xFF) + "."
                 + ((ip>>16)&0xFF) + "."
                 + ((ip>>24)&0xFF);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SysGpio.onClose();  //关闭Gpio输入输出
-        com1.closeUart();   //关闭com1串口通信
     }
 
     private void loadTabPager() {
@@ -465,6 +475,11 @@ public class MainActivity extends AppCompatActivity {
                         SysData.nextStartTime = SysData.nextStartTime + SysData.startCycle * 3600 * 1000;
                         Log.i("MainActivity", "当前时间：" + System.currentTimeMillis() + " 下次启动时间：" + SysData.nextStartTime);
                         SysData.numberTimes = (SysData.numberTimes >= 999) ? 999 : SysData.numberTimes - 1;
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         SysData.isUpdateTimes = true;
                     }
                     try {

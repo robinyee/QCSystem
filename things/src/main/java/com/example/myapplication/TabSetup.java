@@ -121,7 +121,7 @@ public class TabSetup extends Fragment {
         //更新自动运行信息
         if(SysData.isUpdateTimes) {
             try {
-                Thread.sleep(200);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -425,6 +425,7 @@ public class TabSetup extends Fragment {
                 creatQRCode(getView());
                 saveMeterParameter();
                 Toast.makeText(getActivity(), "Web服务已开启", Toast.LENGTH_SHORT).show();
+                //httpAddr.setText(SysData.httpAddr);   //抛出异常测试
             }
         });
 
