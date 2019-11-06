@@ -304,9 +304,9 @@ public class SysGpio {
                         e.printStackTrace();
                     }
 
-                    /*
-                    //温度高于60度，间断加热
-                    if(SysData.tempIn > 60 && SysData.tempOut > 120) {
+
+                    //温度高于70度，间断加热
+                    if(SysData.tempIn > 70 && SysData.tempOut > 120) {
                         try {
                             mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");
@@ -320,7 +320,7 @@ public class SysGpio {
                             e.printStackTrace();
                         }
                     }
-                     */
+
 
                     //温度高于85度，间断加热
                     if(SysData.tempIn > 85 && SysData.tempOut > 110) {
@@ -1189,6 +1189,16 @@ public class SysGpio {
                 //计算COD的值
                 SysData.calculationValue();
 
+                //等待1秒钟
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                //将数据保存至数据库
+                SysData.saveDataToDB();
+
                 //停止温度控制
                 SysGpio.tempControlFlag = false;
                 SysData.statusMsg = "排放废液";
@@ -1229,9 +1239,6 @@ public class SysGpio {
                 SysData.progressRate = 100;
                 SysData.isRun = false;
                 SysData.endTime = System.currentTimeMillis();
-
-                //将数据保存至数据库
-                SysData.saveDataToDB();
 
                 //完成水质测定程序
                 statusS7 = false;

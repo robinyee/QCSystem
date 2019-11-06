@@ -125,9 +125,11 @@ public class TabSetup extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
-            editNumberTimes.setText(String.valueOf(SysData.numberTimes));
-            SysData.isUpdateTimes = false;
+            if(!editNumberTimes.getText().toString().equals(String.valueOf(SysData.numberTimes))) {
+                editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
+                editNumberTimes.setText(String.valueOf(SysData.numberTimes));
+                SysData.isUpdateTimes = false;
+            }
         }
     }
 
