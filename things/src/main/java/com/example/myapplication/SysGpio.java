@@ -1199,6 +1199,13 @@ public class SysGpio {
                 //将数据保存至数据库
                 SysData.saveDataToDB();
 
+                //等待1秒钟
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 //停止温度控制
                 SysGpio.tempControlFlag = false;
                 SysData.statusMsg = "排放废液";

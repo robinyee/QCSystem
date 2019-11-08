@@ -92,7 +92,8 @@ public class SysData {
         double k = 10.0 / biaodingValue;
         didingSumVolume = didingNum * didingVolume;
         didingSumVolume = (double)Math.round(didingSumVolume*100)/100;  //取小数点后两位
-        codVolue = (didingSumVolume - kongbaiValue) * k * caosuannaCon * 16 * 1000 / shuiyangVolume;
+        codVolue = ((gaomengsuanjiaVolume + didingSumVolume) * k - caosuannaVolume) * caosuannaCon * 8 * 1000 /100;
+        //codVolue = (didingSumVolume - kongbaiValue) * k * caosuannaCon * 16 * 1000 / shuiyangVolume;  //公式错误
         codVolue = (double)Math.round(codVolue*100)/100;  //取小数点后两位
         return codVolue;
     }
