@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.things.pio.Gpio;
+import com.google.android.things.pio.GpioCallback;
 import com.google.android.things.pio.PeripheralManager;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class SysGpio {
     static PeripheralManager manager;
     static Gpio mGpioOutD1, mGpioOutD2, mGpioOutD3, mGpioOutD4, mGpioOutD5, mGpioOutD6, mGpioOutD7, mGpioOutD8, mGpioOutP1,
             mGpioOutP2, mGpioOutH1, mGpioOutB1, mGpioOutLED, mGpioOut24V, mGpioOutDC1, mGpioOutRE1, mGpioOutDC2, mGpioOutRE2;
+    static Gpio mGpioIn1, mGpioIn2, mGpioIn3, mGpioIn4;
     static boolean readTempFlag = false; //是否持续读取温度
     static boolean tempControlFlag = false; //是否进行温度控制
 
@@ -37,7 +39,7 @@ public class SysGpio {
     static boolean statusS11 = false;      //S11状态
     static boolean statusS12 = false;      //S12状态
 
-    //设置输入输出引脚
+    //设置输出引脚
     private static final String GPIO_OUT_D1 = "BCM4";  //D1进样阀开关量输出
     private static final String GPIO_OUT_D2 = "BCM17";  //D2进样阀开关量输出
     private static final String GPIO_OUT_D3 = "BCM18";  //D3排空阀开关量输出
@@ -56,6 +58,12 @@ public class SysGpio {
     private static final String GPIO_OUT_RE1 = "BCM5";  //DC1反转
     private static final String GPIO_OUT_DC2 = "BCM12";  //DC2正转
     private static final String GPIO_OUT_RE2 = "BCM13";  //DC2反转
+
+    //设置输入引脚
+    private static final String GPIO_IN_1 = "BCM16";
+    private static final String GPIO_IN_2 = "BCM19";
+    private static final String GPIO_IN_3 = "BCM20";
+    private static final String GPIO_IN_4 = "BCM26";
 
 
     public static void gpioInit() {
@@ -81,6 +89,12 @@ public class SysGpio {
             mGpioOutDC2 = manager.openGpio(GPIO_OUT_DC2);
             mGpioOutRE2 = manager.openGpio(GPIO_OUT_RE2);
 
+            //端口输入端口
+            mGpioIn1 = manager.openGpio(GPIO_IN_1);
+            mGpioIn2 = manager.openGpio(GPIO_IN_2);
+            mGpioIn3 = manager.openGpio(GPIO_IN_3);
+            mGpioIn4 = manager.openGpio(GPIO_IN_4);
+
             //初始化Gpio端口的状态
             mGpioOutD1.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
             mGpioOutD2.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
@@ -101,11 +115,28 @@ public class SysGpio {
             mGpioOutDC2.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
             mGpioOutRE2.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);  //初始化为低电平，高电平输出开关量
 
+            // 初始化为输入端口
+            mGpioIn1.setDirection(Gpio.DIRECTION_IN);
+            mGpioIn2.setDirection(Gpio.DIRECTION_IN);
+            mGpioIn3.setDirection(Gpio.DIRECTION_IN);
+            mGpioIn4.setDirection(Gpio.DIRECTION_IN);
+            // 高电平为活动状态
+            mGpioIn1.setActiveType(Gpio.ACTIVE_LOW);
+            mGpioIn2.setActiveType(Gpio.ACTIVE_LOW);
+            mGpioIn3.setActiveType(Gpio.ACTIVE_LOW);
+            mGpioIn4.setActiveType(Gpio.ACTIVE_LOW);
+            // 设置状态转换响应
+            mGpioIn1.setEdgeTriggerType(Gpio.EDGE_BOTH);
+            mGpioIn2.setEdgeTriggerType(Gpio.EDGE_BOTH);
+            mGpioIn3.setEdgeTriggerType(Gpio.EDGE_BOTH);
+            mGpioIn4.setEdgeTriggerType(Gpio.EDGE_BOTH);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
+
 
     //关闭GPIO
     public static void gpioClose() {
@@ -915,7 +946,7 @@ public class SysGpio {
                     }
                     //时间超过90分钟，可能仪器故障
                     if((System.currentTimeMillis() - SysData.startTime) / 1000 > 5400) {
-                        SysData.errorMsg = "仪器故障";
+                        SysData.errorMsg = "运行超时";
                         return;
                     }
                     //待机状态

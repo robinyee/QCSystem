@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
 import android.os.Handler;
@@ -19,12 +20,14 @@ import androidx.fragment.app.Fragment;
 import java.io.IOException;
 
 import static android.content.ContentValues.TAG;
+import static android.content.Context.MODE_PRIVATE;
 
 public class TabService extends Fragment {
     private Switch aSwitchD1, aSwitchD2, aSwitchD3, aSwitchD4, aSwitchD5, aSwitchD6, aSwitchD7, aSwitchD8, aSwitchP1,
             aSwitchP2, aSwitchH1, aSwitchB1, aSwitchLED, aSwitchV24, aSwitchDC1, aSwitchRE1, aSwitchDC2, aSwitchRE2;
     private Switch aSwitchS1, aSwitchS2, aSwitchS3, aSwitchS4, aSwitchS5, aSwitchS6, aSwitchS7, aSwitchS8,
             aSwitchS9, aSwitchS10, aSwitchS11, aSwitchS12;
+    private Switch aSwitchIn1, aSwitchIn2, aSwitchIn3, aSwitchIn4, aSwitchIsNotice;
 
     //获取线程发送的Msg信息，更新对于UI界面
     static final int UI_UPDATE = 100;
@@ -80,6 +83,12 @@ public class TabService extends Fragment {
             aSwitchS11.setChecked(SysGpio.statusS11);
             aSwitchS12.setChecked(SysGpio.statusS12);
 
+            //端子输入信息
+            aSwitchIn1.setChecked(SysGpio.mGpioIn1.getValue());
+            aSwitchIn2.setChecked(SysGpio.mGpioIn2.getValue());
+            aSwitchIn3.setChecked(SysGpio.mGpioIn3.getValue());
+            aSwitchIn4.setChecked(SysGpio.mGpioIn4.getValue());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,6 +130,15 @@ public class TabService extends Fragment {
         aSwitchS10 = (Switch) view.findViewById(R.id.s10);
         aSwitchS11 = (Switch) view.findViewById(R.id.s11);
         aSwitchS12 = (Switch) view.findViewById(R.id.s12);
+
+        //输入状态Switch
+        aSwitchIn1 = (Switch) view.findViewById(R.id.switchIn1);
+        aSwitchIn2 = (Switch) view.findViewById(R.id.switchIn2);
+        aSwitchIn3 = (Switch) view.findViewById(R.id.switchIn3);
+        aSwitchIn4 = (Switch) view.findViewById(R.id.switchIn4);
+        aSwitchIsNotice = (Switch) view.findViewById(R.id.switchIsNotice);
+        //当前状态显示
+        aSwitchIsNotice.setChecked(SysData.isNotice);
 
         //刷新界面信息
         message = handlerUpdate.obtainMessage(UI_UPDATE);
@@ -444,7 +462,26 @@ public class TabService extends Fragment {
             }
         });
 
+        //SwitchIsNotice按钮点击
+        aSwitchIsNotice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SysData.isNotice = aSwitchIsNotice.isChecked();
+                saveMeterParameter();
+            }
+        });
+
         return view;
+    }
+
+    //保存仪表参数
+    public void saveMeterParameter() {
+        //打开文件
+        final SharedPreferences.Editor editor = getActivity().getSharedPreferences("Parameter", MODE_PRIVATE).edit();
+        editor.putBoolean("isNotice", SysData.isNotice);
+        Log.i("参数存储", "试剂量报警已存储" + SysData.isNotice);
+        //提交保存
+        editor.apply();
     }
 
 

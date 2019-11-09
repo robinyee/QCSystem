@@ -29,6 +29,8 @@ import android.widget.TableLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.things.pio.Gpio;
+import com.google.android.things.pio.GpioCallback;
 import com.instacart.library.truetime.TrueTime;
 
 import java.io.FileNotFoundException;
@@ -45,6 +47,8 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
+
+import static android.content.ContentValues.TAG;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -142,7 +146,45 @@ public class MainActivity extends AppCompatActivity {
         autoRun();
 
         Log.i("外部存储", "是否有权限写外部存储：" + isExternalStorageWritable());
+
+        //试剂状态检测
+        try {
+            SysGpio.mGpioIn1.registerGpioCallback(gpioCallback);
+            SysGpio.mGpioIn2.registerGpioCallback(gpioCallback);
+            SysGpio.mGpioIn3.registerGpioCallback(gpioCallback);
+            SysGpio.mGpioIn4.registerGpioCallback(gpioCallback);
+            Log.i("输入端口", "已经启动侦听");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    //当输入端口状态改变时调用，记录试剂状态
+    private GpioCallback gpioCallback = new GpioCallback() {
+        @Override
+        public boolean onGpioEdge(Gpio gpio) {
+            // Read the active low pin state
+            try {
+                SysData.liusuanStatus = SysGpio.mGpioIn1.getValue();
+                SysData.gaomengsuanjiaStatus = SysGpio.mGpioIn2.getValue();
+                SysData.caosuannaStatus = SysGpio.mGpioIn3.getValue();
+                SysData.zhengliushuiStatus = SysGpio.mGpioIn4.getValue();
+                Log.w(TAG, "输入端口状态" + " 1:" + SysGpio.mGpioIn1.getValue());
+                Log.w(TAG, "输入端口状态" + " 2:" + SysGpio.mGpioIn2.getValue());
+                Log.w(TAG, "输入端口状态" + " 3:" + SysGpio.mGpioIn3.getValue());
+                Log.w(TAG, "输入端口状态" + " 4:" + SysGpio.mGpioIn4.getValue());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // Continue listening for more interrupts
+            return true;
+        }
+
+        @Override
+        public void onGpioError(Gpio gpio, int error) {
+            Log.w(TAG, gpio + ": Error event " + error);
+        }
+    };
 
     //初始化异常捕获并处理
     private void initData() {
@@ -427,6 +469,8 @@ public class MainActivity extends AppCompatActivity {
         SysData.nextStartTime = sp.getLong("nextStartTime", 0);
         SysData.startCycle = sp.getInt("startCycle", 0);
         SysData.numberTimes = sp.getInt("numberTimes", 0);
+        SysData.isNotice = sp.getBoolean("isNotice", false);
+        //Log.i("读取参数", "试剂量报警信息" + SysData.isNotice);
     }
 
     //主程序循环进程，定时保存仪器状态
@@ -451,6 +495,13 @@ public class MainActivity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                    }
+                    //检查试剂状态
+                    if(SysData.isNotice) {
+                        if (SysData.liusuanStatus) SysData.errorMsg = "硫酸试剂量低";
+                        if (SysData.gaomengsuanjiaStatus) SysData.errorMsg = "高锰酸钾试剂量低";
+                        if (SysData.caosuannaStatus) SysData.errorMsg = "草酸钠试剂量低";
+                        if (SysData.zhengliushuiStatus) SysData.errorMsg = "蒸馏水试剂量低";
                     }
                 } while (true);
             }

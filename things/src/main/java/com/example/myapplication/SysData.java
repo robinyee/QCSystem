@@ -88,6 +88,13 @@ public class SysData {
     static boolean statusD35 = false;      //D35状态
     static boolean statusD24EN = false;    //D24EN状态
 
+    //仪器的试剂状态
+    static boolean isNotice = false;          //试剂量低是否报警
+    static boolean liusuanStatus;                   //硫酸试剂量，true-有试剂，false-无试剂
+    static boolean gaomengsuanjiaStatus;            //高锰酸钾试剂量，true-有试剂，false-无试剂
+    static boolean caosuannaStatus;                 //草酸钠试剂量，true-有试剂，false-无试剂
+    static boolean zhengliushuiStatus;              //蒸馏水试剂量，true-有试剂，false-无试剂
+
     public static double calculationValue() {
         double k = 10.0 / biaodingValue;
         didingSumVolume = didingNum * didingVolume;
