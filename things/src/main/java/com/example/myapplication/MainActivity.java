@@ -33,8 +33,11 @@ import com.google.android.things.pio.Gpio;
 import com.google.android.things.pio.GpioCallback;
 import com.instacart.library.truetime.TrueTime;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -205,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
     //开启Web服务
     public static void startWebService() {
         //启动web服务
-        webServer = new WebServer(SysData.webPort);
+        webServer = new WebServer(SysData.webPort, mainApplication);
         try {
             webServer.start();
         } catch (IOException e) {
@@ -518,7 +521,7 @@ public class MainActivity extends AppCompatActivity {
                     //定时启动程序
                     long dtime = System.currentTimeMillis() - SysData.nextStartTime;
                     //定时启动测定程序
-                    if(SysData.isLoop && !SysData.isRun && dtime > 0 && dtime < 2000 && SysData.numberTimes > 0) {
+                    if(SysData.isLoop && !SysData.isRun && dtime > 0 && dtime < 10000 && SysData.numberTimes > 0) {
                         //启动测定流程
                         SysGpio.s7_ShuiZhiCeDing();
                         SysData.statusMsg = "启动测定程序";
@@ -526,11 +529,6 @@ public class MainActivity extends AppCompatActivity {
                         SysData.nextStartTime = SysData.nextStartTime + SysData.startCycle * 3600 * 1000;
                         Log.i("MainActivity", "当前时间：" + System.currentTimeMillis() + " 下次启动时间：" + SysData.nextStartTime);
                         SysData.numberTimes = (SysData.numberTimes >= 999) ? 999 : SysData.numberTimes - 1;
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         SysData.isUpdateTimes = true;
                     }
                     try {
@@ -608,6 +606,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* 检测是否可以写外部文件 */
     public boolean isExternalStorageWritable() {
+
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             return true;

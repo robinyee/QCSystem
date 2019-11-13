@@ -18,7 +18,7 @@ public class SysService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("Service", "启动后台服务");
-        WebServer webServer = new WebServer(SysData.webPort);
+        WebServer webServer = new WebServer(SysData.webPort, getApplicationContext());
         try {
             webServer.start();
             SysData.webServiceFlag = true;

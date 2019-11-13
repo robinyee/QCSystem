@@ -120,15 +120,17 @@ public class TabSetup extends Fragment {
         //txtSysTime.setText(timeFormat.format(System.currentTimeMillis()));
         //更新自动运行信息
         if(SysData.isUpdateTimes) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Log.i("变更自动运行参数", "isUpdateTimes：" + SysData.isUpdateTimes);
+            Log.i("变更自动运行参数", "numberTimes：" + SysData.numberTimes);
+            Log.i("变更自动运行参数", "页面显示：" +editNumberTimes.getText().toString());
             if(!editNumberTimes.getText().toString().equals(String.valueOf(SysData.numberTimes))) {
                 editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
                 editNumberTimes.setText(String.valueOf(SysData.numberTimes));
                 SysData.isUpdateTimes = false;
+                Log.i("变更自动运行参数", "已经更新自动运行参数");
+                Log.i("变更自动运行参数", "isUpdateTimes：" + SysData.isUpdateTimes);
+                Log.i("变更自动运行参数", "numberTimes：" + SysData.numberTimes);
+                Log.i("变更自动运行参数", "页面显示：" +editNumberTimes.getText().toString());
             }
         }
     }
@@ -254,7 +256,7 @@ public class TabSetup extends Fragment {
                         e.printStackTrace();
                     }
                     saveMeterParameter();  //保存设定的参数
-                    Log.e("输入完成", "次数：" + SysData.numberTimes);
+                    Log.i("输入完成", "次数：" + SysData.numberTimes);
                     //return false;
                 }
                 return false;

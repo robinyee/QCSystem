@@ -121,10 +121,10 @@ public class SysGpio {
             mGpioIn3.setDirection(Gpio.DIRECTION_IN);
             mGpioIn4.setDirection(Gpio.DIRECTION_IN);
             // 高电平为活动状态
-            mGpioIn1.setActiveType(Gpio.ACTIVE_LOW);
-            mGpioIn2.setActiveType(Gpio.ACTIVE_LOW);
-            mGpioIn3.setActiveType(Gpio.ACTIVE_LOW);
-            mGpioIn4.setActiveType(Gpio.ACTIVE_LOW);
+            mGpioIn1.setActiveType(Gpio.ACTIVE_HIGH);
+            mGpioIn2.setActiveType(Gpio.ACTIVE_HIGH);
+            mGpioIn3.setActiveType(Gpio.ACTIVE_HIGH);
+            mGpioIn4.setActiveType(Gpio.ACTIVE_HIGH);
             // 设置状态转换响应
             mGpioIn1.setEdgeTriggerType(Gpio.EDGE_BOTH);
             mGpioIn2.setEdgeTriggerType(Gpio.EDGE_BOTH);
@@ -945,7 +945,7 @@ public class SysGpio {
                         e.printStackTrace();
                     }
                     //时间超过90分钟，可能仪器故障
-                    if((System.currentTimeMillis() - SysData.startTime) / 1000 > 5400) {
+                    if(isRun && (System.currentTimeMillis() - SysData.startTime) / 1000 > 5400) {
                         SysData.errorMsg = "运行超时";
                         return;
                     }
@@ -953,7 +953,7 @@ public class SysGpio {
                     if(!isRun) {
                         SysData.progressRate = 0;
                     }
-                } while (SysData.progressRate < 100);
+                } while (isRun && SysData.progressRate < 100);
             }
         }).start();
     }
