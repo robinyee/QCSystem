@@ -654,7 +654,7 @@ public class SysGpio {
                     Thread.sleep(1000);
                     //注射泵2状态正常时执行
                     if(SysData.Pump[2] == 0x00) {
-                        //注射泵抽取液体
+                        //注射泵抽取气体
                         MainActivity.com0.pumpCmd(2, "pull", 12800);     //注射泵吸气
                         Thread.sleep(22000);
                     }
@@ -669,7 +669,7 @@ public class SysGpio {
                     Thread.sleep(1000);
 
                     if(SysData.Pump[2] == 0x00) {
-                        //注射泵抽取液体
+                        //注射泵压出空气
                         MainActivity.com0.pumpCmd(2, "back", 0);     //排空容器中的草酸钠
                         Thread.sleep(22000);
                     }
@@ -688,10 +688,11 @@ public class SysGpio {
                     MainActivity.com0.pumpCmd(2, "status", 0);
                     Thread.sleep(1000);
                     if(SysData.Pump[2] == 0x00) {
-                        //注射泵抽取液体
+                        //注射泵压出液体
                         MainActivity.com0.pumpCmd(2, "push", 2400);     //压出草酸钠试剂
                         Thread.sleep(4000);
                     }
+                    Thread.sleep(1000);
                     SysGpio.mGpioOutD5.setValue(true);                                       //打开D5电磁阀
                     //注射泵状态查询
                     MainActivity.com0.pumpCmd(2, "status", 0);

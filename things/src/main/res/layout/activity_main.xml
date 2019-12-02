@@ -8,7 +8,7 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="2dp"
         android:background="#18A432"
         android:elevation="6dp"
         app:tabIndicatorColor="#E91E63"
