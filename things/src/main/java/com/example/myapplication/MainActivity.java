@@ -473,6 +473,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.startCycle = sp.getInt("startCycle", 0);
         SysData.numberTimes = sp.getInt("numberTimes", 0);
         SysData.isNotice = sp.getBoolean("isNotice", false);
+        SysData.adminPassword = sp.getString("adminPassword", "nsy218");
         //Log.i("读取参数", "试剂量报警信息" + SysData.isNotice);
     }
 
