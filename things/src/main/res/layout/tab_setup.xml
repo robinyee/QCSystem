@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/page_background"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:padding="16dp"
@@ -193,7 +194,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableRight="@drawable/ic_build_white_24dp"
-                    android:background="#ffffffff"
+                    android:background="@android:drawable/list_selector_background"
                     android:layout_marginLeft="20dp"
                     android:layout_gravity="left"
                     android:text="设置时间"/>
@@ -349,7 +350,7 @@
                     android:layout_height="wrap_content"
                     android:drawableRight="@drawable/ic_baseline_wifi_24px"
                     android:layout_gravity="left"
-                    android:background="#ffffffff"
+                    android:background="@android:drawable/list_selector_background"
                     android:layout_marginLeft="20dp"
                     android:text="连接WIFI"/>
             </TableRow>
@@ -403,7 +404,7 @@
                     android:layout_marginLeft="20dp"
                     android:drawableRight="@drawable/ic_replay_black_24dp"
                     android:layout_gravity="left"
-                    android:background="#ffffffff"
+                    android:background="@android:drawable/list_selector_background"
                     android:text="启动WEB"/>
             </TableRow>
             <!--<TableRow>
