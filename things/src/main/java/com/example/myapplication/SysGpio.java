@@ -973,7 +973,7 @@ public class SysGpio {
                 SysGpio.readAd();
                 Log.d(TAG, "run: 滴定线程开始");
                 statusS6 = true;
-                int Difference = 20;  //滴定时模拟量下降的值大于这个差值判定为滴定终点
+                int Difference = 10;  //滴定时模拟量下降的值大于这个差值判定为滴定终点
 
                 //记录初始光电值，取10次采样的平均值
                 int light = 0;
@@ -1093,9 +1093,9 @@ public class SysGpio {
                                 }
                             }
                         }
-
+                        SysData.startAdLight = (SysData.adLight > SysData.startAdLight) ? SysData.adLight : SysData.startAdLight;  //初始光电值取最大值
                         SysGpio.readTempFlag = false;  //停止循环读取温度
-                    } while (!isEnd && (SysData.startAdLight - SysData.adLight) < 10 && SysData.didingNum < 20);     //最多滴定200滴
+                    } while (!isEnd && (SysData.startAdLight - SysData.adLight) < Difference && SysData.didingNum < 400);     //最多滴定200滴
 
                     //注射泵状态查询
                     pumpStatus(2, 1000);
