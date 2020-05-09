@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Socket;
 import fi.iki.elonen.NanoHTTPD;
 
 class WebServer extends NanoHTTPD {
@@ -19,11 +20,21 @@ class WebServer extends NanoHTTPD {
     public Response serve(IHTTPSession session) {
 
         String uri = session.getUri();
-        System.out.println("####MyWebServer:" + uri);
+        System.out.println("WebServer:" + uri);
         String filename = uri.substring(1);
 
         if (uri.equals("/"))
             filename = "index.html";
+
+        if (uri.equals("/run")) {
+            //如果仪器在空闲状态时启动分析流程
+            if (SysData.isRun == false) {
+                SysGpio.s7_ShuiZhiCeDing();
+                filename = "run_ok.html";
+            } else {
+                filename = "run_no.html";
+            }
+        }
 
         boolean is_ascii = true;
         String mimetype = "text/html";
@@ -77,5 +88,6 @@ class WebServer extends NanoHTTPD {
             }
         }
     }
+
 }
 

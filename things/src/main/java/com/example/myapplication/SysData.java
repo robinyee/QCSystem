@@ -13,7 +13,7 @@ public class SysData {
     static double shuiyangVolume = 100.0;       //水样的液体体积
     static int liusuanStep = 3200;              //加硫酸的步数
     static double liusuanVolume = 5.0;          //加硫酸的体积
-    static int caosuannaStep = 5690;            //加草酸钠的步数
+    static int caosuannaStep = 5200;            //加草酸钠的步数
     static double caosuannaVolume = 10.0;       //加草酸钠的体积
     static int gaomengsuanjiaStep = 5200;       //加高锰酸钾的步数
     static double gaomengsuanjiaVolume = 10.0;  //加高锰酸钾的体积
@@ -27,7 +27,7 @@ public class SysData {
     static double biaodingValue = 10.0;         //标定实验滴定高锰酸钾的量
     static double caosuannaCon = 0.01;          //草酸钠的浓度
     static double codVolue = 0;                 //测定的cod值
-    static int didingDeviation = 12;            //滴定误差，开始滴定到出液体加上滴定过量的值
+    static int didingDeviation = 720;            //开始滴定到出液体需要的步数
 
     //仪器运行状态
     static boolean isGetNetTime = false;        //是否已经获取到网络时间
@@ -89,7 +89,8 @@ public class SysData {
     static boolean statusD24EN = false;    //D24EN状态
 
     //仪器的试剂状态
-    static boolean isNotice = false;          //试剂量低是否报警
+    static boolean isEmptyPipeline = false;         //测定前是否清空取样管内的液体
+    static boolean isNotice = false;                //试剂量低是否报警
     static boolean liusuanStatus;                   //硫酸试剂量，true-有试剂，false-无试剂
     static boolean gaomengsuanjiaStatus;            //高锰酸钾试剂量，true-有试剂，false-无试剂
     static boolean caosuannaStatus;                 //草酸钠试剂量，true-有试剂，false-无试剂

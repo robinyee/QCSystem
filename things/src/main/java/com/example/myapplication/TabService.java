@@ -24,10 +24,10 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class TabService extends Fragment {
     private Switch aSwitchD1, aSwitchD2, aSwitchD3, aSwitchD4, aSwitchD5, aSwitchD6, aSwitchD7, aSwitchD8, aSwitchP1,
-            aSwitchP2, aSwitchH1, aSwitchB1, aSwitchLED, aSwitchV24, aSwitchDC1, aSwitchRE1, aSwitchDC2, aSwitchRE2;
+            aSwitchP2, aSwitchP3, aSwitchH1, aSwitchLED, aSwitchV24, aSwitchDC1, aSwitchRE1, aSwitchDC2, aSwitchRE2;
     private Switch aSwitchS1, aSwitchS2, aSwitchS3, aSwitchS4, aSwitchS5, aSwitchS6, aSwitchS7, aSwitchS8,
             aSwitchS9, aSwitchS10, aSwitchS11, aSwitchS12;
-    private Switch aSwitchIn1, aSwitchIn2, aSwitchIn3, aSwitchIn4, aSwitchIsNotice;
+    private Switch aSwitchIn1, aSwitchIn2, aSwitchIn3, aSwitchIn4, aSwitchIsNotice, aSwitchIsEmptyPipeline;
 
     //获取线程发送的Msg信息，更新对于UI界面
     static final int UI_UPDATE = 100;
@@ -60,8 +60,8 @@ public class TabService extends Fragment {
             aSwitchD8.setChecked(SysGpio.mGpioOutD8.getValue());
             aSwitchP1.setChecked(SysGpio.mGpioOutP1.getValue());
             aSwitchP2.setChecked(SysGpio.mGpioOutP2.getValue());
+            aSwitchP3.setChecked(SysGpio.mGpioOutP3.getValue());
             aSwitchH1.setChecked(SysGpio.mGpioOutH1.getValue());
-            aSwitchB1.setChecked(SysGpio.mGpioOutB1.getValue());
             aSwitchLED.setChecked(SysGpio.mGpioOutLED.getValue());
             aSwitchV24.setChecked(SysGpio.mGpioOut24V.getValue());
             aSwitchDC1.setChecked(SysGpio.mGpioOutDC1.getValue());
@@ -108,8 +108,8 @@ public class TabService extends Fragment {
         aSwitchD8 = (Switch) view.findViewById(R.id.d8);
         aSwitchP1 = (Switch) view.findViewById(R.id.p1);
         aSwitchP2 = (Switch) view.findViewById(R.id.p2);
+        aSwitchP3 = (Switch) view.findViewById(R.id.p3);
         aSwitchH1 = (Switch) view.findViewById(R.id.h1);
-        aSwitchB1 = (Switch) view.findViewById(R.id.b1);
         aSwitchLED = (Switch) view.findViewById(R.id.led);
         aSwitchV24 = (Switch) view.findViewById(R.id.v24);
         aSwitchDC1 = (Switch) view.findViewById(R.id.dc1);
@@ -137,8 +137,10 @@ public class TabService extends Fragment {
         aSwitchIn3 = (Switch) view.findViewById(R.id.switchIn3);
         aSwitchIn4 = (Switch) view.findViewById(R.id.switchIn4);
         aSwitchIsNotice = (Switch) view.findViewById(R.id.switchIsNotice);
+        aSwitchIsEmptyPipeline = (Switch) view.findViewById(R.id.switchIsEmptyPipeline);
         //当前状态显示
         aSwitchIsNotice.setChecked(SysData.isNotice);
+        aSwitchIsEmptyPipeline.setChecked(SysData.isEmptyPipeline);
 
         //刷新界面信息
         message = handlerUpdate.obtainMessage(UI_UPDATE);
@@ -270,24 +272,24 @@ public class TabService extends Fragment {
             }
         });
 
-        //SwitchH1按钮点击
-        aSwitchH1.setOnClickListener(new View.OnClickListener() {
+        //SwitchB1按钮点击
+        aSwitchP3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    SysGpio.mGpioOutH1.setValue(aSwitchH1.isChecked());
+                    SysGpio.mGpioOutP3.setValue(aSwitchP3.isChecked());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        //SwitchB1按钮点击
-        aSwitchB1.setOnClickListener(new View.OnClickListener() {
+        //SwitchH1按钮点击
+        aSwitchH1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    SysGpio.mGpioOutB1.setValue(aSwitchB1.isChecked());
+                    SysGpio.mGpioOutH1.setValue(aSwitchH1.isChecked());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -462,11 +464,30 @@ public class TabService extends Fragment {
             }
         });
 
+        //SwitchS12紧急停止按钮点击
+        aSwitchS12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS12.isChecked() && !SysGpio.statusS12) {
+                    SysGpio.s12_Stop();
+                }
+            }
+        });
+
         //SwitchIsNotice按钮点击
         aSwitchIsNotice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SysData.isNotice = aSwitchIsNotice.isChecked();
+                saveMeterParameter();
+            }
+        });
+
+        //SwitchIsEmptyPipeline按钮点击
+        aSwitchIsEmptyPipeline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SysData.isEmptyPipeline = aSwitchIsEmptyPipeline.isChecked();
                 saveMeterParameter();
             }
         });
@@ -479,7 +500,10 @@ public class TabService extends Fragment {
         //打开文件
         final SharedPreferences.Editor editor = getActivity().getSharedPreferences("Parameter", MODE_PRIVATE).edit();
         editor.putBoolean("isNotice", SysData.isNotice);
+        editor.putBoolean("isEmptyPipeline", SysData.isEmptyPipeline);
+
         Log.i("参数存储", "试剂量报警已存储" + SysData.isNotice);
+        Log.i("参数存储", "试剂量报警已存储" + SysData.isEmptyPipeline);
         //提交保存
         editor.apply();
     }

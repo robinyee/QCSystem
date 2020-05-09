@@ -106,7 +106,7 @@ public class UartCom {
                 while ((read = mUartDevice.read(buffer, buffer.length)) > 0) {
                     System.arraycopy(buffer, 0, data, num, read);
                     num = num + read;
-                    Log.v(TAG,"本次读取的数据长度：" + read);
+                    //Log.v(TAG,"本次读取的数据长度：" + read);
                     Thread.sleep(10);
                     /*
                     String text = new String(buffer, 0, read);
@@ -122,9 +122,9 @@ public class UartCom {
                     //mUartDevice.write(srtbyte, srtbyte.length);
                 }
                 //显示数据包的数据
-                Log.v(TAG,"数据包长度：" + num);
+                //Log.v(TAG,"数据包长度：" + num);
                 for(int i = 0; i < num; i++){
-                    Log.v(TAG,i + ":" + data[i]);
+                    //Log.v(TAG,i + ":" + data[i]);
                 }
                 //去除数据数组的空值，解析数据
                 byte[] backData = new byte[num];
@@ -147,41 +147,42 @@ public class UartCom {
 
     //接收的byte[]数据解析
     public void byteArrayToData(byte[] b, int num) {
-        if(num == 12) {
-            if (b[0] == (byte) 0xcc && b[11] == (byte) 0xdd) {
-                Log.w(TAG, "扩展板数据");
-                Log.w(TAG, "数据长度：" + b.length);
+        //Log.w(TAG, "数据长度：" + b.length);
+        if(num == 13) {
+            if (b[0] == (byte) 0xcc && b[11] == (byte) 0xdd && b[12] == (byte) 0xff) {
+                //Log.w(TAG, "扩展板数据");
+                //Log.w(TAG, "数据长度：" + b.length);
                 int temp_in, temp_out;
-                if (b[1] == 0x03 && num == 12) {
-                    Log.w(TAG, "扩展版数据");
+                if (b[1] == 0x10 && num == 13) {
+                    //Log.w(TAG, "扩展版数据");
                     temp_in = b[4] & 0xFF | (b[3] & 0xFF) << 8;
                     SysData.tempIn = ((double) temp_in) / 10;
-                    Log.w(TAG, "反应液温度：" + SysData.tempIn);
+                    //Log.w(TAG, "反应液温度：" + SysData.tempIn);
                     temp_out = b[6] & 0xFF | (b[5] & 0xFF) << 8;
                     SysData.tempOut = ((double) temp_out) / 10;
-                    Log.w(TAG, "加热器温度：" + SysData.tempOut);
+                    //Log.w(TAG, "加热器温度：" + SysData.tempOut);
                     SysData.adLight = b[8] & 0xFF | (b[7] & 0xFF) << 8;
-                    Log.w(TAG, "反应器光电值：" + SysData.adLight);
+                    //Log.w(TAG, "反应器光电值：" + SysData.adLight);
                     SysData.adBack = b[10] & 0xFF | (b[9] & 0xFF) << 8;
-                    Log.w(TAG, "备用模拟量值：" + SysData.adBack);
+                    //Log.w(TAG, "备用模拟量值：" + SysData.adBack);
                 }
             }
         }
         if(num == 8) {
             //校验返回的数据是否出错
             boolean result = checkData(b, 2);
-            Log.w(TAG, "数据检验：" + result);
+            //Log.w(TAG, "数据检验：" + result);
             if (result) {
                 int i = (int) b[1];
                 SysData.Pump[i] = b[2];  //写入泵的状态
-                Log.w(TAG, i + "号泵状态：" + SysData.Pump[i]);
+                //Log.w(TAG, i + "号泵状态：" + SysData.Pump[i]);
             }
         }
     }
 
     //采集模拟量值
     public void getAd(){
-        byte bytes[] = new byte[]{(byte) 0xCC, (byte) 0x03, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
+        byte bytes[] = new byte[]{(byte) 0xCC, (byte) 0x10, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0xDD};
         sendBytes(bytes, true, 2);
     }
 
@@ -226,14 +227,14 @@ public class UartCom {
         System.arraycopy(bytes, 0, newBytes, 0, bytes.length - num);
         System.arraycopy(bytes, bytes.length - num, sumBytes, 0, num);
         byte result[] = SumCheck(newBytes, num);
-        Log.w(TAG, "校验结果：" + result[0] + " " + result[1]);
+        //Log.w(TAG, "校验结果：" + result[0] + " " + result[1]);
         for(int i=0; i<num; i++){
             if(result[i] != sumBytes[i]) {
-                Log.w(TAG, "校验出错" );
+                //Log.w(TAG, "校验出错" );
                 return false;
             }
         }
-        Log.w(TAG, "校验正确" );
+        //Log.w(TAG, "校验正确" );
         return true;
     }
 
@@ -242,7 +243,7 @@ public class UartCom {
         byte[] srtbyte = text.getBytes();
         try {
             mUartDevice.write(srtbyte, srtbyte.length);
-            Log.w(TAG, "已发送数据：" + text);
+            //Log.w(TAG, "已发送数据：" + text);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -267,8 +268,8 @@ public class UartCom {
         }
         try {
             mUartDevice.write(bytes, bytes.length);
-            Log.v(TAG, "已发送数据:" + bytes[0] + " " + bytes[1]  + " " + bytes[2] + " " + bytes[3] + " " + bytes[4]
-                    + " " + bytes[5]  + " " + bytes[6] + " " + bytes[7]);
+            //Log.v(TAG, "已发送数据:" + bytes[0] + " " + bytes[1]  + " " + bytes[2] + " " + bytes[3] + " " + bytes[4]
+            //+ " " + bytes[5]  + " " + bytes[6] + " " + bytes[7]);
 
             return bytes.length;
         } catch (IOException e) {

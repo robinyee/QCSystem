@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private TimeManager timeManager = TimeManager.getInstance();
     public static UartCom com0, com1;
     public static WebServer webServer;
+    public static WebSockets webSockets;
     public static AppDatabase db;   //数据库
 
     @Override
@@ -209,19 +210,24 @@ public class MainActivity extends AppCompatActivity {
     public static void startWebService() {
         //启动web服务
         webServer = new WebServer(SysData.webPort, mainApplication);
+        webSockets = new WebSockets(SysData.webPort + 1, mainApplication);
         try {
             webServer.start();
+            webSockets.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
         SysData.webServiceFlag = true;
-        Log.i("MainActivity", "WEB服务启动：" + SysData.webServiceFlag);
+        Log.i("MainActivity", "WEB服务已启动");
+        Log.i("MainActivity", "WebHttp服务 http://" + SysData.webIPAddr + ":" + SysData.webPort);
+        Log.i("MainActivity", "WebSocket服务 ws://" + SysData.webIPAddr + ":" +(SysData.webPort + 1));
     }
 
     //关闭Web服务
     public static void stopWebService() {
         //启动web服务
         webServer.stop();
+        webSockets.stop();
         SysData.webServiceFlag = false;
         Log.i("MainActivity", "WEB服务停止：" + SysData.webServiceFlag);
     }
@@ -473,6 +479,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.startCycle = sp.getInt("startCycle", 0);
         SysData.numberTimes = sp.getInt("numberTimes", 0);
         SysData.isNotice = sp.getBoolean("isNotice", false);
+        SysData.isEmptyPipeline = sp.getBoolean("isEmptyPipeline", false);
         SysData.adminPassword = sp.getString("adminPassword", "nsy218");
         //Log.i("读取参数", "试剂量报警信息" + SysData.isNotice);
     }
@@ -519,7 +526,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 do {
-                    //定时启动程序
+                    //定时启动程序，运行次数为999以上时，仪器一直定时运行不会停止。
                     long dtime = System.currentTimeMillis() - SysData.nextStartTime;
                     //定时启动测定程序
                     if(SysData.isLoop && !SysData.isRun && dtime > 0 && dtime < 10000 && SysData.numberTimes > 0) {
@@ -530,6 +537,21 @@ public class MainActivity extends AppCompatActivity {
                         SysData.nextStartTime = SysData.nextStartTime + SysData.startCycle * 3600 * 1000;
                         Log.i("MainActivity", "当前时间：" + System.currentTimeMillis() + " 下次启动时间：" + SysData.nextStartTime);
                         SysData.numberTimes = (SysData.numberTimes >= 999) ? 999 : SysData.numberTimes - 1;
+                        SysData.isUpdateTimes = true;
+                    }
+                    //循环运行，周期值为0，次数次数
+                    if(SysData.isLoop && !SysData.isRun && SysData.startCycle == 0 && SysData.numberTimes > 0) {
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //启动测定流程
+                        SysGpio.s7_ShuiZhiCeDing();
+                        SysData.statusMsg = "启动测定程序";
+                        SysData.isRun = true;
+                        SysData.nextStartTime = System.currentTimeMillis();
+                        SysData.numberTimes = SysData.numberTimes - 1;
                         SysData.isUpdateTimes = true;
                     }
                     try {
