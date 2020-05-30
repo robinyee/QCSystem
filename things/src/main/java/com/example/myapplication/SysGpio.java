@@ -313,63 +313,66 @@ public class SysGpio {
                     }
 
                     //低于设置温度，开启加热器
-                    if(SysData.tempIn < (temp)) {
+                    if((SysData.tempIn < temp &&  SysData.tempOut < (temp + 3)) || SysData.tempOut < temp) {
                         try {
                             mGpioOutH1.setValue(true);
                             Log.d(TAG, "run: 开始加热");
+                            //等待5S
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
                     //高于设置温度，关闭加热器
-                    if(SysData.tempIn > (temp)) {
+                    if(SysData.tempIn > temp || (SysData.tempIn > (temp - 1) && SysData.tempOut > (temp + 3))) {
+                        try {
+                            mGpioOutH1.setValue(false);
+                            Log.d(TAG, "run: 停止加热");
+                            //等待5S
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+/*
+                    //温度高于75度，间断加热
+                    if(SysData.tempIn > 75 && SysData.tempOut > 120) {
                         try {
                             mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
-                    //等待10S
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    //温度高于70度，间断加热
-                    if(SysData.tempIn > 70 && SysData.tempOut > 120) {
-                        try {
-                            mGpioOutH1.setValue(false);
-                            Log.d(TAG, "run: 停止加热");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        //等待30S
+                        //等待20S
                         try {
                             Thread.sleep(20000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
-
-
+*/
                     //温度高于85度，间断加热
-                    if(SysData.tempIn > 85 && SysData.tempOut > 110) {
+                    if(SysData.tempIn > 85 && SysData.tempOut > 120) {
                         try {
                             mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        //等待60S
-                        try {
-                            Thread.sleep(60000);
-                        } catch (InterruptedException e) {
+                            Thread.sleep(10000);
+                            mGpioOutH1.setValue(true);
+                            Log.d(TAG, "run: 开始加热");
+                            Thread.sleep(5000);
+                        } catch (IOException | InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
+
                     //温度高于90度，间断加热
                     if(SysData.tempIn > 90 && SysData.tempOut > 100) {
                         try {
@@ -378,15 +381,15 @@ public class SysGpio {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        //等待60S
+                        //等待20S
                         try {
-                            Thread.sleep(60000);
+                            Thread.sleep(10000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                     //加热器温度大于150度，停止加热
-                    if(SysData.tempOut > 150 || SysData.tempIn > 95) {
+                    if(SysData.tempIn > 98 || SysData.tempOut > 150) {
                         try {
                             mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");
@@ -973,7 +976,7 @@ public class SysGpio {
                 SysGpio.readAd();
                 Log.d(TAG, "run: 滴定线程开始");
                 statusS6 = true;
-                int Difference = 10;  //滴定时模拟量下降的值大于这个差值判定为滴定终点
+                int Difference = 20;  //滴定时模拟量下降的值大于这个差值判定为滴定终点
 
                 //记录初始光电值，取10次采样的平均值
                 int light = 0;
@@ -1056,11 +1059,11 @@ public class SysGpio {
                         MainActivity.com0.getAd();
                         Thread.sleep(1600);
                         //如果光电值降低5以上，等待10S
-                        if((SysData.startAdLight - SysData.adLight) >= Difference){
+                        if((SysData.startAdLight - SysData.adLight) >= (Difference / 2) ){
                             //读取温度
                             SysGpio.readTempFlag = true;
                             SysGpio.readAd();
-                            Thread.sleep(100);
+                            Thread.sleep(1000);
                             //取10次采样的平均值
                             light = 0;
                             for(int i = 0; i < 10; i++) {
@@ -1073,7 +1076,7 @@ public class SysGpio {
                                 light = light + SysData.adLight;
                                 endAdLight = light / (i + 1);
                             }
-                            if((SysData.startAdLight - endAdLight) >= Difference) {
+                            if((SysData.startAdLight - endAdLight) >= Difference ) {
                                 Thread.sleep(20000);
                                 //取10次采样的平均值
                                 light = 0;
@@ -1461,11 +1464,21 @@ public class SysGpio {
                 SysData.statusMsg = "准备滴定";
                 //启动温度控制
                 SysGpio.tempControlFlag = true;
-                SysGpio.tempControl(60);
+                SysGpio.tempControl(90);  //滴定时温度控制在90度
 
                 //等待60S
                 try {
                     Thread.sleep(60000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                //启动温度控制
+                SysGpio.tempControlFlag = true;
+                SysGpio.tempControl(60);  //滴定时温度控制在60度
+                //等待10S
+                try {
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

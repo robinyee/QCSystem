@@ -60,7 +60,7 @@ public class TabSetup extends Fragment {
     private TextView txtTempIn, txtTempOut, txtAdLight, txtAdLight1, txtDidingNum, txtDidingSumVolume;
     private TextView txtXiaoJieStart, txtXiaoJieLave, txtSysDate, txtSysTime, wifiName, txtStarttime, txtEndtime;
     private long lave = 0; //剩余消解时间
-    private Button buttonSetupWeb, buttonSaveData,buttonSetupWifi, timeSetup;
+    private Button buttonSetupWeb, buttonSaveData,buttonSetupWifi, timeSetup, stopSys;
     //private ImageButton buttonSetupWifi, timeSetup;
     private TimeManager timeManager = TimeManager.getInstance();
     private TextView httpAddr, localIp;
@@ -73,6 +73,7 @@ public class TabSetup extends Fragment {
     private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
     private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
     private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon, editDidingDeviation, editAdminPassword;
+    private EditText editCom0, editCom1;
     private RadioGroup radioGroup;
     private TableLayout tableParameter;
     private int passType;
@@ -131,6 +132,8 @@ public class TabSetup extends Fragment {
                 Log.i("变更自动运行参数", "isUpdateTimes：" + SysData.isUpdateTimes);
                 Log.i("变更自动运行参数", "numberTimes：" + SysData.numberTimes);
                 Log.i("变更自动运行参数", "页面显示：" +editNumberTimes.getText().toString());
+            } else {
+                SysData.isUpdateTimes = false;
             }
         }
     }
@@ -158,6 +161,7 @@ public class TabSetup extends Fragment {
         buttonSetupWeb = view.findViewById(R.id.setupweb);
         buttonSetupWifi = view.findViewById(R.id.setupwifi);
         buttonSaveData = view.findViewById(R.id.saveData);
+        stopSys = view.findViewById(R.id.stopSys);
         //系统参数
         editSsid = view.findViewById(R.id.editssid);
         editPass = view.findViewById(R.id.editwifipassword);
@@ -168,6 +172,9 @@ public class TabSetup extends Fragment {
         editNumberTimes = view.findViewById(R.id.numberTimes);
         switchIsLoop = view.findViewById(R.id.isLoop);
         editAdminPassword = view.findViewById(R.id.editAdminPassword);
+        editCom0 = view.findViewById(R.id.editCom0);
+        editCom1 = view.findViewById(R.id.editCom1);
+
         //仪表参数
         editShuiyangStep = view.findViewById(R.id.editShuiyangStep);
         editShuiyangVolume = view.findViewById(R.id.editShuiyangVolume);
@@ -188,6 +195,14 @@ public class TabSetup extends Fragment {
         //更多参数显示
         moreParameter = view.findViewById(R.id.moreParameter);
         tableParameter = view.findViewById(R.id.tableParameter);
+
+        //显示出口通讯名称
+        if(SysData.deviceList.size() >= 2) {
+            editCom0.setText(SysData.deviceList.get(1));
+        }
+        if(SysData.deviceList.size() >= 3) {
+            editCom1.setText(SysData.deviceList.get(2));
+        }
 
         //更新网络TextView信息
         setNetTxtInfo();
@@ -450,6 +465,14 @@ public class TabSetup extends Fragment {
                     isGone = true;
                 }
 
+            }
+        });
+
+        //点击设置系统参数按钮
+        stopSys.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showStopSysDialog();
             }
         });
 
@@ -739,4 +762,38 @@ public class TabSetup extends Fragment {
                 });
         altDialog.show();
     }
+
+
+    //按下系统参数时显示对话框
+    private void showStopSysDialog(){
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder altDialog = new AlertDialog.Builder(getActivity());
+        altDialog.setIcon(R.drawable.ic_error_black_24dp);
+        altDialog.setTitle("系统参数");
+        altDialog.setMessage("确定要进入系统参数设置吗？");
+        altDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //退出APP
+                        Log.i("MainActivity", "退出应用程序");
+                        System.exit(0);
+                    }
+                });
+        altDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+
+                    }
+                });
+        // 显示
+        altDialog.show();
+    }
+
 }

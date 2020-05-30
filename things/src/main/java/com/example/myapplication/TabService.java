@@ -314,6 +314,14 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOut24V.setValue(aSwitchV24.isChecked());
+                    if(aSwitchV24.isChecked() && SysData.isRun == false) {
+                        //开始读取模拟量
+                        SysGpio.readTempFlag = true;
+                        SysGpio.readAd();
+                    } else {
+                        //停止读取模拟量
+                        SysGpio.readTempFlag = false;
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

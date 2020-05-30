@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.google.android.things.pio.Gpio;
 import com.google.android.things.pio.GpioCallback;
+import com.google.android.things.pio.PeripheralManager;
 import com.instacart.library.truetime.TrueTime;
 
 import java.io.File;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public static WebServer webServer;
     public static WebSockets webSockets;
     public static AppDatabase db;   //数据库
+    PeripheralManager manager = PeripheralManager.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,15 +103,23 @@ public class MainActivity extends AppCompatActivity {
             setSysTime();
         }
 
-        //打开串口通讯
-        com0 = new UartCom("UART0", 9600, 8, 1);// "UART0"为TLL串口
-        com0.openUart();
-
-        /*
-        //打开串口通讯
-        com1 = new UartCom("USB1-1.4:1.0", 9600, 8, 1);// "USB1-1.4:1.0"为U转串接口
-        com1.openUart();
-         */
+        //打开出口通讯
+        SysData.deviceList = manager.getUartDeviceList();
+        if (SysData.deviceList.isEmpty()) {
+            Log.i(TAG, "No UART port available on this device.");
+        } else {
+            if(SysData.deviceList.size() >= 2) {
+                //打开串口0通讯
+                com0 = new UartCom(SysData.deviceList.get(1), 9600, 8, 1);// 为TLL串口
+                com0.openUart();
+            }
+            if(SysData.deviceList.size() >= 3) {
+                //打开串口1通讯
+                com1 = new UartCom(SysData.deviceList.get(2), 9600, 8, 1);// 为U转串接口
+                com1.openUart();
+                com1.testCRC32("00000");   //测试CRC32校验函数
+            }
+        }
 
         //打开并初始化Gpio端口
         SysGpio.gpioInit();
@@ -203,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         SysGpio.gpioClose(); //关闭GPIO并注销
+        com0.closeUart();   //关闭com0串口通信
         com1.closeUart();   //关闭com1串口通信
     }
 
@@ -502,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         saveMeterStatus();  //仪器运行时定时保存仪器状态数据
                         try {
-                            Thread.sleep(60000);  //10秒后保存数据，能记录isRun的false状态
+                            Thread.sleep(60000);  //60秒后保存数据，能记录isRun的false状态
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -513,6 +524,16 @@ public class MainActivity extends AppCompatActivity {
                         if (SysData.gaomengsuanjiaStatus) SysData.errorMsg = "高锰酸钾试剂量低";
                         if (SysData.caosuannaStatus) SysData.errorMsg = "草酸钠试剂量低";
                         if (SysData.zhengliushuiStatus) SysData.errorMsg = "蒸馏水试剂量低";
+                    }
+                    //加热器温度大于150度，反应器内温度高于100度，停止加热并报警
+                    if(SysData.tempOut > 150 || SysData.tempIn > 110) {
+                        try {
+                            SysGpio.mGpioOutH1.setValue(false);
+                            Log.d(TAG, "run: 停止加热");
+                            SysData.errorMsg = "反应器温度过高";
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 } while (true);
             }
@@ -539,7 +560,7 @@ public class MainActivity extends AppCompatActivity {
                         SysData.numberTimes = (SysData.numberTimes >= 999) ? 999 : SysData.numberTimes - 1;
                         SysData.isUpdateTimes = true;
                     }
-                    //循环运行，周期值为0，次数次数
+                    //循环运行，周期值设为0，次数设为需要运行的次数
                     if(SysData.isLoop && !SysData.isRun && SysData.startCycle == 0 && SysData.numberTimes > 0) {
                         try {
                             Thread.sleep(3000);
@@ -551,7 +572,7 @@ public class MainActivity extends AppCompatActivity {
                         SysData.statusMsg = "启动测定程序";
                         SysData.isRun = true;
                         SysData.nextStartTime = System.currentTimeMillis();
-                        SysData.numberTimes = SysData.numberTimes - 1;
+                        SysData.numberTimes = (SysData.numberTimes > 0) ? SysData.numberTimes - 1 : 0;
                         SysData.isUpdateTimes = true;
                     }
                     try {

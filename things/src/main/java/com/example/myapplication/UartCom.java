@@ -9,12 +9,15 @@ import com.google.android.things.pio.UartDeviceCallback;
 
 import java.io.IOException;
 
+import static com.example.myapplication.CRC16.getCRC16;
+import static com.example.myapplication.CRC32.getCRC32;
+
 public class UartCom {
     private String TAG = "UartCom";
-    private String UART_DEVICE_NAME = "UART0";
-    private int BAUD_RATE = 115200;
-    private int DATA_BITS = 8;
-    private int STOP_BITS = 1;
+    private String UART_DEVICE_NAME;
+    private int BAUD_RATE;
+    private int DATA_BITS;
+    private int STOP_BITS;
     private int CHUNK_SIZE = 256;
     private UartDevice mUartDevice;
     private String backMsg;
@@ -304,6 +307,20 @@ public class UartCom {
         return mByte;
     }
 
+    public void testCRC32(String str) {
+        //String str = "00000";
+        //System.out.println("CRC32:"+getCRC32(str));
+        Log.w(TAG, "String:" + str);
+        Log.w(TAG, "CRC32:" + getCRC32(str));
+        java.util.zip.CRC32 crc32 = new java.util.zip.CRC32();
+        crc32.update(str.getBytes());
+        //System.out.println("CRC32:"+Long.toHexString(crc32.getValue()));
+        Log.w(TAG, "String:" + str);
+        Log.w(TAG, "CRC32:" + Long.toHexString(crc32.getValue()));
+        Log.w(TAG, "String:" + str);
+        Log.w(TAG, "CRC16:" + getCRC16(str));
+    }
+
     //关闭通讯端口
     public void closeUart() {
         if (mUartDevice != null) {
@@ -317,3 +334,4 @@ public class UartCom {
     }
 
 }
+

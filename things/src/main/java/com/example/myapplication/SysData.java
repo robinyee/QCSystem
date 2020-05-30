@@ -62,6 +62,7 @@ public class SysData {
     static int numberTimes = 0;                 //启动次数
     static boolean isUpdateTimes = false;       //是否需要更新自动启动信息
     static String adminPassword = "nsy218";     //管理员密码
+    static List<String> deviceList;             //串口通讯名称列表
 
     //仪器数据
     static List<Result> results = null;         //仪表测定结果数据
@@ -100,7 +101,7 @@ public class SysData {
         double k = 10.0 / biaodingValue;
         didingSumVolume = didingNum * didingVolume;
         didingSumVolume = (double)Math.round(didingSumVolume*100)/100;  //取小数点后两位
-        codVolue = ((gaomengsuanjiaVolume + didingSumVolume) * k - caosuannaVolume) * caosuannaCon * 8 * 1000 /100;
+        codVolue = ((gaomengsuanjiaVolume + didingSumVolume) * k - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
         //codVolue = (didingSumVolume - kongbaiValue) * k * caosuannaCon * 16 * 1000 / shuiyangVolume;  //公式错误
         codVolue = (double)Math.round(codVolue*100)/100;  //取小数点后两位
         return codVolue;
@@ -132,6 +133,7 @@ public class SysData {
                 countData = MainActivity.db.resultDao().findResultCount();
                 maxPage = countData / numPerpage + 1;
                 rss = MainActivity.db.resultDao().getNum(num, start);
+                /*
                 for(Result result:rss) {
                     //result = results.get(0);
                     Log.i("数据记录", "id:" + result.rid);
@@ -139,6 +141,8 @@ public class SysData {
                     Log.i("数据记录", "type:" + result.dataType);
                     Log.i("数据记录", "value:" + result.dataValue);
                 }
+
+                 */
                 results = rss;
             }
         }).start();
