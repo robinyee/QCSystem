@@ -635,7 +635,8 @@ public class TabSetup extends Fragment {
                         calendar.set(Calendar.SECOND, 0);
                         newDate = calendar.getTime();
                         if(type.equals("SetTime")) {
-                            timeManager.setTime(newDate.getTime());
+                            timeManager.setTime(newDate.getTime());  //设置系统时间
+                            MainActivity.setDs3231Time();  //设置DS3231时间
                         }
                         if(type.equals("AutoTime")) {
                             SysData.nextStartTime = newDate.getTime();

@@ -3,10 +3,8 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 import androidx.viewpager.widget.ViewPager;
-
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.things.device.TimeManager;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -28,12 +26,10 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.google.android.things.pio.Gpio;
 import com.google.android.things.pio.GpioCallback;
 import com.google.android.things.pio.PeripheralManager;
 import com.instacart.library.truetime.TrueTime;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -51,8 +47,15 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
-
 import static android.content.ContentValues.TAG;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -70,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initData();   //初始化异常捕获
         setContentView(R.layout.activity_main);
+
+        //读取DS3231时间
+        getDs3231Time();
 
         //打开数据库
         db = Room.databaseBuilder(getApplicationContext(),
@@ -171,6 +177,72 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //获取Ds3231时间
+    private void getDs3231Time() {
+        Date sysDate, ds3231Date, startDate;
+        Ds3231 device;
+        try {
+            Log.d(TAG, "开始读取DS3231时间");
+            device = new Ds3231(BoardDefaults.getI2CPort());
+            Log.d(TAG, "isTimekeepingDataValid = " + device.isTimekeepingDataValid());
+            Log.d(TAG, "isOscillatorEnabled = " + device.isOscillatorEnabled());
+            //读取原系统时间
+            sysDate = new Date(System.currentTimeMillis());
+            Log.d(TAG, "原系统时间 = " + sysDate.toString());
+            Log.d(TAG, "Ds3231时间 = " + device.getTime().getTime());
+            //初始时间
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(2020, Calendar.JANUARY, 1);
+            startDate = calendar.getTime();
+            Log.d(TAG, "初始时间 = " + startDate.toString());
+            //DS3231时间
+            ds3231Date = new Date(device.getTime().getTime());
+            //设置系统时间
+            if(ds3231Date.getTime() > startDate.getTime()) {
+                timeManager.setTime(ds3231Date.getTime());
+            } else if(sysDate.getTime() < startDate.getTime()) {
+                timeManager.setTime(startDate.getTime());
+            }
+            //设置后的时间
+            Log.d(TAG, "Ds3231时间 = " + device.getTime().toString());
+            Log.d(TAG, "Ds3231温度 = " + device.readTemperature());
+            sysDate = new Date(System.currentTimeMillis());
+            Log.d(TAG, "新系统时间 = " + sysDate.toString());
+
+            // Close the device.
+            device.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Error while opening screen", e);
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    //设置Ds3231时间
+    public static void setDs3231Time() {
+        Date date;
+        Ds3231 device;
+        try {
+            Log.d(TAG, "开始设置DS3231时间");
+            device = new Ds3231(BoardDefaults.getI2CPort());
+            Log.d(TAG, "isTimekeepingDataValid = " + device.isTimekeepingDataValid());
+            Log.d(TAG, "isOscillatorEnabled = " + device.isOscillatorEnabled());
+
+            date = new Date(System.currentTimeMillis());
+            device.setTime(date);
+            Log.d(TAG, "系统时间 = " + date.toString());
+            Log.d(TAG, "DS3231时间 = " + device.getTime().toString());
+            Log.d(TAG, "DS3231温度 = " + device.readTemperature());
+
+            // Close the device.
+            device.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Error while opening screen", e);
+            throw new RuntimeException(e);
+        }
+
     }
 
     //当输入端口状态改变时调用，记录试剂状态
@@ -399,6 +471,7 @@ public class MainActivity extends AppCompatActivity {
                         timeManager.setTime(date.getTime());
                         isOK = max;
                         SysData.isGetNetTime = true;
+                        setDs3231Time(); //设置DS3231时间
                     } else {
                         isOK = isOK + 1;
                     }
