@@ -782,7 +782,7 @@ public class TabSetup extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         //退出APP
                         Log.i("MainActivity", "退出应用程序");
-                        System.exit(0);
+                        //System.exit(0);
                     }
                 });
         altDialog.setNegativeButton("取消",

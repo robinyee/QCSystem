@@ -74,8 +74,16 @@ public class MainActivity extends AppCompatActivity {
         initData();   //初始化异常捕获
         setContentView(R.layout.activity_main);
 
+        //加载Tab页面
+        loadTabPager();
+
         //读取DS3231时间
         getDs3231Time();
+
+        //第一次运行获取网络时间，每天零时网络校时
+        if (!SysData.isGetNetTime) {
+            setSysTime();
+        }
 
         //打开数据库
         db = Room.databaseBuilder(getApplicationContext(),
@@ -101,13 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
          */
 
-        //加载Tab页面
-        loadTabPager();
 
-        //第一次运行获取网络时间，每天零时网络校时
-        if (!SysData.isGetNetTime) {
-            setSysTime();
-        }
 
         //打开出口通讯
         SysData.deviceList = manager.getUartDeviceList();
@@ -188,25 +190,33 @@ public class MainActivity extends AppCompatActivity {
             device = new Ds3231(BoardDefaults.getI2CPort());
             Log.d(TAG, "isTimekeepingDataValid = " + device.isTimekeepingDataValid());
             Log.d(TAG, "isOscillatorEnabled = " + device.isOscillatorEnabled());
-            //读取原系统时间
-            sysDate = new Date(System.currentTimeMillis());
-            Log.d(TAG, "原系统时间 = " + sysDate.toString());
-            Log.d(TAG, "Ds3231时间 = " + device.getTime().getTime());
+
             //初始时间
             Calendar calendar = Calendar.getInstance();
             calendar.set(2020, Calendar.JANUARY, 1);
             startDate = calendar.getTime();
             Log.d(TAG, "初始时间 = " + startDate.toString());
-            //DS3231时间
-            ds3231Date = new Date(device.getTime().getTime());
-            //设置系统时间
-            if(ds3231Date.getTime() > startDate.getTime()) {
-                timeManager.setTime(ds3231Date.getTime());
-            } else if(sysDate.getTime() < startDate.getTime()) {
-                timeManager.setTime(startDate.getTime());
+
+            //如果时间保存数据有效读取DS3231时间
+            if(device.isTimekeepingDataValid()) {
+                //DS3231时间
+                ds3231Date = new Date(device.getTime().getTime());
+            } else {
+                ds3231Date = startDate;
             }
+            Log.d(TAG, "Ds3231时间 = " + ds3231Date.getTime());
+
+            //读取原系统时间
+            sysDate = new Date(System.currentTimeMillis());
+            Log.d(TAG, "原系统时间 = " + sysDate.toString());
+
+            //设置系统时间
+            if(ds3231Date.getTime() > sysDate.getTime()) {
+                timeManager.setTime(ds3231Date.getTime());
+            }
+
             //设置后的时间
-            Log.d(TAG, "Ds3231时间 = " + device.getTime().toString());
+            Log.d(TAG, "Ds3231时间 = " + ds3231Date.toString());
             Log.d(TAG, "Ds3231温度 = " + device.readTemperature());
             sysDate = new Date(System.currentTimeMillis());
             Log.d(TAG, "新系统时间 = " + sysDate.toString());
