@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-CN" class="h-100">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.0.1">
+	<link rel="icon" href="favicon.ico">
+    <title>高锰酸盐指数在线分析仪</title>
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://cdn.staticfile.org/vue/2.2.6/vue.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>-->
+	<script src="https://cdn.bootcdn.net/ajax/libs/feather-icons/4.9.0/feather.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>-->
+	<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>-->
+	<!--<script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="bootstrap.bundle.js"></script>-->
+	
+	<style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+    
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+	
+    <!-- Custom styles for this template -->
+    <link href="sticky-footer-navbar.css" rel="stylesheet">
+	<link href="jumbotron.css" rel="stylesheet">
+  </head>
+  <body class="d-flex flex-column h-100">
+  <!-- Fixed navbar -->
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+	  <div class="container-xl">
+    <a class="navbar-brand" href="index.html">高锰酸盐指数在线分析仪</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">首页 <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="data.html">数据查询</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="setup.html">仪表设置</a>
+        </li>
+		<li class="nav-item active">
+		  <a class="nav-link" href="service.html">系统服务</a>
+		</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+		  <li class="nav-item">
+		    <a class="nav-link" href="login.html">退出登录</a>
+		  </li>
+      </ul>
+    </div>
+	</div>
+  </nav>
+
+<div id="root">
+<!-- Begin page content -->
+<main role="main">
+	<!-- Main jumbotron for a primary marketing message or call to action -->
+	  <div class="jumbotron">
+	    <div class="container">
+	      <h3 class="display-5">系统服务</h3>
+	      <p class="lead">监测仪表运行状态、试剂余量、运行异常情况，远程启动仪表测量、试剂标定、仪表校准功能</p>
+	    </div>
+	  </div>
+
+	<div class="container">
+	    <!-- Example row of columns -->
+	    <div class="row">
+	        <div class="col-md-4">
+				<div class="card mb-3">
+				  <h5 class="card-header">试剂状态</h5>
+				  <div class="card-body">
+					<dl class="row">
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn1 ? 'btn btn-danger' : 'btn btn-success'">硫酸</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn2 ? 'btn btn-danger' : 'btn btn-success'">高锰酸钾</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn3 ? 'btn btn-danger' : 'btn btn-success'">草酸钠</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn4 ? 'btn btn-danger' : 'btn btn-success'">蒸馏水</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="isEmptyPipeline ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_isEmptyPipeline')" >量低报警</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="isNotice ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_isNotice')" >前置润洗</button></dd>
+					</dl>
+				  </div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="card mb-3">
+				  <h5 class="card-header">开关控制</h5>
+				  <div class="card-body">
+					<dl class="row">
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOut24V ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOut24V')" >总电源</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutH1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutH1')" >加热器</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutLED ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutLED')" >光源灯</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutP1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutP1')" >进样泵</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutP2 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutP2')" >注射泵1</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutP3 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutP3')" >注射泵2</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD1')" >电磁阀1</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD2 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD2')" >电磁阀2</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD3 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD3')" >电磁阀3</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD5 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD5')" >电磁阀5</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD6 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD6')" >电磁阀6</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD8 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD8')" >电磁阀8</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutDC1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutDC1')" >搅拌正转</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutRE1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutRE1')" >搅拌反转</button></dd>
+					</dl>
+				  </div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="card mb-3">
+				  <h5 class="card-header">测定流程</h5>
+				  <div class="card-body">
+					  <dl class="row">
+					    <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS1')" >进水样</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS2 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS2')" >加硫酸</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS3 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS3')" >加锰</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS4 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS4')" >加草酸钠</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS5 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS5')" >消解</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS6 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS6')" >滴定</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS7 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS7')" >水质测定</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS8 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('RUN_Reset')" >仪表复位</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS9 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS9')" >空白实验</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS10 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS10')" >试剂标定</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS11 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS11')" >仪表校准</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS12 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('RUN_Stop')" >紧急停止</button></dd>
+					  </dl>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+</main>
+</div>
+
+
+<footer class="footer mt-auto py-3">
+  <div class="container">
+    <span class="text-muted">&copy; 2020 江苏南水科技有限公司</span>
+  </div>
+</footer>
+
+      
+</body>
+
+<script src="format.js"></script>
+<script src="socketCod.js"></script>
+<!--<script src="dashboard.js"></script>-->
+
+<script>
+	//页面打开自动连接服务器
+	setInterval(function(){
+		if(!Vm.connected){
+			Vm.autoWsConnect();
+			console.log('连接服务器' + Vm.connected);
+		}
+	}, 500);
+	//自动发送心跳包
+	setInterval(function(){
+		Vm.heartBeatContent = "GPIO_Status";
+		if(Vm.connected){
+			if(!Vm.autoSend){
+				Vm.autoHeartBeat();
+				console.log('自动发送心跳包' + Vm.autoSend);
+			}
+		}
+	}, 1000);
+</script>
+
+
+</html>

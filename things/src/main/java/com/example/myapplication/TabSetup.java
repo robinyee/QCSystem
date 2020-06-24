@@ -73,7 +73,7 @@ public class TabSetup extends Fragment {
     private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
     private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
     private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon, editDidingDeviation, editAdminPassword;
-    private EditText editCom0, editCom1;
+    private EditText editCom0, editCom1, editCom1Addr, editCom1BaudRate;
     private RadioGroup radioGroup;
     private TableLayout tableParameter;
     private int passType;
@@ -174,6 +174,8 @@ public class TabSetup extends Fragment {
         editAdminPassword = view.findViewById(R.id.editAdminPassword);
         editCom0 = view.findViewById(R.id.editCom0);
         editCom1 = view.findViewById(R.id.editCom1);
+        editCom1Addr = view.findViewById(R.id.editComAddr);
+        editCom1BaudRate = view.findViewById(R.id.editComBaudRate);
 
         //仪表参数
         editShuiyangStep = view.findViewById(R.id.editShuiyangStep);
@@ -472,7 +474,9 @@ public class TabSetup extends Fragment {
         stopSys.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showStopSysDialog();
+                saveEditText();
+                saveMeterParameter();
+                showRebootSysDialog();
             }
         });
 
@@ -526,7 +530,8 @@ public class TabSetup extends Fragment {
         editor.putInt("startCycle", SysData.startCycle);
         editor.putInt("numberTimes", SysData.numberTimes);
         editor.putString("adminPassword", SysData.adminPassword);
-
+        editor.putInt("modbusAddr", SysData.MODBUS_ADDR);
+        editor.putInt("baudRate", SysData.BAUD_RATE);
         //提交保存
         editor.apply();
     }
@@ -552,6 +557,9 @@ public class TabSetup extends Fragment {
         SysData.didingDeviation = Integer.parseInt(editDidingDeviation.getText().toString());
         //系统参数
         SysData.adminPassword = editAdminPassword.getText().toString();
+        SysData.MODBUS_ADDR = Integer.parseInt(editCom1Addr.getText().toString());
+        SysData.BAUD_RATE = Integer.parseInt(editCom1BaudRate.getText().toString());
+
         /*
         //保存EditText的内容 -- 系统自动获取无需保存
         SysData.wifiSsid = editSsid.getText().toString();
@@ -582,6 +590,9 @@ public class TabSetup extends Fragment {
         editNumberTimes.setText(String.valueOf(SysData.numberTimes));
         switchIsLoop.setChecked(SysData.isLoop);
         editAdminPassword.setText(SysData.adminPassword);
+        editCom1Addr.setText(String.valueOf(SysData.MODBUS_ADDR));
+        editCom1BaudRate.setText(String.valueOf(SysData.BAUD_RATE));
+
         //填充仪表参数的内容
         editShuiyangStep.setText(String.valueOf(SysData.shuiyangStep));
         editShuiyangVolume.setText(String.valueOf(SysData.shuiyangVolume));
@@ -766,7 +777,7 @@ public class TabSetup extends Fragment {
 
 
     //按下系统参数时显示对话框
-    private void showStopSysDialog(){
+    private void showRebootSysDialog(){
         /* @setIcon 设置对话框图标
          * @setTitle 设置对话框标题
          * @setMessage 设置对话框消息提示
@@ -774,15 +785,15 @@ public class TabSetup extends Fragment {
          */
         final AlertDialog.Builder altDialog = new AlertDialog.Builder(getActivity());
         altDialog.setIcon(R.drawable.ic_error_black_24dp);
-        altDialog.setTitle("系统参数");
-        altDialog.setMessage("确定要进入系统参数设置吗？");
+        altDialog.setTitle("重新启动仪表");
+        altDialog.setMessage("确定要从新启动仪表吗？");
         altDialog.setPositiveButton("确定",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //退出APP
                         Log.i("MainActivity", "退出应用程序");
-                        //System.exit(0);
+                        System.exit(0);
                     }
                 });
         altDialog.setNegativeButton("取消",

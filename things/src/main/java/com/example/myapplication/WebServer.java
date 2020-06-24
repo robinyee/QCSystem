@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.Socket;
+
 import fi.iki.elonen.NanoHTTPD;
 
 class WebServer extends NanoHTTPD {
@@ -56,8 +56,14 @@ class WebServer extends NanoHTTPD {
         } else if (filename.contains(".png")) {
             mimetype = "image/png";
             is_ascii = false;
+        } else if (filename.contains(".ico")) {
+            mimetype = "image/x-icon";
+            is_ascii = false;
+        } else if (filename.contains(".svg")) {
+            mimetype = "image/svg";
+            is_ascii = false;
         } else {
-            filename = "index.html";
+            filename = "tools.html";
             mimetype = "text/html";
         }
 
@@ -69,7 +75,13 @@ class WebServer extends NanoHTTPD {
                 reader = new BufferedReader(new InputStreamReader(mainContext.getAssets().open(filename)));
 
                 while ((line = reader.readLine()) != null) {
-                    response += line;
+                    if(filename.equals("socket.js") && line.equals("        address: 'ws://127.0.0.1:9501',")){
+                        line = "        address: 'ws://" + SysData.webIPAddr + ":" + (SysData.webPort + 1) + "',";
+                    }
+                    if(filename.equals("socketCod.js") && line.equals("        address: 'ws://10.10.0.139:8081',")){
+                        line = "        address: 'ws://" + SysData.webIPAddr + ":" + (SysData.webPort + 1) + "',";
+                    }
+                    response = response + line + "\n";
                 }
                 reader.close();
             } catch (IOException e) {

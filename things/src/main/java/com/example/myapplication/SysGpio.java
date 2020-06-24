@@ -199,6 +199,18 @@ public class SysGpio {
         }
     }
 
+    //获取Gpio输出口的开关状态，端口名称，
+    public static boolean getGpioOut(Gpio  mGpioOut) {
+        boolean isOn = false;
+        try {
+            isOn = mGpioOut.getValue();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return isOn;
+    }
+
+
     //读取模拟量值
     public static void readAd() {
         //Log.d(TAG, "run: 开始读取模拟量数据");
@@ -413,6 +425,7 @@ public class SysGpio {
             Log.d(TAG, "run: 泵" + n + "状态：" + SysData.Pump[n] );
             if(pumpTimeOut > 100) {
                 SysData.errorMsg = "注射泵" + n + "故障";
+                SysData.errorId = 8;
                 return;
             }
         } while(SysData.Pump[n] != 0x00);
@@ -1051,8 +1064,9 @@ public class SysGpio {
                         ddNum += 1;
                         SysData.didingNum = ddNum;
                         //SysData.didingNum = (ddNum > SysData.didingDeviation) ? ddNum - SysData.didingDeviation : 0;      //从滴定开始到液体到达管口滴定的次数和滴定过量的滴数，空管滴数9滴，过量滴数3滴
-                        if(ddNum >= 200){
-                            SysData.errorMsg = "COD值超量程";
+                        if(ddNum >= 400){
+                            SysData.errorMsg = "滴定超量";
+                            SysData.errorId = 5;
                             //return;
                         }
                         //读取模拟量值
@@ -1163,7 +1177,8 @@ public class SysGpio {
                     }
                     //时间超过90分钟，可能仪器故障
                     if(isRun && (System.currentTimeMillis() - SysData.startTime) / 1000 > 5400) {
-                        SysData.errorMsg = "运行超时";
+                        SysData.errorMsg = "测定超时";
+                        SysData.errorId = 6;
                         return;
                     }
                     //待机状态
@@ -1192,8 +1207,9 @@ public class SysGpio {
                 updateProgress();   //自动更新进度条
                 SysData.statusMsg = "启动测定程序";
                 SysData.isRun = true;
+                SysData.workType = "水样分析";         //仪表工作类型 水样分析、试剂标定、仪表校准、仪表复位
                 SysData.startTime = System.currentTimeMillis();
-                SysData.endTime = 0;
+                SysData.endTime = System.currentTimeMillis() + 3000000;
                 //SysData.codVolue = 0;  //测定过程中显示前次数据
                 SysData.didingNum = 0;
 
@@ -1249,7 +1265,8 @@ public class SysGpio {
                     try {
                         //时间超过5分钟，可能进样泵故障
                         if((System.currentTimeMillis() - SysData.startTime) / 1000 > 300) {
-                            SysData.errorMsg = "进样泵故障";
+                            SysData.errorMsg = "加水样出错";
+                            SysData.errorId = 1;
                             return;
                         }
                         Thread.sleep(1000);
@@ -1265,7 +1282,8 @@ public class SysGpio {
 
                 //判断是否有水样进入
                 if((afterAd - beforeAd) < 30) {
-                    SysData.errorMsg = "进水样出错";
+                    SysData.errorMsg = "加水样出错";
+                    SysData.errorId = 1;
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException e) {
@@ -1293,7 +1311,8 @@ public class SysGpio {
                     try {
                         //时间超过10分钟，可能试剂泵故障
                         if((System.currentTimeMillis() - SysData.startTime) / 1000 > 600) {
-                            SysData.errorMsg = "试剂泵故障";
+                            SysData.errorMsg = "加硫酸出错";
+                            SysData.errorId = 2;
                             return;
                         }
                         Thread.sleep(1000);
@@ -1324,7 +1343,8 @@ public class SysGpio {
                     try {
                         //时间超过30分钟，可能加热器故障
                         if((System.currentTimeMillis() - SysData.startTime) / 1000 > 1800) {
-                            SysData.errorMsg = "加热器故障";
+                            SysData.errorMsg = "温度异常";
+                            SysData.errorId = 7;
                             return;
                         }
                         Thread.sleep(1000);
@@ -1379,6 +1399,7 @@ public class SysGpio {
                 //判断加高锰酸钾是否正常
                 if((beforeAd - afterAd) < 50) {
                     SysData.errorMsg = "加高锰酸钾出错";
+                    SysData.errorId = 3;
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException e) {
@@ -1451,6 +1472,7 @@ public class SysGpio {
                 //判断加草酸钠是否正常
                 if((afterAd - beforeAd) < 50) {
                     SysData.errorMsg = "加草酸钠出错";
+                    SysData.errorId = 4;
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException e) {
@@ -1580,6 +1602,7 @@ public class SysGpio {
                 //测定时间大于1小时，则提示测定超时
                 if((SysData.endTime - SysData.startTime) / 1000 > 3600) {
                     SysData.errorMsg = "测定超时";
+                    SysData.errorId = 6;
                 }
                 //完成水质测定程序
                 statusS7 = false;

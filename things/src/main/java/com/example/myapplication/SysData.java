@@ -27,7 +27,7 @@ public class SysData {
     static double biaodingValue = 10.0;         //标定实验滴定高锰酸钾的量
     static double caosuannaCon = 0.01;          //草酸钠的浓度
     static double codVolue = 0;                 //测定的cod值
-    static int didingDeviation = 720;            //开始滴定到出液体需要的步数
+    static int didingDeviation = 720;           //开始滴定到出液体需要的步数
 
     //仪器运行状态
     static boolean isGetNetTime = false;        //是否已经获取到网络时间
@@ -38,12 +38,16 @@ public class SysData {
     static int adLight, adBack;                 //adLight光电值，adBack备用模拟量
     static byte[] Pump = new byte[10];          //记录各泵的状态，十六进制数据，0x00-状态正常，0x01-帧错误，0x02-参数错误，0x03-光耦错误，0x04-电机忙，0xfe-任务挂起，0xff-未知错误
     static int startAdLight;                    //存储滴定前的光电值
-    static String errorMsg;                     //记录仪器出错信息
+    static String errorMsg = "";                //记录仪器出错信息
+    static int errorId = 0;                     //仪表出错代码 1-加水样出错，2-加硫酸出错，3-加高锰酸钾出错，4-加草酸钠出错，5-滴定超量，6-测定超时，7-反应器温度过高，8-注射泵故障， 9-试剂量低， 10-主板温度过高
     static long startXiaojie;                   //消解开始时间
     static long endXiaoJie;                     //消解结束时间
     static int jiaoBanType = 0;                 //搅拌方式 0-停止搅拌，1-间歇搅拌，2-持续搅拌
     static long startTime;                      //测定开始时间
     static long endTime;                        //测定结束时间
+    static String workType = "水样分析";         //仪表工作类型 水样分析、试剂标定、仪表校准、仪表复位
+    static String workFrom = "未知";       //启动分析命令来自于 触摸屏、串口、Web、定时启动
+    static double tempBox;                      //主板温度 DS3231芯片温度
 
     //系统参数
     static String httpAddr = "";                //http访问地址
@@ -63,6 +67,10 @@ public class SysData {
     static boolean isUpdateTimes = false;       //是否需要更新自动启动信息
     static String adminPassword = "nsy218";     //管理员密码
     static List<String> deviceList;             //串口通讯名称列表
+    static int BAUD_RATE = 9600;                //外部串口通讯波特率
+    static int DATA_BITS = 8;                   //外部串口通讯数据位
+    static int STOP_BITS = 1;                   //外部串口通讯停止位
+    static int MODBUS_ADDR = 3;                 //MODBUS地址位
 
     //仪器数据
     static List<Result> results = null;         //仪表测定结果数据
@@ -70,8 +78,8 @@ public class SysData {
     static int countData = 0;                   //数据的总条数
     static int numPerpage = 50;                 //每页的数据条数
     static int maxPage = 1;                     //最大页数
-    static long startDataTime = 0;               //查询起始时间
-    static long endDataTime = 0;                 //查询结束时间
+    static long startDataTime = 0;              //查询起始时间
+    static long endDataTime = 0;                //查询结束时间
 
     //仪器控制页面状态
     static boolean statusD1 = false;       //D1状态

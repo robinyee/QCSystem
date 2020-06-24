@@ -837,7 +837,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="内部通讯"/>
+                    android:text="内部信息"/>
                 <EditText
                     android:id="@+id/editCom0"
                     android:layout_width="120dp"
@@ -853,7 +853,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="外部通讯"/>
+                    android:text="通讯端口"/>
                 <EditText
                     android:id="@+id/editCom1"
                     android:layout_width="120dp"
@@ -862,8 +862,41 @@
                     android:gravity="center"
                     android:imeOptions="actionDone"
                     android:focusable="false"
-                    android:hint="外部通讯端口"
+                    android:hint="通讯端口"
                     android:singleLine="true"
+                    android:textSize="14sp" />
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="设备地址"/>
+                <EditText
+                    android:id="@+id/editComAddr"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:hint="设备地址"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="波特率"/>
+                <EditText
+                    android:id="@+id/editComBaudRate"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:hint="波特率"
                     android:textSize="14sp" />
                 <Button
                     android:id="@+id/stopSys"
@@ -873,109 +906,9 @@
                     android:drawableLeft="@drawable/ic_settings_black_24dp"
                     android:layout_gravity="left"
                     android:background="@android:drawable/list_selector_background"
-                    android:text="设置系统参数"/>
-            </TableRow>
-            <!--<TableRow>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="加密方式"/>
-                <RadioGroup
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="20dp"
-                    android:layout_span="3"
-                    android:id="@+id/radioGroupPassType">
-                    <RadioButton
-                        android:id="@+id/nopass"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="无密码"/>
-                    <RadioButton
-                        android:id="@+id/wep"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="WEP"/>
-                    <RadioButton
-                        android:id="@+id/wpa"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="WPA"/>
-                    <RadioButton
-                        android:id="@+id/wpa2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:checked="true"
-                        android:text="WPA2"/>
-                </RadioGroup>
-
-                <Button
-                    android:id="@+id/setupwifi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:text="连接到WIFI"/>
-
-            </TableRow>-->
-
-        </TableLayout>
-        <!--
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/line2"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="远程控制"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp" />
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow
-                android:layout_marginTop="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:text="WEB访问"/>
-                <TextView
-                    android:id="@+id/httpaddr"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_span="2"
-                    android:text="http"
-                    android:layout_marginLeft="20dp"/>
-
-            </TableRow>
-            <TableRow
-                android:layout_marginTop="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:text="手机扫码"/>
-                <ImageView
-                    android:id="@+id/imageViewZXing"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_column="1"
-                    android:layout_marginLeft="20dp"/>
+                    android:text="重启仪表"/>
             </TableRow>
         </TableLayout>
-        -->
 
         <ImageView
             android:layout_width="match_parent"

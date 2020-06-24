@@ -61,12 +61,13 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     private static MainActivity mainApplication;
-    private TimeManager timeManager = TimeManager.getInstance();
-    public static UartCom com0, com1;
+    public static TimeManager timeManager = TimeManager.getInstance();
+    public static UartCom com0;
+    public static OutCom com1;
     public static WebServer webServer;
     public static WebSockets webSockets;
     public static AppDatabase db;   //数据库
-    PeripheralManager manager = PeripheralManager.getInstance();
+    public static PeripheralManager manager = PeripheralManager.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +99,6 @@ public class MainActivity extends AppCompatActivity {
         //清除保存的数据
         //clearPreferences();
 
-        //SysData.didingNum = 20;
-        //SysData.calculationValue();
-        //SysData.errorMsg = "加热超时";
         /*
         //启动后台服务
         Intent intent = new Intent(this, SysService.class);
@@ -109,25 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
          */
 
-
-
-        //打开出口通讯
-        SysData.deviceList = manager.getUartDeviceList();
-        if (SysData.deviceList.isEmpty()) {
-            Log.i(TAG, "No UART port available on this device.");
-        } else {
-            if(SysData.deviceList.size() >= 2) {
-                //打开串口0通讯
-                com0 = new UartCom(SysData.deviceList.get(1), 9600, 8, 1);// 为TLL串口
-                com0.openUart();
-            }
-            if(SysData.deviceList.size() >= 3) {
-                //打开串口1通讯
-                com1 = new UartCom(SysData.deviceList.get(2), 9600, 8, 1);// 为U转串接口
-                com1.openUart();
-                com1.testCRC32("00000");   //测试CRC32校验函数
-            }
-        }
 
         //打开并初始化Gpio端口
         SysGpio.gpioInit();
@@ -139,13 +118,6 @@ public class MainActivity extends AppCompatActivity {
         //获取无线网络SSID
         String ssid = getWifiSsid(getApplicationContext());
         SysData.wifiSsid = ssid;
-
-        /*
-        //连接到无线网络 - 调试未通过
-        boolean result = wifiConnection(getApplicationContext(), "HappyWiFi", "13621588977");
-        Log.i("MainActivity", "WIFI连接：" + result);
-
-         */
 
         //获取网络ip地址
         SysData.localIpAddr = getLocalIpAddress();
@@ -178,6 +150,26 @@ public class MainActivity extends AppCompatActivity {
             Log.i("输入端口", "已经启动侦听");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        //打开出口通讯
+        openCom();
+
+    }
+
+    //获取Ds3231温度
+    private void getDs3231Temp() {
+        Ds3231 device;
+        try {
+            Log.d(TAG, "开始读取DS3231温度");
+            device = new Ds3231(BoardDefaults.getI2CPort());
+            SysData.tempBox = device.readTemperature();
+            Log.d(TAG, "Ds3231温度 = " + device.readTemperature());
+            // Close the device.
+            device.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Error while opening screen", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -218,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
             //设置后的时间
             Log.d(TAG, "Ds3231时间 = " + ds3231Date.toString());
             Log.d(TAG, "Ds3231温度 = " + device.readTemperature());
+            SysData.tempBox = device.readTemperature();
             sysDate = new Date(System.currentTimeMillis());
             Log.d(TAG, "新系统时间 = " + sysDate.toString());
 
@@ -245,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "系统时间 = " + date.toString());
             Log.d(TAG, "DS3231时间 = " + device.getTime().toString());
             Log.d(TAG, "DS3231温度 = " + device.readTemperature());
+            SysData.tempBox = device.readTemperature();
 
             // Close the device.
             device.close();
@@ -253,6 +247,25 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
+    }
+
+    //打开串口通讯端口
+    public static void openCom() {
+        SysData.deviceList = manager.getUartDeviceList();
+        if (SysData.deviceList.isEmpty()) {
+            Log.i(TAG, "No UART port available on this device.");
+        } else {
+            if(SysData.deviceList.size() >= 2) {
+                //打开串口0通讯
+                com0 = new UartCom(SysData.deviceList.get(1), 9600, 8, 1);// 为TLL串口
+                com0.openUart();
+            }
+            if(SysData.deviceList.size() >= 3) {
+                //打开串口1通讯
+                com1 = new OutCom(SysData.deviceList.get(2), SysData.BAUD_RATE, SysData.DATA_BITS, SysData.STOP_BITS);// 为U转串接口
+                com1.openUart();
+            }
+        }
     }
 
     //当输入端口状态改变时调用，记录试剂状态
@@ -575,6 +588,8 @@ public class MainActivity extends AppCompatActivity {
         SysData.isNotice = sp.getBoolean("isNotice", false);
         SysData.isEmptyPipeline = sp.getBoolean("isEmptyPipeline", false);
         SysData.adminPassword = sp.getString("adminPassword", "nsy218");
+        SysData.MODBUS_ADDR = sp.getInt("modbusAddr", 3);
+        SysData.BAUD_RATE = sp.getInt("baudRate", 9600);
         //Log.i("读取参数", "试剂量报警信息" + SysData.isNotice);
     }
 
@@ -601,12 +616,28 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
+
+                    //获取主板温度
+                    getDs3231Temp();  //DS3231芯片温度
+
                     //检查试剂状态
                     if(SysData.isNotice) {
-                        if (SysData.liusuanStatus) SysData.errorMsg = "硫酸试剂量低";
-                        if (SysData.gaomengsuanjiaStatus) SysData.errorMsg = "高锰酸钾试剂量低";
-                        if (SysData.caosuannaStatus) SysData.errorMsg = "草酸钠试剂量低";
-                        if (SysData.zhengliushuiStatus) SysData.errorMsg = "蒸馏水试剂量低";
+                        if (SysData.liusuanStatus) {
+                            SysData.errorMsg = "硫酸试剂量低";
+                            SysData.errorId = 9;
+                        }
+                        if (SysData.gaomengsuanjiaStatus) {
+                            SysData.errorMsg = "高锰酸钾试剂量低";
+                            SysData.errorId = 9;
+                        }
+                        if (SysData.caosuannaStatus) {
+                            SysData.errorMsg = "草酸钠试剂量低";
+                            SysData.errorId = 9;
+                        }
+                        if (SysData.zhengliushuiStatus) {
+                            SysData.errorMsg = "蒸馏水试剂量低";
+                            SysData.errorId = 9;
+                        }
                     }
                     //加热器温度大于150度，反应器内温度高于100度，停止加热并报警
                     if(SysData.tempOut > 150 || SysData.tempIn > 110) {
@@ -614,6 +645,18 @@ public class MainActivity extends AppCompatActivity {
                             SysGpio.mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");
                             SysData.errorMsg = "反应器温度过高";
+                            SysData.errorId = 7;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //主板温度高于50度，停止加热并报警
+                    if(SysData.tempBox >= 50) {
+                        try {
+                            SysGpio.mGpioOutH1.setValue(false);
+                            Log.d(TAG, "run: 停止加热");
+                            SysData.errorMsg = "主板温度过高";
+                            SysData.errorId = 10;
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -638,6 +681,7 @@ public class MainActivity extends AppCompatActivity {
                         SysGpio.s7_ShuiZhiCeDing();
                         SysData.statusMsg = "启动测定程序";
                         SysData.isRun = true;
+                        SysData.workFrom = "定时启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
                         SysData.nextStartTime = SysData.nextStartTime + SysData.startCycle * 3600 * 1000;
                         Log.i("MainActivity", "当前时间：" + System.currentTimeMillis() + " 下次启动时间：" + SysData.nextStartTime);
                         SysData.numberTimes = (SysData.numberTimes >= 999) ? 999 : SysData.numberTimes - 1;

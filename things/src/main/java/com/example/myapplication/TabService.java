@@ -458,6 +458,7 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 if (aSwitchS7.isChecked() && !SysGpio.statusS7) {
                     SysGpio.s7_ShuiZhiCeDing();
+                    SysData.workFrom = "触摸屏启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
                 }
             }
         });
