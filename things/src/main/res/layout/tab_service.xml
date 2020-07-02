@@ -276,7 +276,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="试剂标定"/>
+                        android:text="标样测定"/>
                     <Switch
                         android:id="@+id/s11"
                         android:layout_width="130dp"

@@ -24,7 +24,7 @@ class WebServer extends NanoHTTPD {
         String filename = uri.substring(1);
 
         if (uri.equals("/"))
-            filename = "index.html";
+            filename = "login.html";
 
         if (uri.equals("/run")) {
             //如果仪器在空闲状态时启动分析流程
@@ -78,7 +78,7 @@ class WebServer extends NanoHTTPD {
                     if(filename.equals("socket.js") && line.equals("        address: 'ws://127.0.0.1:9501',")){
                         line = "        address: 'ws://" + SysData.webIPAddr + ":" + (SysData.webPort + 1) + "',";
                     }
-                    if(filename.equals("socketCod.js") && line.equals("        address: 'ws://10.10.0.139:8081',")){
+                    if(filename.equals("socketcod.js") && line.equals("        address: 'ws://10.10.0.139:8081',")){
                         line = "        address: 'ws://" + SysData.webIPAddr + ":" + (SysData.webPort + 1) + "',";
                     }
                     response = response + line + "\n";

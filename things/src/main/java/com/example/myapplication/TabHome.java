@@ -112,7 +112,7 @@ public class TabHome extends Fragment {
     private void updateUi() {
         curDate = new Date(System.currentTimeMillis());
         textViewTime.setText(formater.format(curDate)); //显示当前时间
-        textViewCODValue.setText(" " + SysData.codVolue);
+        textViewCODValue.setText(" " + SysData.codValue);
         progressBar.setProgress(SysData.progressRate);
         textViewStatus.setText(SysData.statusMsg);
         if(!SysData.errorMsg.equals("")) {
@@ -178,6 +178,7 @@ public class TabHome extends Fragment {
                         //清除报警信息
                         SysData.errorMsg = "";
                         SysData.errorId = 0;
+                        SysData.resetAlert();                       //复位数据库报警记录
                         imageWarning.setVisibility(View.INVISIBLE);
                         Log.i("报警信息", "已清除");
                     }

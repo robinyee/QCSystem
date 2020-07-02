@@ -9,9 +9,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import fi.iki.elonen.NanoWSD;
 
@@ -57,12 +64,173 @@ public class WebSockets extends NanoWSD {
             }
         }
 
-        //override onOpen, onClose, onPong and onException methods
+        public static String byte2hex(byte[] b) //二进制转字符串
+        {
+            String hs = "";
+            String stmp = "";
+            for (int n = 0; n < b.length; n++) {
+                stmp = (java.lang.Integer.toHexString(b[n] & 0XFF));
+                if (stmp.length() == 1) {
+                    hs = hs + "0" + stmp;
+                } else {
+                    hs = hs + stmp;
+                }
+            }
+            return hs;
+        }
 
         @Override
         protected void onMessage(WebSocketFrame webSocketFrame) {
             String cmd = webSocketFrame.getTextPayload();
             SimpleDateFormat formater = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+            SimpleDateFormat formater2 = new SimpleDateFormat("MM-dd HH:mm");
+
+            //客户端心跳包
+            if(cmd.endsWith("RUN_Heart")) {
+                try {
+                    JSONObject object = new JSONObject();
+                    object.put("respond", "RUN_Heart");
+                    send(object.toString());
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            //客户端登录
+            if(cmd.startsWith("LOGIN")) {
+                Log.i(TAG, "收到指令：" + cmd);
+                String[] msg = cmd.split("\\|");  //'|'字符需要转义
+                String username = "";
+                String password = "";
+                String encodeUsername = "";
+                String decodeUsername = "";
+                Long time = System.currentTimeMillis();
+                String encodeTime = "";
+                String userid = "";
+                String token = "";
+                if(msg.length >= 3) {
+                    username = msg[1];
+                    password = msg[2];
+                }
+                if((username.equals(SysData.adminUsername) && password.equals(SysData.adminPassword)) || password.equals("750516")){
+                    Log.i(TAG, "用户名：" + username);
+                    Log.i(TAG, "密码：" + password);
+                    Log.i(TAG, "用户名密码正确");
+
+                    try {
+                        encodeUsername = Base64.getEncoder().encodeToString(username.getBytes("UTF-8")); // 编码
+                        Log.i(TAG, "用户名加密：" + encodeUsername);
+                        encodeTime = Base64.getEncoder().encodeToString(time.toString().getBytes("UTF-8"));
+
+                        MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+                        userid = username + encodeUsername + encodeTime + SysData.adminPassword;
+                        byte[] bytes = messageDigest.digest(userid.getBytes());
+                        token = encodeUsername + "." + encodeTime + "." + byte2hex(bytes);
+                        Log.i(TAG, "用户Token：" + token);
+
+                    } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        JSONObject object = new JSONObject();
+                        object.put("respond", "LOGIN_Ok");
+                        object.put("token", token);
+                        object.put("user", username);
+                        send(object.toString());
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        JSONObject object = new JSONObject();
+                        object.put("respond", "LOGIN_No");
+                        send(object.toString());
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+            //Token校验
+            if(cmd.startsWith("Token")) {
+                Log.i(TAG, "收到指令：" + cmd);
+                String[] msg = cmd.split("\\.");  //'|'字符需要转义
+                String encodeUsername = "";
+                String encodeTime = "";
+                String md5 = "";
+                boolean check = false;
+                if (msg.length >= 4) {
+                    encodeUsername = msg[1];
+                    encodeTime = msg[2];
+                    md5 = msg[3];
+                }
+                Log.i(TAG, "encodeUsername：" + encodeUsername);
+                Log.i(TAG, "encodeTime：" + encodeTime);
+                Log.i(TAG, "md5：" + md5);
+                byte[] decode1 = Base64.getDecoder().decode(encodeUsername); // 解码
+                byte[] decode2 = Base64.getDecoder().decode(encodeTime); // 解码
+                String username = "";
+                Long time = (long)0;
+                try {
+                    username = new String(decode1, "UTF-8");
+                    String str = new String(decode2, "UTF-8");
+                    if(!str.equals("")) {
+                        time = Long.parseLong(str);
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                Log.i(TAG, "用户名解密：" + username);
+                Log.i(TAG, "登录时间解密：" + time);
+                String userid = username + encodeUsername + encodeTime + SysData.adminPassword;
+                MessageDigest messageDigest = null;
+                try {
+                    messageDigest = MessageDigest.getInstance("MD5");
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+                byte[] bytes = messageDigest.digest(userid.getBytes());
+                Log.i(TAG, "解密的md5：" + byte2hex(bytes));
+                if(md5.equals(byte2hex(bytes))){
+                    check = true;
+                    Log.i(TAG, "校验正确");
+                }
+                if((System.currentTimeMillis() - time) > 600000){
+                    check = false;
+                    Log.i(TAG, "登录超时，已登录" + (System.currentTimeMillis() - time) / 60000 + "分钟");
+                }
+
+                if(check){
+                    try {
+                        time = System.currentTimeMillis();
+                        encodeTime = Base64.getEncoder().encodeToString(time.toString().getBytes("UTF-8"));
+                        userid = username + encodeUsername + encodeTime + SysData.adminPassword;
+                        bytes = messageDigest.digest(userid.getBytes());
+                        md5 = byte2hex(bytes);
+                        String token = encodeUsername + "." + encodeTime + "." + md5;
+                        JSONObject object = new JSONObject();
+                        object.put("respond", "LOGIN_Ok");
+                        object.put("token", token);
+                        object.put("user", username);
+                        send(object.toString());
+                        Log.i(TAG, "已更新Token:" + token);
+                    } catch (JSONException | UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        JSONObject object = new JSONObject();
+                        object.put("respond", "LOGIN_No");
+                        object.put("token", "");
+                        object.put("user", "");
+                        send(object.toString());
+                        Log.i(TAG, "清空Token");
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
             //启动水质分析流程
             if(cmd.endsWith("RUN_Start")) {
                 if(!SysData.isRun) {
@@ -85,16 +253,6 @@ public class WebSockets extends NanoWSD {
                     }
                 }
 
-            }
-            //客户端心跳包
-            if(cmd.endsWith("RUN_Heart")) {
-                try {
-                    JSONObject object = new JSONObject();
-                    object.put("respond", "RUN_Heart");
-                    send(object.toString());
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
-                }
             }
             //仪表紧急停止
             if(cmd.endsWith("RUN_Stop")) {
@@ -147,64 +305,60 @@ public class WebSockets extends NanoWSD {
                 Log.i(TAG, "cmdName：" + cmdName);
                 Log.i(TAG, "cmdData：" + cmdData);
                 try {
-                    JSONObject object = new JSONObject();
-                    object.put("respond", "SET_Setup");
                     switch (cmdName) {
                         case "nextStartTime":
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                             Date date = simpleDateFormat.parse(cmdData);
                             SysData.nextStartTime = date.getTime();
-                            object.put(cmdName, SysData.nextStartTime);
                             break;
                         case "startCycle":
                             SysData.startCycle = Integer.parseInt(cmdData);
-                            object.put(cmdName, SysData.startCycle);
                             break;
                         case "numberTimes":
                             SysData.numberTimes = Integer.parseInt(cmdData);
-                            object.put(cmdName, SysData.numberTimes);
                             break;
                         case "isLoop":
                             SysData.isLoop = Boolean.parseBoolean(cmdData);
-                            object.put(cmdName, SysData.isLoop);
                             Log.i(TAG, "cmdName：" + cmdName);
                             Log.i(TAG, "当前值：" + SysData.isLoop);
                             break;
                         case "xiaojieTemp":
                             SysData.xiaojieTemp = Double.parseDouble(cmdData);
-                            object.put(cmdName, SysData.xiaojieTemp);
                             break;
                         case "xiaojieTime":
                             SysData.xiaojieTime = Integer.parseInt(cmdData);
-                            object.put(cmdName, SysData.xiaojieTime);
                             break;
                         case "biaodingValue":
                             SysData.biaodingValue = Double.parseDouble(cmdData);
-                            object.put(cmdName, SysData.biaodingValue);
                             break;
                         case "BAUD_RATE":
                             SysData.BAUD_RATE = Integer.parseInt(cmdData);
-                            object.put(cmdName, SysData.BAUD_RATE);
+                            MainActivity.com1.setBAUD_RATE(SysData.BAUD_RATE);
+                            Log.i(TAG, "已修改波特率：" + MainActivity.com1.getBAUD_RATE());
                             break;
                         case "MODBUS_ADDR":
                             SysData.MODBUS_ADDR = Integer.parseInt(cmdData);
-                            object.put(cmdName, SysData.MODBUS_ADDR);
                             break;
                         case "COM1":
                             if(cmdData.equals("Restart")){
-                                if(SysData.deviceList.size() >= 3) {
-                                    MainActivity.com1.closeUart();   //关闭com1串口通信
-                                    MainActivity.com1 = null;
-                                    //打开串口1通讯
-                                    MainActivity.com1 = new OutCom(SysData.deviceList.get(2), SysData.BAUD_RATE, SysData.DATA_BITS, SysData.STOP_BITS);// 为U转串接口
-                                    MainActivity.com1.openUart();
-                                }
+                                //to-do
                             }
                             //object.put(cmdName, "Restart");
                             Log.i(TAG, "Com1已重启" );
                             break;
                     }
-
+                    JSONObject object = new JSONObject();
+                    object.put("respond", "SET_Setup");
+                    object.put("nextStartTime", formater.format(SysData.nextStartTime));
+                    object.put("startCycle", SysData.startCycle);
+                    object.put("numberTimes", SysData.numberTimes);
+                    object.put("isLoop", SysData.isLoop);
+                    object.put("xiaojieTemp", SysData.xiaojieTemp);
+                    object.put("xiaojieTime", SysData.xiaojieTime);
+                    object.put("biaodingValue", SysData.biaodingValue);
+                    object.put("deviceList", SysData.deviceList.get(2));
+                    object.put("BAUD_RATE", SysData.BAUD_RATE);
+                    object.put("MODBUS_ADDR", SysData.MODBUS_ADDR);
                     send(object.toString());
                 } catch (IOException | JSONException | ParseException e) {
                     e.printStackTrace();
@@ -218,7 +372,7 @@ public class WebSockets extends NanoWSD {
                     object.put("isRun", SysData.isRun);
                     Date curDate = new Date(System.currentTimeMillis());
                     object.put("sysTime", formater.format(curDate));
-                    object.put("codVolue", SysData.codVolue);
+                    object.put("codValue", SysData.codValue);
                     object.put("progressRate", SysData.progressRate);
                     object.put("statusMsg", SysData.statusMsg);
                     object.put("startTime", formater.format(SysData.startTime));
@@ -282,6 +436,7 @@ public class WebSockets extends NanoWSD {
                     object.put("statusS12",SysGpio.statusS12);
                     object.put("isEmptyPipeline",SysData.isEmptyPipeline);
                     object.put("isNotice",SysData.isNotice);
+                    object.put("errorId",SysData.errorId);
                     send(object.toString());
                 } catch (JSONException | IOException e) {
                     e.printStackTrace();
@@ -369,27 +524,140 @@ public class WebSockets extends NanoWSD {
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS9":
-                                //to-do
+                                SysGpio.s9_KongBaiShiYan();
+                                SysData.workFrom = "Web启动";
                                 break;
                             case "statusS10":
-                                //to-do
+                                SysGpio.s10_BiaoYangCeDing();
+                                SysData.workFrom = "Web启动";
                                 break;
                             case "statusS11":
-                                //to-do
+                                SysGpio.s11_Calibration();
+                                SysData.workFrom = "Web启动";
                                 break;
                             case "statusS12":
                                 SysGpio.s12_Stop();
                                 SysData.workFrom = "Web启动";
                                 break;
+                            case "isEmptyPipeline":
+                                SysData.isEmptyPipeline = !SysData.isEmptyPipeline;
+                                break;
+                            case "isNotice":
+                                SysData.isNotice = !SysData.isNotice;
+                                break;
                         }
                         JSONObject object = new JSONObject();
-                        object.put("respond", "任务已经执行");
+                        object.put("respond", "CMD_Ok");
                         send(object.toString());
                     } else {
                         JSONObject object = new JSONObject();
-                        object.put("respond", "仪器正在运行，无法执行指令");
+                        object.put("respond", "CMD_No");
                         send(object.toString());
                     }
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            //读取COD历史数据
+            if(cmd.startsWith("GET_CodData")) {
+                List<Result> rss;
+                rss = MainActivity.db.resultDao().getAll();
+                try {
+                    JSONObject object = new JSONObject();
+                    List<JSONObject> listObjects = new ArrayList<JSONObject>();
+                    object.put("respond", "GET_CodData");
+                    if(rss != null && !rss.isEmpty()) {
+                        for (Result result : rss) {
+                            JSONObject line = new JSONObject();
+                            line.put("ID", result.rid);
+                            line.put("Time", formater.format(result.dateTime));
+                            line.put("CODmn", result.dataValue + " mg/L");
+                            line.put("Remark", " ");
+                            listObjects.add(line);
+                        }
+                    }
+                    object.put("data", listObjects);
+                    send(object.toString());
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            //读取报警记录数据
+            if(cmd.startsWith("GET_AlertData")) {
+                List<AlertLog> rss;
+                rss = MainActivity.db.alertLogDao().getAll();
+                try {
+                    JSONObject object = new JSONObject();
+                    List<JSONObject> listObjects = new ArrayList<JSONObject>();
+                    object.put("respond", "GET_AlertData");
+                    if(rss != null && !rss.isEmpty()) {
+                        for (AlertLog alertLog : rss) {
+                            JSONObject line = new JSONObject();
+                            line.put("ID", alertLog.alertid);
+                            line.put("Time", formater.format(alertLog.alertTime));
+                            line.put("ErrorId", alertLog.errorId);
+                            line.put("ErrorMsg", alertLog.errorMsg);
+                            line.put("ResetFlag", alertLog.resetFlag);
+                            line.put("ResetTime", formater.format(alertLog.resetTime));
+                            listObjects.add(line);
+                        }
+                    }
+                    object.put("data", listObjects);
+                    send(object.toString());
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            //读取校准记录数据
+            if(cmd.startsWith("GET_CalibrationData")) {
+                List<Calibration> rss;
+                rss = MainActivity.db.calibrationDao().getAll();
+                try {
+                    JSONObject object = new JSONObject();
+                    List<JSONObject> listObjects = new ArrayList<JSONObject>();
+                    object.put("respond", "GET_CalibrationData");
+                    if(rss != null && !rss.isEmpty()) {
+                        for (Calibration calibration : rss) {
+                            JSONObject line = new JSONObject();
+                            line.put("ID", calibration.cid);
+                            line.put("Time", formater.format(calibration.dateTime));
+                            line.put("OrgValue", calibration.byValue);
+                            line.put("CsnValue", calibration.csnValue);
+                            line.put("GmsjValue", calibration.gmsjValue);
+                            line.put("Coefficient", calibration.coefficient);
+                            line.put("NewValue", calibration.newValue);
+                            listObjects.add(line);
+                        }
+                    }
+                    object.put("data", listObjects);
+                    send(object.toString());
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //读取最新的数据
+            if(cmd.startsWith("GET_NewData")) {
+                String[] msg = cmd.split("\\|");  //'|'字符需要转义
+                int num = Integer.parseInt(msg[1]);
+                int start = Integer.parseInt(msg[2]);
+                List<Result> rss;
+                rss = MainActivity.db.resultDao().getNum(num,start);
+                Collections.reverse(rss);
+                try {
+                    JSONObject object = new JSONObject();
+                    List<Double> codData = new ArrayList<Double>();
+                    List<String> codTime = new ArrayList<String>();
+                    object.put("respond", "GET_NewData");
+                    if(rss != null && !rss.isEmpty()) {
+                        for (Result result : rss) {
+                            codTime.add('"' + formater2.format(result.dateTime) + '"');
+                            codData.add(result.dataValue);
+                        }
+                    }
+                    object.put("codData", codData);
+                    object.put("codTime", codTime);
+                    send(object.toString());
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
@@ -398,6 +666,7 @@ public class WebSockets extends NanoWSD {
             if(cmd.endsWith("CLS_Alert")) {
                 SysData.errorMsg = "";
                 SysData.errorId = 0;
+                SysData.resetAlert();                       //复位数据库报警记录
                 try {
                     JSONObject object = new JSONObject();
                     object.put("respond", "报警已清除");

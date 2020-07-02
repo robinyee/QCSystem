@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     public static WebSockets webSockets;
     public static AppDatabase db;   //数据库
     public static PeripheralManager manager = PeripheralManager.getInstance();
+    public static Ds3231 device;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +89,9 @@ public class MainActivity extends AppCompatActivity {
 
         //打开数据库
         db = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "result").build();
+                AppDatabase.class, "db_cod").build();  //创建数据库
         SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+        SysData.readChartData(30, 0);       //从数据库中读取30条数据
 
         //clearPreferences();
         //读取系统参数
@@ -159,14 +161,18 @@ public class MainActivity extends AppCompatActivity {
 
     //获取Ds3231温度
     private void getDs3231Temp() {
-        Ds3231 device;
+        //Ds3231 device;
         try {
+            if(device != null) {
+                return;
+            }
             Log.d(TAG, "开始读取DS3231温度");
             device = new Ds3231(BoardDefaults.getI2CPort());
             SysData.tempBox = device.readTemperature();
             Log.d(TAG, "Ds3231温度 = " + device.readTemperature());
             // Close the device.
             device.close();
+            device = null;
         } catch (IOException e) {
             Log.e(TAG, "Error while opening screen", e);
             throw new RuntimeException(e);
@@ -176,8 +182,11 @@ public class MainActivity extends AppCompatActivity {
     //获取Ds3231时间
     private void getDs3231Time() {
         Date sysDate, ds3231Date, startDate;
-        Ds3231 device;
+        //Ds3231 device;
         try {
+            if(device != null) {
+                return;
+            }
             Log.d(TAG, "开始读取DS3231时间");
             device = new Ds3231(BoardDefaults.getI2CPort());
             Log.d(TAG, "isTimekeepingDataValid = " + device.isTimekeepingDataValid());
@@ -216,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Close the device.
             device.close();
+            device = null;
         } catch (IOException e) {
             Log.e(TAG, "Error while opening screen", e);
             throw new RuntimeException(e);
@@ -226,8 +236,11 @@ public class MainActivity extends AppCompatActivity {
     //设置Ds3231时间
     public static void setDs3231Time() {
         Date date;
-        Ds3231 device;
+        //Ds3231 device;
         try {
+            if(device != null) {
+                return;
+            }
             Log.d(TAG, "开始设置DS3231时间");
             device = new Ds3231(BoardDefaults.getI2CPort());
             Log.d(TAG, "isTimekeepingDataValid = " + device.isTimekeepingDataValid());
@@ -242,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Close the device.
             device.close();
+            device = null;
         } catch (IOException e) {
             Log.e(TAG, "Error while opening screen", e);
             throw new RuntimeException(e);
@@ -599,7 +613,11 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int errorid = 0;
+                String errorMsg = "";
                 do {
+                    errorid = SysData.errorId;
+                    errorMsg = SysData.errorMsg;
                     //保存运行状态数据
                     if(SysData.isRun){
                         saveMeterStatus();  //仪器运行时定时保存仪器状态数据
@@ -659,6 +677,12 @@ public class MainActivity extends AppCompatActivity {
                             SysData.errorId = 10;
                         } catch (IOException e) {
                             e.printStackTrace();
+                        }
+                    }
+
+                    if(SysData.errorId != 0) {
+                        if(errorid != SysData.errorId || errorMsg != SysData.errorMsg) {
+                            SysData.saveAlertToDB();  //保存报警记录
                         }
                     }
                 } while (true);
@@ -723,7 +747,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("errorMsg", SysData.errorMsg);
         editor.putLong("startTime", SysData.startTime);
         editor.putLong("endTime", SysData.endTime);
-        editor.putLong("codVolue", Double.doubleToLongBits(SysData.codVolue));
+        editor.putLong("codValue", Double.doubleToLongBits(SysData.codValue));
         editor.putBoolean("isLoop", SysData.isLoop);
         editor.putLong("nextStartTime", SysData.nextStartTime);
         editor.putInt("startCycle", SysData.startCycle);
@@ -743,7 +767,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.errorMsg = sp.getString("errorMsg", "");
         SysData.startTime = sp.getLong("startTime", 0);
         SysData.endTime = sp.getLong("endTime", 0);
-        SysData.codVolue = Double.longBitsToDouble(sp.getLong("codVolue", 0));
+        SysData.codValue = Double.longBitsToDouble(sp.getLong("codValue", 0));
     }
 
     //清空Preferences中的数据

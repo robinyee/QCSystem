@@ -3,8 +3,11 @@ package com.example.myapplication;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.security.Key;
 import java.text.DecimalFormat;
 import java.util.List;
+
+import javax.crypto.spec.SecretKeySpec;
 
 public class SysData {
 
@@ -26,8 +29,11 @@ public class SysData {
     static double kongbaiValue = 0.25;          //空白实验滴定高锰酸钾的量
     static double biaodingValue = 10.0;         //标定实验滴定高锰酸钾的量
     static double caosuannaCon = 0.01;          //草酸钠的浓度
-    static double codVolue = 0;                 //测定的cod值
+    static double codValue = 0;                 //测定的cod值
     static int didingDeviation = 720;           //开始滴定到出液体需要的步数
+    static double originalValue = 0;            //校准前的cod值
+    static double newValue = 0;                 //校准后的cod值
+    static double coefficient = 1.0;             //标定系数K值
 
     //仪器运行状态
     static boolean isGetNetTime = false;        //是否已经获取到网络时间
@@ -39,14 +45,15 @@ public class SysData {
     static byte[] Pump = new byte[10];          //记录各泵的状态，十六进制数据，0x00-状态正常，0x01-帧错误，0x02-参数错误，0x03-光耦错误，0x04-电机忙，0xfe-任务挂起，0xff-未知错误
     static int startAdLight;                    //存储滴定前的光电值
     static String errorMsg = "";                //记录仪器出错信息
+    static String[] errorMsgList = {"无报警", "加水样出错", "加硫酸出错", "加高锰酸钾出错", "加草酸钠出错", "滴定超量", "测定超时", "反应器温度过高", "注射泵故障", "试剂量低", "主板温度过高"};
     static int errorId = 0;                     //仪表出错代码 1-加水样出错，2-加硫酸出错，3-加高锰酸钾出错，4-加草酸钠出错，5-滴定超量，6-测定超时，7-反应器温度过高，8-注射泵故障， 9-试剂量低， 10-主板温度过高
     static long startXiaojie;                   //消解开始时间
     static long endXiaoJie;                     //消解结束时间
     static int jiaoBanType = 0;                 //搅拌方式 0-停止搅拌，1-间歇搅拌，2-持续搅拌
     static long startTime;                      //测定开始时间
     static long endTime;                        //测定结束时间
-    static String workType = "水样分析";         //仪表工作类型 水样分析、试剂标定、仪表校准、仪表复位
-    static String workFrom = "未知";       //启动分析命令来自于 触摸屏、串口、Web、定时启动
+    static String workType = "水样分析";         //仪表工作类型 水样分析、标样测定、仪表校准、仪表复位
+    static String workFrom = "未知";            //启动分析命令来自于 触摸屏、串口、Web、定时启动
     static double tempBox;                      //主板温度 DS3231芯片温度
 
     //系统参数
@@ -65,6 +72,7 @@ public class SysData {
     static int startCycle = 1;                  //启动周期
     static int numberTimes = 0;                 //启动次数
     static boolean isUpdateTimes = false;       //是否需要更新自动启动信息
+    static String adminUsername = "admin";      //管理员用户名
     static String adminPassword = "nsy218";     //管理员密码
     static List<String> deviceList;             //串口通讯名称列表
     static int BAUD_RATE = 9600;                //外部串口通讯波特率
@@ -72,14 +80,19 @@ public class SysData {
     static int STOP_BITS = 1;                   //外部串口通讯停止位
     static int MODBUS_ADDR = 3;                 //MODBUS地址位
 
-    //仪器数据
-    static List<Result> results = null;         //仪表测定结果数据
-    static int currentPage = 1;                 //当前浏览的页码
-    static int countData = 0;                   //数据的总条数
-    static int numPerpage = 50;                 //每页的数据条数
-    static int maxPage = 1;                     //最大页数
-    static long startDataTime = 0;              //查询起始时间
-    static long endDataTime = 0;                //查询结束时间
+    //数据查询结果
+    static List<Result> results = null;             //仪表测定结果数据
+    static List<Result> resultChart = null;         //仪表趋势线图测定结果数据
+    static List<AlertLog> alertLogs = null;         //仪表报警记录数据
+    static List<Calibration> calibrations = null;   //仪表校准记录数据
+    static String listDataType = "codmn";           //查询的数据类型，codmn,alert,calibration
+    //数据查询结果分页
+    static int currentPage = 1;                     //当前浏览的页码
+    static int countData = 0;                       //数据的总条数
+    static int numPerpage = 7;                      //每页的数据条数
+    static int maxPage = 1;                         //最大页数
+    static long startDataTime = 0;                  //查询起始时间
+    static long endDataTime = 0;                    //查询结束时间
 
     //仪器控制页面状态
     static boolean statusD1 = false;       //D1状态
@@ -105,14 +118,28 @@ public class SysData {
     static boolean caosuannaStatus;                 //草酸钠试剂量，true-有试剂，false-无试剂
     static boolean zhengliushuiStatus;              //蒸馏水试剂量，true-有试剂，false-无试剂
 
+    //计算COD的值
     public static double calculationValue() {
-        double k = 10.0 / biaodingValue;
+        double k = caosuannaVolume / biaodingValue;
         didingSumVolume = didingNum * didingVolume;
         didingSumVolume = (double)Math.round(didingSumVolume*100)/100;  //取小数点后两位
-        codVolue = ((gaomengsuanjiaVolume + didingSumVolume) * k - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
-        //codVolue = (didingSumVolume - kongbaiValue) * k * caosuannaCon * 16 * 1000 / shuiyangVolume;  //公式错误
-        codVolue = (double)Math.round(codVolue*100)/100;  //取小数点后两位
-        return codVolue;
+        codValue = ((gaomengsuanjiaVolume + didingSumVolume) * k - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
+        codValue = (double)Math.round(codValue*100)/100;  //取小数点后两位
+        return codValue;
+    }
+
+    //计算校准后的新值
+    public static double calibrationValue() {
+        double orgDidingVolume = didingSumVolume;
+        didingSumVolume = didingNum * didingVolume;
+        didingSumVolume = (double)Math.round(didingSumVolume*100)/100;  //取小数点后两位
+        biaodingValue = didingSumVolume;
+        coefficient = caosuannaVolume / didingSumVolume;
+        originalValue = ((gaomengsuanjiaVolume + orgDidingVolume) * 1 - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
+        originalValue = (double)Math.round(originalValue*100)/100;  //取小数点后两位
+        newValue = ((gaomengsuanjiaVolume + orgDidingVolume) * coefficient - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
+        newValue = (double)Math.round(newValue*100)/100;  //取小数点后两位
+        return newValue;
     }
 
     //保存测定值数据至数据库
@@ -124,8 +151,59 @@ public class SysData {
                 Result result = new Result();
                 result.dateTime = startTime;
                 result.dataType = "COD";
-                result.dataValue = codVolue;
+                result.dataValue = codValue;
                 MainActivity.db.resultDao().insert(result);
+            }
+        }).start();
+    }
+
+    //保存校准数据至数据库
+    public static void saveCalibrationDataToDB() {
+        Log.i("数据库", "添加数据");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Calibration calibration = new Calibration();
+                calibration.dateTime = startTime;
+                calibration.byValue = originalValue;
+                calibration.csnValue = caosuannaVolume;
+                calibration.gmsjValue = didingSumVolume;
+                if(didingSumVolume != 0) {
+                    coefficient = (double) Math.round(caosuannaVolume / didingSumVolume * 100) / 100;  //取小数点后两位
+                    calibration.coefficient = coefficient;
+                } else {
+                    calibration.coefficient = 1.0;
+                }
+                calibration.newValue = newValue;
+                MainActivity.db.calibrationDao().insert(calibration);
+            }
+        }).start();
+    }
+
+    //保存报警记录数据至数据库
+    public static void saveAlertToDB() {
+        Log.i("数据库", "添加数据");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AlertLog alertLog = new AlertLog();
+                alertLog.alertTime = System.currentTimeMillis();
+                alertLog.errorId = errorId;
+                alertLog.errorMsg = errorMsg;
+                alertLog.resetFlag = 0;
+                alertLog.resetTime = (long) 0;
+                MainActivity.db.alertLogDao().insert(alertLog);
+            }
+        }).start();
+    }
+
+    //从数据库读取曲线数据
+    public static void readChartData(final int num, final int start) {
+        Log.i("数据库", "读取数据");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SysData.resultChart = MainActivity.db.resultDao().getNum(num, start);       //从数据库中读取30条数据
             }
         }).start();
     }
@@ -136,25 +214,40 @@ public class SysData {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Result> rss;
-                //results = MainActivity.db.resultDao().getAll();
-                countData = MainActivity.db.resultDao().findResultCount();
-                maxPage = countData / numPerpage + 1;
-                rss = MainActivity.db.resultDao().getNum(num, start);
-                /*
-                for(Result result:rss) {
-                    //result = results.get(0);
-                    Log.i("数据记录", "id:" + result.rid);
-                    Log.i("数据记录", "time:" + result.dateTime);
-                    Log.i("数据记录", "type:" + result.dataType);
-                    Log.i("数据记录", "value:" + result.dataValue);
+                if(listDataType.equals("codmn")) {
+                    List<Result> rss;
+                    countData = MainActivity.db.resultDao().findResultCount();
+                    maxPage = countData / numPerpage + 1;
+                    rss = MainActivity.db.resultDao().getNum(num, start);
+                    results = rss;
                 }
-
-                 */
-                results = rss;
+                if(listDataType.equals("alert")) {
+                    List<AlertLog> rss;
+                    countData = MainActivity.db.alertLogDao().findAlertLogCount();
+                    maxPage = countData / numPerpage + 1;
+                    rss = MainActivity.db.alertLogDao().getNum(num, start);
+                    alertLogs = rss;
+                }
+                if(listDataType.equals("calibration")) {
+                    List<Calibration> rss;
+                    countData = MainActivity.db.calibrationDao().findCalibrationCount();
+                    maxPage = countData / numPerpage + 1;
+                    rss = MainActivity.db.calibrationDao().getNum(num, start);
+                    calibrations = rss;
+                }
             }
         }).start();
     }
 
+    //复位报警记录
+    public static void resetAlert() {
+        Log.i("数据库", "更新数据");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.db.alertLogDao().updateByFlag(System.currentTimeMillis());
+            }
+        }).start();
+    }
 
 }

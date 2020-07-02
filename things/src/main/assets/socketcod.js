@@ -1,6 +1,6 @@
 "use strict"
 var Vm = new Vue({
-    el: "#root",
+    el: '#root',
     data: {
         consoleData: [], // 控制台日志
         messageData: [], // 消息记录
@@ -25,7 +25,7 @@ var Vm = new Vue({
 		respond: '',
 		isRun: false,
 		sysTime: '',
-		codVolue: 0,
+		codValue: 0,
 		progressRate: 0,
 		statusMsg: '',
 		startTime: '',
@@ -91,9 +91,25 @@ var Vm = new Vue({
 		deviceList: '',
 		BAUD_RATE: 9600,
 		MODBUS_ADDR: 3,
+		errorId: 0,
 		date: '',
-		time: ''
-    },
+		time: '',
+		connecting: '<div class="float-right spinner-grow text-success spinner-grow-sm" role="status"><span class="sr-only">Loading...</span></div>',
+		perPageCod: 10,
+		currentPageCod: 1,
+		itemsCod: 0,
+		perPageAlert: 10,
+		currentPageAlert: 1,
+		itemsAlert: 0,
+		perPageCalibration: 10,
+		currentPageCalibration: 1,
+		itemsCalibration: 0,
+		chartData: 0,
+		chartTime: 0,
+		username: '',
+		password: '',
+		token: ''
+	},
     created: function created () {
         this.canUseH5WebSocket()
         var address = localStorage.getItem('address');
@@ -270,7 +286,7 @@ var Vm = new Vue({
 				_this.respond = obj.respond;
 				_this.isRun = obj.isRun;
 				_this.sysTime = obj.sysTime;
-				_this.codVolue = obj.codVolue;
+				_this.codValue = obj.codValue;
 				_this.progressRate = obj.progressRate;
 				_this.statusMsg = obj.statusMsg;
 				_this.startTime = obj.startTime;
@@ -327,8 +343,17 @@ var Vm = new Vue({
 				_this.statusS12 = obj.statusS12;
 				_this.isEmptyPipeline = obj.isEmptyPipeline;
 				_this.isNotice = obj.isNotice;
+				_this.errorId = obj.errorId;
 			}
-			if(obj.respond === 'GET_Setup' || obj.respond === 'GET_Setup'){
+			if(obj.respond === 'CMD_Ok'){
+				_this.respond = obj.respond;
+				_this.makeToast("命令已执行", "消息", 'success', 'b-toaster-top-right');
+			}
+			if(obj.respond === 'CMD_No'){
+				_this.respond = obj.respond;
+				_this.makeToast("命令未执行，可能仪器正在运行", "出错", 'danger', 'b-toaster-top-right');
+			}
+			if(obj.respond === 'GET_Setup'){
 				_this.respond = obj.respond;
 				_this.nextStartTime = obj.nextStartTime;
 				_this.startCycle = obj.startCycle;
@@ -341,8 +366,56 @@ var Vm = new Vue({
 				_this.BAUD_RATE = obj.BAUD_RATE;
 				_this.MODBUS_ADDR = obj.MODBUS_ADDR;
 			}
+			if(obj.respond === 'SET_Setup'){
+				_this.respond = obj.respond;
+				_this.nextStartTime = obj.nextStartTime;
+				_this.startCycle = obj.startCycle;
+				_this.numberTimes = obj.numberTimes;
+				_this.isLoop = obj.isLoop;
+				_this.xiaojieTemp = obj.xiaojieTemp;
+				_this.xiaojieTime = obj.xiaojieTime;
+				_this.biaodingValue = obj.biaodingValue;
+				_this.deviceList = obj.deviceList;
+				_this.BAUD_RATE = obj.BAUD_RATE;
+				_this.MODBUS_ADDR = obj.MODBUS_ADDR;
+				_this.makeToast("设置已成功", "消息", 'success', 'b-toaster-top-right');
+			}
+			if(obj.respond === 'GET_CodData'){
+				_this.respond = obj.respond;
+				var coddata = JSON.parse(obj.data);
+				_this.itemsCod = coddata;
+			}
+			if(obj.respond === 'GET_AlertData'){
+				_this.respond = obj.respond;
+				var alertdata = JSON.parse(obj.data);
+				_this.itemsAlert = alertdata;
+			}
+			if(obj.respond === 'GET_CalibrationData'){
+				_this.respond = obj.respond;
+				var calibrationdata = JSON.parse(obj.data);
+				_this.itemsCalibration = calibrationdata;
+			}
+			if(obj.respond === 'GET_NewData'){
+				_this.respond = obj.respond;
+				_this.chartData = JSON.parse(obj.codData);
+				_this.chartTime = JSON.parse(obj.codTime);
+				options.series[0].data = _this.chartData;
+				options.xaxis.categories = _this.chartTime;
+			}
+			if(obj.respond === 'LOGIN_Ok'){
+				_this.respond = obj.respond;
+				_this.token = obj.token;
+				_this.username = obj.user;
+			}
+			if(obj.respond === 'LOGIN_No'){
+				_this.respond = obj.respond;
+				_this.token = obj.token;
+				_this.username = obj.user;
+				_this.makeToast("用户名或密码错误，请重新输入", "错误", 'danger', 'b-toaster-top-center');
+				//_this.makeToast('success');
+			}
 			//控制台输出
-			console.log(data);
+			//console.log(data);
 		},
         scrollOver: function scrollOver (e) {
             if (e) {
@@ -351,6 +424,25 @@ var Vm = new Vue({
         },
         cleanMessage: function () {
             this.messageData = [];
-        }
-    }
-});
+        },
+		makeToast(massage = null, title = "info", variant = 'default', toaster = 'b-toaster-top-right') {
+			this.$bvToast.toast(massage, {
+			  title: title,
+			  variant: variant,
+			  toaster: toaster,
+			  solid: true
+			})
+		}
+    },
+	computed: {
+		rowsCod() {
+			return this.itemsCod.length
+		},
+		rowsAlert() {
+			return this.itemsAlert.length
+		},
+		rowsCalibration() {
+			return this.itemsCalibration.length
+		}
+	}
+})

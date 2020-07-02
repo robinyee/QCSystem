@@ -20,6 +20,22 @@
 	<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>-->
 	<!--<script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="bootstrap.bundle.js"></script>-->
 	
+	
+	<!-- Add this to <head> -->
+	<!-- Load required Bootstrap and BootstrapVue CSS -->
+	<link type="text/css" rel="stylesheet" href="https://unpkg.zhimg.com/bootstrap/dist/css/bootstrap.min.css" />
+	<link type="text/css" rel="stylesheet" href="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+
+	<!-- Load polyfills to support older browsers -->
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+
+	<!-- Load Vue followed by BootstrapVue -->
+	<script src="https://unpkg.zhimg.com/vue@latest/dist/vue.min.js"></script>
+	<script src="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+	<!-- Load the following for BootstrapVueIcons support -->
+	<script src="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+	
 	<style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -41,29 +57,34 @@
 	<link href="jumbotron.css" rel="stylesheet">
   </head>
   <body class="d-flex flex-column h-100">
+
+<div id="root">
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-	  <div class="container-xl">
-    <a class="navbar-brand" href="index.html">高锰酸盐指数在线分析仪</a>
+	<div class="container">
+    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">高锰酸盐指数在线分析仪</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="index.html">首页 <span class="sr-only">(current)</span></a>
+          <a class="nav-link" v-bind:href="'index.html?id=' + token">首页</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="data.html">数据查询</a>
+          <a class="nav-link" v-bind:href="'data.html?id=' + token">数据查询</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="setup.html">仪表设置</a>
+          <a class="nav-link" v-bind:href="'setup.html?id=' + token">仪表设置<span class="sr-only">(current)</span></a>
         </li>
 		<li class="nav-item">
-		  <a class="nav-link" href="service.html">系统服务</a>
+		  <a class="nav-link" v-bind:href="'service.html?id=' + token">系统服务</a>
 		</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+		  <li class="nav-item">
+		    <a class="nav-link" href="#">{{ username }}</a>
+		  </li>
 		  <li class="nav-item">
 		    <a class="nav-link" href="login.html">退出登录</a>
 		  </li>
@@ -72,7 +93,6 @@
 	</div>
   </nav>
 
-<div id="root">
 <!-- Begin page content -->
 <main role="main">
 	<!-- Main jumbotron for a primary marketing message or call to action -->
@@ -88,12 +108,12 @@
 	    <div class="row">
 	        <div class="col-md-4">
 				<div class="card mb-3">
-				  <h5 class="card-header">定时启动</h5>
-				  <div class="card-body">
+				  <h5 class="card-header">定时启动<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 320px;">
 				    <form>
 				    	<div class="form-group">
 				    	  <h6>待启动时间：<span class="badge badge-success">{{nextStartTime}}</span></h6>
-						  <p class="lead">
+						  <p>
 						  <input type="date" id="date"  v-model="date" v-on:change="sendData('SET_Setup|nextStartTime|' + date + ' ' + time); nextStartTime = date + ' ' + time;"/>
 						  <input type="time" id="time"  v-model="time" v-on:change="sendData('SET_Setup|nextStartTime|' + date + ' ' + time); nextStartTime = date + ' ' + time;"/>
 						  </p>
@@ -114,8 +134,8 @@
 			</div>
 			<div class="col-md-4">
 				<div class="card mb-3">
-				  <h5 class="card-header">仪表参数</h5>
-				  <div class="card-body">
+				  <h5 class="card-header">仪表参数<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 320px;">
 				    <form>
 				    	<div class="form-group">
 				    	  <h6>消解温度[单位：℃]</h6>
@@ -129,15 +149,15 @@
 				    	  <h6>试剂标定[试剂标定校准值]</h6>
 				    	  <input type="text" placeholder="输入标定值" class="form-control" v-model="biaodingValue" v-on:change="sendData('SET_Setup|biaodingValue|' + biaodingValue)">
 				    	</div>
-				    	<button type="button" class="btn btn-success">保存参数</button>
+				    	<!--<button type="button" class="btn btn-success" @click="sendData('GET_Setup')" >保存参数</button>-->
 				    </form>
 				  </div>
 				</div>
 			</div>
 			<div class="col-md-4">
 				<div class="card mb-3">
-				  <h5 class="card-header">系统信息</h5>
-				  <div class="card-body">
+				  <h5 class="card-header">系统信息<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 320px;">
 				    <form>
 				    	<div class="form-group">
 				    	  <h6>串口名称[USB串口]</h6>
@@ -149,7 +169,7 @@
 				    	</div>
 				    	<div class="form-group">
 							<h6>波特率[当前值：{{BAUD_RATE}}]</h6>
-							<p class="lead">
+							<p>
 								<label for="select">选择</label>
 								<select id="select" v-model="BAUD_RATE" v-on:change="sendData('SET_Setup|BAUD_RATE|' + BAUD_RATE)">
 									<option value="9600">9600</option>
@@ -160,7 +180,7 @@
 								<label for="select">bit/s</label>
 							</p>
 				    	</div>
-				    	<button type="button" class="btn btn-success" v-on:click="sendData('SET_Setup|COM1|Restart')">重启串口</button>
+				    	<button type="button" class="btn btn-success" @click="sendData('GET_Setup')" >重新载入</button>
 				    </form>
 				  </div>
 				</div>
@@ -179,17 +199,11 @@
 </footer>
 
 <script src="format.js"></script>
-<script src="socketCod.js"></script>
+<script src="socketcod.js"></script>
 <!--<script src="dashboard.js"></script>-->
+<script src="connect.js"></script>
 
 <script>
-	//页面打开自动连接服务器
-	setInterval(function(){
-		if(!Vm.connected){
-			Vm.autoWsConnect();
-			console.log('连接服务器' + Vm.connected);
-		}
-	}, 500);
 	//自动发送心跳包
 	setTimeout(function(){
 		if(Vm.connected){

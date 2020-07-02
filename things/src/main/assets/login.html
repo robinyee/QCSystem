@@ -6,14 +6,34 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
+	<link rel="icon" href="favicon.ico">
     <title>高锰酸盐指数在线分析仪</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/sign-in/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://cdn.staticfile.org/vue/2.2.6/vue.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>-->
+    <script src="https://cdn.bootcdn.net/ajax/libs/feather-icons/4.9.0/feather.js"></script>
+    
+	
+	<!-- Add this to <head> -->
+	<!-- Load required Bootstrap and BootstrapVue CSS -->
+	<link type="text/css" rel="stylesheet" href="https://unpkg.zhimg.com/bootstrap/dist/css/bootstrap.min.css" />
+	<link type="text/css" rel="stylesheet" href="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
 
-    <!-- Bootstrap core CSS -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-	<!--<link href="bootstrap.css" rel="stylesheet">-->
+	<!-- Load polyfills to support older browsers -->
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
 
+	<!-- Load Vue followed by BootstrapVue -->
+	<script src="https://unpkg.zhimg.com/vue@latest/dist/vue.min.js"></script>
+	<script src="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+	<!-- Load the following for BootstrapVueIcons support -->
+	<script src="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+	
+	
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -33,21 +53,60 @@
     <!-- Custom styles for this template -->
     <link href="signin.css" rel="stylesheet">
   </head>
+  
   <body class="text-center">
+  
     <form class="form-signin">
+	<div id="root">
   <img class="mb-4" src="bootstrap-solid.png" alt="" width="72" height="72">
-  <h1 class="h3 mb-3 font-weight-normal">用户登录</h1>
+  <h1 class="h3 mb-3 font-weight-normal">CODmn用户登录</h1>
   <label for="inputUser" class="sr-only">用户名</label>
-  <input type="text" id="inputUser" class="form-control" placeholder="用户名" required autofocus>
+  <input type="text" id="inputUser" class="form-control" placeholder="用户名" required autofocus v-model="username" @keyup.enter="sendData('LOGIN|' + username + '|' + password)">
   <label for="inputPassword" class="sr-only">密码</label>
-  <input type="password" id="inputPassword" class="form-control" placeholder="密码" required>
+  <input type="password" id="inputPassword" class="form-control" placeholder="密码" required v-model="password" @keyup.enter="sendData('LOGIN|' + username + '|' + password)">
   <div class="checkbox mb-3">
     <label>
-      <input type="checkbox" value="remember-me"> 记住密码
+      <input type="checkbox" value="remember-me"> 记住密码 
     </label>
   </div>
-  <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+  <button class="btn btn-lg btn-primary btn-block" type="button" @keyup.enter="sendData('LOGIN|' + username + '|' + password)" @click="sendData('LOGIN|' + username + '|' + password)">登录</button>
   <p class="mt-5 mb-3 text-muted">&copy; 2017-2020 江苏南水科技有限公司</p>
+
+</div>
 </form>
+
 </body>
+
+<script src="socketcod.js"></script>
+
+<script type="text/javascript">
+	//页面打开自动连接服务器
+	setInterval(function(){
+		if(!Vm.connected){
+			Vm.autoWsConnect();
+			console.log('连接服务器' + Vm.connected);
+		}
+		/*
+		if(Vm.respond === 'LOGIN_No') {
+			 alert("用户名或密码错误，请重新输入");
+			 Vm.respond = '';
+		} 
+		*/
+		if(Vm.respond === 'LOGIN_Ok') {
+			window.location.href='index.html?id=' + Vm.token; 
+		}
+	}, 500);
+	//自动发送心跳包
+	setTimeout(function(){
+		if(Vm.connected){
+			if(!Vm.autoSend){
+				Vm.heartBeatContent = "RUN_Heart";
+				Vm.autoHeartBeat();
+				console.log('自动发送心跳包' + Vm.autoSend);
+			}
+		}
+	}, 800);
+
+</script>
+
 </html>

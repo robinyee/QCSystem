@@ -241,12 +241,12 @@ public class OutCom {
             //读取仪表cod值 03 03 00 00 00 01 XX XX
             Log.w(TAG,  "读取仪表cod值");
             String askStr,dataStr;
-            int codVolue = (int) (SysData.codVolue * 100);
-            //codVolue = 1023;
+            int codValue = (int) (SysData.codValue * 100);
+            //codValue = 1023;
             askStr = "";
             byte[] askByte = new byte[]{(byte) b[0], (byte) b[1], (byte) 0x02};
-            String codStr = Integer.toHexString(codVolue);
-            if(codVolue == 0) {
+            String codStr = Integer.toHexString(codValue);
+            if(codValue == 0) {
                 codStr = "0000";
             }
             if(codStr.length() < 4) {
@@ -255,7 +255,7 @@ public class OutCom {
                 }
             }
 
-            Log.w(TAG,  "cod的值:" + codVolue);
+            Log.w(TAG,  "cod的值:" + codValue);
             Log.w(TAG,  "cod的值H:" + codStr);
             askStr = bytes2HexString(askByte);
             askStr = askStr + codStr;
@@ -341,6 +341,7 @@ public class OutCom {
                 }
                 SysData.errorId = 0;                        //复位错误代码
                 SysData.errorMsg = "";                      //复位错误信息
+                SysData.resetAlert();                       //复位数据库报警记录
                 String sendStr = bytes2HexString(b);
                 sendBytes(sendStr, false);
             }
@@ -527,6 +528,7 @@ public class OutCom {
     public void closeUart() {
         if (mUartDevice != null) {
             try {
+                mUartDevice.unregisterUartDeviceCallback(mUartDeviceCallback);
                 mUartDevice.close();
                 mUartDevice = null;
             } catch (IOException e) {

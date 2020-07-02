@@ -18,11 +18,12 @@
         <lecho.lib.hellocharts.view.LineChartView
             android:id="@+id/chart"
             android:layout_width="wrap_content"
-            android:layout_height="300dp"
+            android:layout_height="310dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"/>
+        <!-- android:layout_height="300dp" -->
 
         <LinearLayout
             android:id="@+id/linearLayout10"
@@ -85,6 +86,70 @@
                 android:text="清空" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="0dp"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCodmnData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/list_selector_background"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="CODmn值"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btnAlertData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/list_selector_background"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="报警记录"
+                android:textColor="@android:color/black" />
+
+            <Button
+                android:id="@+id/btnCalibrationData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/list_selector_background"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="校准记录"
+                android:textColor="@android:color/black" />
+
+        </LinearLayout>
+<!--
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="高锰酸盐指数数据"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="40dp"
+            android:paddingLeft="0dp"/>
+
         <ImageView
             android:id="@+id/moreParameter"
             android:layout_width="match_parent"
@@ -93,15 +158,18 @@
             android:layout_marginLeft="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="0dp"/>
+            -->
+
         <ListView
             android:id="@+id/datalist"
             android:layout_width="match_parent"
-            android:layout_height="1840dp"
+            android:layout_height="285dp"
             android:scrollbars="none"
             android:layout_marginLeft="40dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="40dp"
             android:layout_marginBottom="10dp" />
+        <!-- android:layout_height="1840dp" -->
 
         <LinearLayout
             android:id="@+id/linearLayout11"
@@ -164,6 +232,7 @@
                 android:text="最后页" />
 
         </LinearLayout>
+
 
     </LinearLayout>
     </ScrollView>

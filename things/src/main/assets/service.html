@@ -20,6 +20,22 @@
 	<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>-->
 	<!--<script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="bootstrap.bundle.js"></script>-->
 	
+	
+	<!-- Add this to <head> -->
+	<!-- Load required Bootstrap and BootstrapVue CSS -->
+	<link type="text/css" rel="stylesheet" href="https://unpkg.zhimg.com/bootstrap/dist/css/bootstrap.min.css" />
+	<link type="text/css" rel="stylesheet" href="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+
+	<!-- Load polyfills to support older browsers -->
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+
+	<!-- Load Vue followed by BootstrapVue -->
+	<script src="https://unpkg.zhimg.com/vue@latest/dist/vue.min.js"></script>
+	<script src="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+	<!-- Load the following for BootstrapVueIcons support -->
+	<script src="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+	
 	<style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -42,29 +58,34 @@
 	<link href="jumbotron.css" rel="stylesheet">
   </head>
   <body class="d-flex flex-column h-100">
+
+<div id="root">
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-	  <div class="container-xl">
-    <a class="navbar-brand" href="index.html">高锰酸盐指数在线分析仪</a>
+	<div class="container">
+    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">高锰酸盐指数在线分析仪</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="index.html">首页 <span class="sr-only">(current)</span></a>
+          <a class="nav-link" v-bind:href="'index.html?id=' + token">首页</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="data.html">数据查询</a>
+          <a class="nav-link" v-bind:href="'data.html?id=' + token">数据查询</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="setup.html">仪表设置</a>
+          <a class="nav-link" v-bind:href="'setup.html?id=' + token">仪表设置</a>
         </li>
 		<li class="nav-item active">
-		  <a class="nav-link" href="service.html">系统服务</a>
+		  <a class="nav-link" v-bind:href="'service.html?id=' + token">系统服务<span class="sr-only">(current)</span></a>
 		</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+		  <li class="nav-item">
+		    <a class="nav-link" href="#">{{ username }}</a>
+		  </li>
 		  <li class="nav-item">
 		    <a class="nav-link" href="login.html">退出登录</a>
 		  </li>
@@ -73,7 +94,6 @@
 	</div>
   </nav>
 
-<div id="root">
 <!-- Begin page content -->
 <main role="main">
 	<!-- Main jumbotron for a primary marketing message or call to action -->
@@ -81,6 +101,7 @@
 	    <div class="container">
 	      <h3 class="display-5">系统服务</h3>
 	      <p class="lead">监测仪表运行状态、试剂余量、运行异常情况，远程启动仪表测量、试剂标定、仪表校准功能</p>
+		  
 	    </div>
 	  </div>
 
@@ -89,8 +110,8 @@
 	    <div class="row">
 	        <div class="col-md-4">
 				<div class="card mb-3">
-				  <h5 class="card-header">试剂状态</h5>
-				  <div class="card-body">
+				  <h5 class="card-header">试剂状态<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 320px;">
 					<dl class="row">
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn1 ? 'btn btn-danger' : 'btn btn-success'">硫酸</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn2 ? 'btn btn-danger' : 'btn btn-success'">高锰酸钾</button></dd>
@@ -98,14 +119,15 @@
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn4 ? 'btn btn-danger' : 'btn btn-success'">蒸馏水</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="isEmptyPipeline ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_isEmptyPipeline')" >量低报警</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="isNotice ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_isNotice')" >前置润洗</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="errorId != 0 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CLS_Alert')" >清除报警</button></dd>
 					</dl>
 				  </div>
 				</div>
 			</div>
 			<div class="col-md-4">
 				<div class="card mb-3">
-				  <h5 class="card-header">开关控制</h5>
-				  <div class="card-body">
+				  <h5 class="card-header">开关控制<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 320px;">
 					<dl class="row">
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOut24V ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOut24V')" >总电源</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutH1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutH1')" >加热器</button></dd>
@@ -127,8 +149,8 @@
 			</div>
 			<div class="col-md-4">
 				<div class="card mb-3">
-				  <h5 class="card-header">测定流程</h5>
-				  <div class="card-body">
+				  <h5 class="card-header">测定流程<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 320px;">
 					  <dl class="row">
 					    <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS1')" >进水样</button></dd>
 						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS2 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS2')" >加硫酸</button></dd>
@@ -164,17 +186,11 @@
 </body>
 
 <script src="format.js"></script>
-<script src="socketCod.js"></script>
+<script src="socketcod.js"></script>
 <!--<script src="dashboard.js"></script>-->
+<script src="connect.js"></script>
 
 <script>
-	//页面打开自动连接服务器
-	setInterval(function(){
-		if(!Vm.connected){
-			Vm.autoWsConnect();
-			console.log('连接服务器' + Vm.connected);
-		}
-	}, 500);
 	//自动发送心跳包
 	setInterval(function(){
 		Vm.heartBeatContent = "GPIO_Status";

@@ -15,6 +15,8 @@ import java.io.IOException;
 
 import static android.content.ContentValues.TAG;
 import static com.example.myapplication.SysData.calculationValue;
+import static com.example.myapplication.SysData.codValue;
+import static com.example.myapplication.SysData.coefficient;
 import static com.example.myapplication.SysData.didingDeviation;
 import static com.example.myapplication.SysData.isEmptyPipeline;
 import static com.example.myapplication.SysData.isRun;
@@ -426,11 +428,11 @@ public class SysGpio {
             if(pumpTimeOut > 100) {
                 SysData.errorMsg = "注射泵" + n + "故障";
                 SysData.errorId = 8;
+                SysData.saveAlertToDB();  //保存报警记录
                 return;
             }
         } while(SysData.Pump[n] != 0x00);
     }
-
 
     //测定前排空进样管
     public static void paikong() {
@@ -1067,6 +1069,7 @@ public class SysGpio {
                         if(ddNum >= 400){
                             SysData.errorMsg = "滴定超量";
                             SysData.errorId = 5;
+                            SysData.saveAlertToDB();  //保存报警记录
                             //return;
                         }
                         //读取模拟量值
@@ -1169,6 +1172,7 @@ public class SysGpio {
                     if (SysData.progressRate < 95) {
                         SysData.progressRate = (int) ((System.currentTimeMillis() - SysData.startTime) / 1000 / 30);
                     }
+
                     //暂停30秒
                     try {
                         Thread.sleep(30000);
@@ -1179,6 +1183,7 @@ public class SysGpio {
                     if(isRun && (System.currentTimeMillis() - SysData.startTime) / 1000 > 5400) {
                         SysData.errorMsg = "测定超时";
                         SysData.errorId = 6;
+                        SysData.saveAlertToDB();  //保存报警记录
                         return;
                     }
                     //待机状态
@@ -1192,25 +1197,57 @@ public class SysGpio {
 
     //水质测定流程
     public static void s7_ShuiZhiCeDing() {
+        SysData.workType = "水质分析";
+        statusS7 = true;
+        analysis();
+    }
+
+    //空白测定流程
+    public static void s9_KongBaiShiYan() {
+        SysData.workType = "标样测定";
+        statusS9 = true;
+        analysis();   //启动分析流程
+    }
+
+    //标样测定流程
+    public static void s10_BiaoYangCeDing() {
+        SysData.workType = "标样测定";
+        statusS10 = true;
+        analysis();   //启动分析流程
+    }
+
+    //仪表校准流程
+    public static void s11_Calibration() {
+        SysData.workType = "仪表校准";
+        statusS11 = true;
+        analysis();   //启动分析流程
+    }
+
+    //水质分析过程，可运行于水质分析、标样分析、仪表校准模式
+    public static void analysis() {
         new Thread(new Runnable() {
 
             public void run() {
-                Log.d(TAG, "run: 开始水质测定");
+                Log.d(TAG, "run: " + SysData.workType);
                 //紧急停止
                 if(SysData.stopFlag) {
                     return;
                 }
 
-                //启动水质测定程序
-                statusS7 = true;
+                //启动水质分析流程
+                //statusS7 = true;
                 SysData.progressRate = 1;
-                updateProgress();   //自动更新进度条
                 SysData.statusMsg = "启动测定程序";
                 SysData.isRun = true;
-                SysData.workType = "水样分析";         //仪表工作类型 水样分析、试剂标定、仪表校准、仪表复位
                 SysData.startTime = System.currentTimeMillis();
-                SysData.endTime = System.currentTimeMillis() + 3000000;
-                //SysData.codVolue = 0;  //测定过程中显示前次数据
+                updateProgress();   //自动更新进度条
+                //仪表校准需要1个小时左右
+                if(SysData.workType.equals("仪表校准")){
+                    SysData.endTime = System.currentTimeMillis() + 3600000;
+                } else {
+                    SysData.endTime = System.currentTimeMillis() + 3000000;
+                }
+                //SysData.codValue = 0;  //测定过程中显示前次数据
                 SysData.didingNum = 0;
 
                 //开启电源
@@ -1220,6 +1257,16 @@ public class SysGpio {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                //标样测定、仪器校准开启电磁阀1，加入标样
+                if(!SysData.workType.equals("水质分析")){
+                    try {
+                        SysGpio.mGpioOutD1.setValue(true); //打开阀1
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 //等待2S
                 try {
                     Thread.sleep(2000);
@@ -1267,6 +1314,7 @@ public class SysGpio {
                         if((System.currentTimeMillis() - SysData.startTime) / 1000 > 300) {
                             SysData.errorMsg = "加水样出错";
                             SysData.errorId = 1;
+                            SysData.saveAlertToDB();  //保存报警记录
                             return;
                         }
                         Thread.sleep(1000);
@@ -1284,6 +1332,7 @@ public class SysGpio {
                 if((afterAd - beforeAd) < 30) {
                     SysData.errorMsg = "加水样出错";
                     SysData.errorId = 1;
+                    SysData.saveAlertToDB();  //保存报警记录
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException e) {
@@ -1293,6 +1342,16 @@ public class SysGpio {
                     return;
                 }
                 Log.d(TAG, "水质测定:Max=" + afterAd + ",水质测定:Min=" + beforeAd);
+
+                //标样测定、仪器校准关闭电磁阀1
+                if(!SysData.workType.equals("水质分析")){
+                    try {
+                        SysGpio.mGpioOutD1.setValue(false); //关闭阀1
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 //停止读取模拟量
                 SysGpio.readTempFlag = false;
                 //SysData.progressRate = 5;
@@ -1313,6 +1372,7 @@ public class SysGpio {
                         if((System.currentTimeMillis() - SysData.startTime) / 1000 > 600) {
                             SysData.errorMsg = "加硫酸出错";
                             SysData.errorId = 2;
+                            SysData.saveAlertToDB();  //保存报警记录
                             return;
                         }
                         Thread.sleep(1000);
@@ -1345,6 +1405,7 @@ public class SysGpio {
                         if((System.currentTimeMillis() - SysData.startTime) / 1000 > 1800) {
                             SysData.errorMsg = "温度异常";
                             SysData.errorId = 7;
+                            SysData.saveAlertToDB();  //保存报警记录
                             return;
                         }
                         Thread.sleep(1000);
@@ -1400,6 +1461,7 @@ public class SysGpio {
                 if((beforeAd - afterAd) < 50) {
                     SysData.errorMsg = "加高锰酸钾出错";
                     SysData.errorId = 3;
+                    SysData.saveAlertToDB();  //保存报警记录
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException e) {
@@ -1473,6 +1535,7 @@ public class SysGpio {
                 if((afterAd - beforeAd) < 50) {
                     SysData.errorMsg = "加草酸钠出错";
                     SysData.errorId = 4;
+                    SysData.saveAlertToDB();  //保存报警记录
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException e) {
@@ -1486,7 +1549,7 @@ public class SysGpio {
                 SysData.statusMsg = "准备滴定";
                 //启动温度控制
                 SysGpio.tempControlFlag = true;
-                SysGpio.tempControl(90);  //滴定时温度控制在90度
+                SysGpio.tempControl(90);  //滴定前温度控制在90度
 
                 //等待60S
                 try {
@@ -1545,10 +1608,99 @@ public class SysGpio {
                     e.printStackTrace();
                 }
 
+                //停止读取温度
+                SysGpio.readTempFlag = false;
                 //停止温度控制
                 SysGpio.tempControlFlag = false;
-                SysData.statusMsg = "排放废液";
 
+                //仪表校准，需要加入草酸钠，再滴定
+                if(SysData.workType.equals("仪表校准")){
+                    //启动排水2秒钟
+                    try {
+                        SysGpio.mGpioOutD8.setValue(true);
+                        Thread.sleep(3000);
+                        SysGpio.mGpioOutD8.setValue(false);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    SysData.statusMsg = "加入草酸钠";
+                    //停止读取温度
+                    SysGpio.readTempFlag = false;
+                    //停止温度控制
+                    SysGpio.tempControlFlag = false;
+                    //持续搅拌
+                    SysData.jiaoBanType = 2;
+                    //启动加草酸钠程序
+                    s4_JiaCaoSuanNa();
+                    //等待加草酸钠完成
+                    do {
+                        //紧急停止
+                        if(SysData.stopFlag) {
+                            return;
+                        }
+
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    } while(statusS4 == true);
+
+                    SysData.statusMsg = "准备滴定";
+                    //启动温度控制
+                    SysGpio.tempControlFlag = true;
+                    SysGpio.tempControl(90);  //滴定前温度控制在90度
+
+                    //等待60S
+                    try {
+                        Thread.sleep(60000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    //启动温度控制
+                    SysGpio.tempControlFlag = true;
+                    SysGpio.tempControl(60);  //滴定时温度控制在60度
+                    //等待10S
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    //停止读取温度
+                    SysGpio.readTempFlag = false;
+                    SysData.statusMsg = "正在滴定";
+
+                    //启动滴定程序
+                    s6_DiDing();
+                    //等待滴定完成
+                    do {
+                        //紧急停止
+                        if(SysData.stopFlag) {
+                            return;
+                        }
+
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    } while(statusS6 == true);
+                    //计算标定值
+                    SysData.calibrationValue();
+                    //将校准数据保存至数据库
+                    SysData.saveCalibrationDataToDB();
+                    //停止读取温度
+                    SysGpio.readTempFlag = false;
+                    //停止温度控制
+                    SysGpio.tempControlFlag = false;
+                }
+
+                //排放废液
+                SysData.statusMsg = "排放废液";
                 //启动排水
                 try {
                     SysGpio.mGpioOutD8.setValue(true);
@@ -1562,7 +1714,7 @@ public class SysGpio {
 
                 //终止搅拌程序
                 SysData.jiaoBanType = -1;
-                SysData.statusMsg = "完成水质测定";
+                SysData.statusMsg = "完成分析流程";
 
                 //等待2秒钟
                 try {
@@ -1603,11 +1755,15 @@ public class SysGpio {
                 if((SysData.endTime - SysData.startTime) / 1000 > 3600) {
                     SysData.errorMsg = "测定超时";
                     SysData.errorId = 6;
+                    SysData.saveAlertToDB();  //保存报警记录
                 }
-                //完成水质测定程序
+                //完成水质分析程序
                 statusS7 = false;
-                Log.d(TAG, "run: 结束水质测定");
-                Log.d(TAG, "run: COD值：" + SysData.codVolue);
+                statusS9 = false;
+                statusS10 = false;
+                statusS11 = false;
+                Log.d(TAG, "run: 结束分析流程");
+                Log.d(TAG, "run: COD值：" + SysData.codValue);
             }
         }).start();
     }

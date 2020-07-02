@@ -52,6 +52,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
 public class TabSetup extends Fragment {
@@ -268,6 +269,27 @@ public class TabSetup extends Fragment {
                     } else if(!SysData.isUpdateTimes) {
                         SysData.numberTimes = Integer.parseInt(editNumberTimes.getText().toString());
                     }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    saveMeterParameter();  //保存设定的参数
+                    Log.i("输入完成", "次数：" + SysData.numberTimes);
+                    //return false;
+                }
+                return false;
+            }
+        });
+
+        //修改串口波特率
+        editCom1BaudRate.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    MainActivity.com1.setBAUD_RATE(SysData.BAUD_RATE);
+                    Log.i(TAG, "已修改波特率：" + MainActivity.com1.getBAUD_RATE());
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {

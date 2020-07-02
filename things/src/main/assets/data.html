@@ -12,7 +12,30 @@
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <style>
+    <script src="https://cdn.bootcdn.net/ajax/libs/feather-icons/4.9.0/feather.js"></script>
+    <!--<script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/3.0.0-alpha/Chart.min.js"></script>-->
+	<script src="https://cdn.staticfile.org/vue/2.2.6/vue.js"></script>
+	<link rel="stylesheet" href="https://unpkg.zhimg.com/vue-easytable/umd/css/index.css">
+	<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+          <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="bootstrap.bundle.js"></script>-->
+    
+	
+	<!-- Add this to <head> -->
+	<!-- Load required Bootstrap and BootstrapVue CSS -->
+	<link type="text/css" rel="stylesheet" href="https://unpkg.zhimg.com/bootstrap/dist/css/bootstrap.min.css" />
+	<link type="text/css" rel="stylesheet" href="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+
+	<!-- Load polyfills to support older browsers -->
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+
+	<!-- Load Vue followed by BootstrapVue -->
+	<script src="https://unpkg.zhimg.com/vue@latest/dist/vue.min.js"></script>
+	<script src="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+	<!-- Load the following for BootstrapVueIcons support -->
+	<script src="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+	
+	<style>
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -33,29 +56,34 @@
 	<link href="jumbotron.css" rel="stylesheet">
   </head>
   <body class="d-flex flex-column h-100">
+
+<div id="root">
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-	  <div class="container-xl">
-    <a class="navbar-brand" href="index.html">高锰酸盐指数在线分析仪</a>
+	<div class="container">
+    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">高锰酸盐指数在线分析仪</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="index.html">首页 </a>
+          <a class="nav-link" v-bind:href="'index.html?id=' + token">首页</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="data.html">数据查询</a>
+          <a class="nav-link" v-bind:href="'data.html?id=' + token">数据查询<span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="setup.html">仪表设置</a>
+          <a class="nav-link" v-bind:href="'setup.html?id=' + token">仪表设置</a>
         </li>
 		<li class="nav-item">
-		  <a class="nav-link" href="service.html">系统服务</a>
+		  <a class="nav-link" v-bind:href="'service.html?id=' + token">系统服务</a>
 		</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+		  <li class="nav-item">
+		    <a class="nav-link" href="#">{{ username }}</a>
+		  </li>
 		  <li class="nav-item">
 		    <a class="nav-link" href="login.html">退出登录</a>
 		  </li>
@@ -77,264 +105,126 @@
 
 	<div class="container">
 	    <!-- Example row of columns -->
-		
-		      <h4>高锰酸盐指数</h4>
-		      <div class="table-responsive">
-		        <table class="table table-striped table-sm">
-		          <thead>
-		            <tr>
-		              <th>序号</th>
-		              <th>开始时间</th>
-		              <th>结束时间</th>
-		              <th>CODmn值</th>
-		              <th>备注</th>
-		            </tr>
-		          </thead>
-		          <tbody>
-		            <tr>
-		              <td>1,001</td>
-		              <td>Lorem</td>
-		              <td>ipsum</td>
-		              <td>dolor</td>
-		              <td>sit</td>
-		            </tr>
-		            <tr>
-		              <td>1,002</td>
-		              <td>amet</td>
-		              <td>consectetur</td>
-		              <td>adipiscing</td>
-		              <td>elit</td>
-		            </tr>
-		            <tr>
-		              <td>1,003</td>
-		              <td>Integer</td>
-		              <td>nec</td>
-		              <td>odio</td>
-		              <td>Praesent</td>
-		            </tr>
-		            <tr>
-		              <td>1,003</td>
-		              <td>libero</td>
-		              <td>Sed</td>
-		              <td>cursus</td>
-		              <td>ante</td>
-		            </tr>
-		            <tr>
-		              <td>1,004</td>
-		              <td>dapibus</td>
-		              <td>diam</td>
-		              <td>Sed</td>
-		              <td>nisi</td>
-		            </tr>
-		            <tr>
-		              <td>1,005</td>
-		              <td>Nulla</td>
-		              <td>quis</td>
-		              <td>sem</td>
-		              <td>at</td>
-		            </tr>
-		            <tr>
-		              <td>1,006</td>
-		              <td>nibh</td>
-		              <td>elementum</td>
-		              <td>imperdiet</td>
-		              <td>Duis</td>
-		            </tr>
-		            <tr>
-		              <td>1,007</td>
-		              <td>sagittis</td>
-		              <td>ipsum</td>
-		              <td>Praesent</td>
-		              <td>mauris</td>
-		            </tr>
-		            <tr>
-		              <td>1,008</td>
-		              <td>Fusce</td>
-		              <td>nec</td>
-		              <td>tellus</td>
-		              <td>sed</td>
-		            </tr>
-		            <tr>
-		              <td>1,009</td>
-		              <td>augue</td>
-		              <td>semper</td>
-		              <td>porta</td>
-		              <td>Mauris</td>
-		            </tr>
-		            <tr>
-		              <td>1,010</td>
-		              <td>massa</td>
-		              <td>Vestibulum</td>
-		              <td>lacinia</td>
-		              <td>arcu</td>
-		            </tr>
-		            <tr>
-		              <td>1,011</td>
-		              <td>eget</td>
-		              <td>nulla</td>
-		              <td>Class</td>
-		              <td>aptent</td>
-		            </tr>
-		            <tr>
-		              <td>1,012</td>
-		              <td>taciti</td>
-		              <td>sociosqu</td>
-		              <td>ad</td>
-		              <td>litora</td>
-		            </tr>
-		            <tr>
-		              <td>1,013</td>
-		              <td>torquent</td>
-		              <td>per</td>
-		              <td>conubia</td>
-		              <td>nostra</td>
-		            </tr>
-		            <tr>
-		              <td>1,014</td>
-		              <td>per</td>
-		              <td>inceptos</td>
-		              <td>himenaeos</td>
-		              <td>Curabitur</td>
-		            </tr>
-		            <tr>
-		              <td>1,015</td>
-		              <td>sodales</td>
-		              <td>ligula</td>
-		              <td>in</td>
-		              <td>libero</td>
-		            </tr>
-		          </tbody>
-		        </table>
-		      </div>
-		
-	    <div class="page-header">
-	        <h4>高锰酸盐指数</h4>
-	    </div>
-	    <div class="row">
-	        <div class="col-md-12">
-	            <table class="table table-striped">
-	                <thead>
-	                <tr>
-	                    <th>序号</th>
-	                    <th>启动时间</th>
-	                    <th>结束时间</th>
-	                    <th>CODmn</th>
-	                </tr>
-	                </thead>
-	                <tbody>
-	                <tr>
-	                    <td>0001</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>5.98</td>
-	                </tr>
-	                <tr>
-	                    <td>0002</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>6.23</td>
-	                </tr>
-	                <tr>
-	                    <td>0003</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>3.15</td>
-	                </tr>
-	                </tbody>
-	            </table>
-	        </div>
-	    </div>
-	    
-	    <div class="page-header">
-	        <h4>仪表报警记录</h4>
-	    </div>
-	    <div class="row">
-	        <div class="col-md-12">
-	            <table class="table table-striped">
-	                <thead>
-	                <tr>
-	                    <th>序号</th>
-	                    <th>报警时间</th>
-	                    <th>复位时间</th>
-	                    <th>报警信息</th>
-	                </tr>
-	                </thead>
-	                <tbody>
-	                <tr>
-	                    <td>0001</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>加水样异常</td>
-	                </tr>
-	                <tr>
-	                    <td>0002</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>加水样异常</td>
-	                </tr>
-	                <tr>
-	                    <td>0003</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>加水样异常</td>
-	                </tr>
-	                </tbody>
-	            </table>
-	        </div>
-	    </div>
-	    
-	    <div class="page-header">
-	        <h4>仪表校准记录</h4>
-	    </div>
-	    <div class="row">
-	        <div class="col-md-12">
-	            <table class="table table-striped">
-	                <thead>
-	                <tr>
-	                    <th>序号</th>
-	                    <th>校准时间</th>
-	                    <th>校准值</th>
-	                    <th>是否通过</th>
-	                </tr>
-	                </thead>
-	                <tbody>
-	                <tr>
-	                    <td>0001</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>5.05</td>
-	                    <td>通过</td>
-	                </tr>
-	                <tr>
-	                    <td>0002</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>5.05</td>
-	                    <td>通过</td>
-	                </tr>
-	                <tr>
-	                    <td>0003</td>
-	                    <td>2020-6-18 06:00</td>
-	                    <td>5.05</td>
-	                    <td>通过</td>
-	                </tr>
-	                </tbody>
-	            </table>
-	        </div>
-	    </div>
+		<nav>
+		  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+		    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">高锰酸盐指数</a>
+		    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">报警记录</a>
+		    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">校准记录</a>
+		  </div>
+		</nav>
+		<div class="tab-content" id="nav-tabContent">
+		  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+			  <!--表格-->
+			  <template>
+			    <div class="overflow-auto">
+			  	  <b-table
+			          id="cod-table"
+			          :items="itemsCod"
+			          :per-page="perPageCod"
+			          :current-page="currentPageCod"
+					  striped hover
+			        ></b-table>
+			  	  <b-pagination
+			  	    v-model="currentPageCod"
+			  	    :total-rows="rowsCod"
+			  	    :per-page="perPageCod"
+			  	    aria-controls="cod-table"
+			  	  ></b-pagination>
+			      </div>
+			  </template>
+			  
+		  </div>
+		  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+			<!--表格-->
+			<template>
+			  <div class="overflow-auto">
+				  <b-table
+			        id="alert-table"
+			        :items="itemsAlert"
+			        :per-page="perPageAlert"
+			        :current-page="currentPageAlert"
+								  striped hover
+			      ></b-table>
+				  <b-pagination
+				    v-model="currentPageAlert"
+				    :total-rows="rowsAlert"
+				    :per-page="perPageAlert"
+				    aria-controls="alert-table"
+				  ></b-pagination>
+			    </div>
+			</template>
+			
+		  </div>
+		  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+			<!--表格-->
+			<template>
+			  <div class="overflow-auto">
+				  <b-table
+			        id="calibration-table"
+			        :items="itemsCalibration"
+			        :per-page="perPageCalibration"
+			        :current-page="currentPageCalibration"
+								  striped hover
+			      ></b-table>
+				  <b-pagination
+				    v-model="currentPageCalibration"
+				    :total-rows="rowsCalibration"
+				    :per-page="perPageCalibration"
+				    aria-controls="calibration-table"
+				  ></b-pagination>
+			    </div>
+			</template>
+			
+		  </div>
+		</div>
+
 	</div>
 	
 </main>
+</div>
 
 <footer class="footer mt-auto py-3">
   <div class="container">
     <span class="text-muted">&copy; 2020 江苏南水科技有限公司</span>
   </div>
 </footer>
-<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-      <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="bootstrap.bundle.js"></script>-->
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-    <script src="dashboard.js"></script>
+
+<script src="format.js"></script>
+<script src="socketcod.js"></script>
+<!--<script src="dashboard.js"></script>-->
+<script src="connect.js"></script>
+
+<script>
+	//自动发送心跳包
+	setTimeout(function(){
+		if(Vm.connected){
+			if(!Vm.autoSend){
+				Vm.heartBeatContent = "RUN_Heart";
+				Vm.autoHeartBeat();
+				console.log('自动发送心跳包' + Vm.autoSend);
+			}
+		}
+	}, 800);
+	//获取仪表COD数据
+	setTimeout(function(){
+		if(Vm.connected){
+			Vm.sendData("GET_CodData")
+		}
+	}, 1000);
+	//获取仪表COD数据
+	setTimeout(function(){
+		if(Vm.connected){
+			Vm.sendData("GET_AlertData")
+		}
+	}, 1200);
+	//获取仪表COD数据
+	setTimeout(function(){
+		if(Vm.connected){
+			Vm.sendData("GET_CalibrationData")
+		}
+	}, 1400);
+</script>
 
 </body>
 </html>

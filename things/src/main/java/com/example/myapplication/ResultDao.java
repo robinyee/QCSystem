@@ -9,7 +9,7 @@ import java.util.List;
 
 @Dao
 public interface ResultDao {
-    @Query("SELECT * FROM result")
+    @Query("SELECT * FROM result ORDER BY time DESC")
     List<Result> getAll();
 
     @Query("SELECT * FROM result  ORDER BY time DESC LIMIT (:num) OFFSET (:start)")

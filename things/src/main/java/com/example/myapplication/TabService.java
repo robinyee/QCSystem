@@ -473,6 +473,39 @@ public class TabService extends Fragment {
             }
         });
 
+        //SwitchS9空白实验按钮点击
+        aSwitchS9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS9.isChecked() && !SysGpio.statusS9) {
+                    SysGpio.s9_KongBaiShiYan();
+                    SysData.workFrom = "触摸屏启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
+                }
+            }
+        });
+
+        //SwitchS10标样测定按钮点击
+        aSwitchS10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS10.isChecked() && !SysGpio.statusS10) {
+                    SysGpio.s10_BiaoYangCeDing();
+                    SysData.workFrom = "触摸屏启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
+                }
+            }
+        });
+
+        //SwitchS11仪器校准按钮点击
+        aSwitchS11.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS11.isChecked() && !SysGpio.statusS11) {
+                    SysGpio.s11_Calibration();
+                    SysData.workFrom = "触摸屏启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
+                }
+            }
+        });
+
         //SwitchS12紧急停止按钮点击
         aSwitchS12.setOnClickListener(new View.OnClickListener() {
             @Override

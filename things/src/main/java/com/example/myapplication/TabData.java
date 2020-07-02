@@ -66,7 +66,8 @@ public class TabData extends Fragment {
     private ArrayList<String> listData;
     private Button btnRefresh, btnQuery, btnExport, btnDelete;
     private Button btnFirstPage, btnPreviousPage, btnNextPage, btnLastPage;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+    private Button btnCodmnData, btnAlterData, btnCalibrationData;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
     private SimpleDateFormat dateFormatShort = new SimpleDateFormat("yyyy年MM月dd日");
 
     ListView listview;
@@ -87,6 +88,9 @@ public class TabData extends Fragment {
         btnPreviousPage = view.findViewById(R.id.btnPreviousPage);
         btnNextPage = view.findViewById(R.id.btnNextPage);
         btnLastPage = view.findViewById(R.id.btnLastPage);
+        btnCodmnData = view.findViewById(R.id.btnCodmnData);
+        btnAlterData = view.findViewById(R.id.btnAlertData);
+        btnCalibrationData = view.findViewById(R.id.btnCalibrationData);
 
         //查询数据
         SysData.currentPage = 1;
@@ -207,6 +211,66 @@ public class TabData extends Fragment {
             }
         });
 
+        //点击CODmnData按钮
+        btnCodmnData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnCodmnData.setTextColor(Color.WHITE);
+                btnAlterData.setTextColor(Color.BLACK);
+                btnCalibrationData.setTextColor(Color.BLACK);
+                SysData.currentPage = 1;
+                SysData.listDataType = "codmn";
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //显示数据列表
+                addListTable();
+            }
+        });
+
+        //点击AlterData按钮
+        btnAlterData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnCodmnData.setTextColor(Color.BLACK);
+                btnAlterData.setTextColor(Color.WHITE);
+                btnCalibrationData.setTextColor(Color.BLACK);
+                SysData.currentPage = 1;
+                SysData.listDataType = "alert";
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //显示数据列表
+                addListTable();
+            }
+        });
+
+        //点击CalibrationData按钮
+        btnCalibrationData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnCodmnData.setTextColor(Color.BLACK);
+                btnAlterData.setTextColor(Color.BLACK);
+                btnCalibrationData.setTextColor(Color.WHITE);
+                SysData.currentPage = 1;
+                SysData.listDataType = "calibration";
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //显示数据列表
+                addListTable();
+            }
+        });
+
         //点击第一页按钮
         btnFirstPage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,9 +285,9 @@ public class TabData extends Fragment {
                 //显示数据列表
                 addListTable();
                 //初始化折线图
-                initView();
+                //initView();
                 //绘制曲线
-                drawLine();
+                //drawLine();
 
             }
         });
@@ -245,9 +309,9 @@ public class TabData extends Fragment {
                 //显示数据列表
                 addListTable();
                 //初始化折线图
-                initView();
+                //initView();
                 //绘制曲线
-                drawLine();
+                //drawLine();
 
             }
         });
@@ -269,9 +333,9 @@ public class TabData extends Fragment {
                 //显示数据列表
                 addListTable();
                 //初始化折线图
-                initView();
+                //initView();
                 //绘制曲线
-                drawLine();
+                //drawLine();
 
             }
         });
@@ -290,9 +354,9 @@ public class TabData extends Fragment {
                 //显示数据列表
                 addListTable();
                 //初始化折线图
-                initView();
+                //initView();
                 //绘制曲线
-                drawLine();
+                //drawLine();
 
             }
         });
@@ -331,7 +395,15 @@ public class TabData extends Fragment {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    SysData.results = MainActivity.db.resultDao().findByTime(SysData.startDataTime, SysData.endDataTime);
+                                    if(SysData.listDataType.equals("codmn")) {
+                                        SysData.results = MainActivity.db.resultDao().findByTime(SysData.startDataTime, SysData.endDataTime);
+                                    }
+                                    if(SysData.listDataType.equals("alert")) {
+                                        SysData.alertLogs = MainActivity.db.alertLogDao().findByTime(SysData.startDataTime, SysData.endDataTime);
+                                    }
+                                    if(SysData.listDataType.equals("calibration")) {
+                                        SysData.calibrations = MainActivity.db.calibrationDao().findByTime(SysData.startDataTime, SysData.endDataTime);
+                                    }
                                 }
                             }).start();
                             try {
@@ -365,7 +437,7 @@ public class TabData extends Fragment {
         final AlertDialog.Builder altDialog = new AlertDialog.Builder(getActivity());
         altDialog.setIcon(R.drawable.ic_warning_black_24dp);
         altDialog.setTitle("警告");
-        altDialog.setMessage("清空数据：" + SysData.errorMsg + "\n数据删除后将不能恢复，是否清除所有数据？");
+        altDialog.setMessage("清空数据：" + SysData.listDataType + "\n数据删除后将不能恢复，是否清除所有数据？");
         altDialog.setPositiveButton("清空",
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -374,7 +446,16 @@ public class TabData extends Fragment {
                             @Override
                             public void run() {
                                 Log.i("数据库", "删除数据");
-                                MainActivity.db.resultDao().deleteByTime(System.currentTimeMillis());
+                                if(SysData.listDataType.equals("codmn")) {
+                                    MainActivity.db.resultDao().deleteByTime(System.currentTimeMillis());
+                                }
+                                if(SysData.listDataType.equals("alert")) {
+                                    MainActivity.db.alertLogDao().deleteByTime(System.currentTimeMillis());
+                                }
+                                if(SysData.listDataType.equals("calibration")) {
+                                    MainActivity.db.calibrationDao().deleteByTime(System.currentTimeMillis());
+                                }
+
                                 SysData.currentPage = 1;
                                 SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                             }
@@ -417,24 +498,58 @@ public class TabData extends Fragment {
     public void addListTable() {
         //将数据加入到ListView展示数据
         listData = new ArrayList<String>();
-        if(SysData.results != null && !SysData.results.isEmpty()) {
-            for (Result result : SysData.results) {
-                listData.add(result.rid + "     " + dateFormat.format(result.dateTime) + "     " + result.dataType + "     " + result.dataValue + " mg/L");
+        if(SysData.listDataType.equals("codmn")) {
+            if (SysData.results != null && !SysData.results.isEmpty()) {
+                listData.add("序号\t\t\t\t时间\t\t\t类型\t测定结果");
+                for (Result result : SysData.results) {
+                    listData.add(result.rid + "\t\t" + dateFormat.format(result.dateTime) + "\t" + result.dataType + "\t" + result.dataValue + " mg/L");
+                }
+                String[] stringData = listData.toArray(new String[0]);
+                listview.setAdapter(new DataAdapter(view.getContext(), stringData));
+            } else {
+                listData.add("暂未查询到数据");
+                String[] stringData = listData.toArray(new String[0]);
+                listview.setAdapter(new DataAdapter(view.getContext(), stringData));
             }
-            String[] stringData = listData.toArray(new String[0]);
-            listview.setAdapter(new DataAdapter(view.getContext(), stringData));
-        } else {
-            listData.add("暂未查询到数据");
-            String[] stringData = listData.toArray(new String[0]);
-            listview.setAdapter(new DataAdapter(view.getContext(), stringData));
+        }
+        if(SysData.listDataType.equals("alert")) {
+            if (SysData.alertLogs != null && !SysData.alertLogs.isEmpty()) {
+                listData.add("序号\t\t报警时间\t\t\t\t出错信息\t\t\t\t复位时间");
+                for (AlertLog alertLog : SysData.alertLogs) {
+                    listData.add(alertLog.alertid + "\t" + dateFormat.format(alertLog.alertTime) + "\t"
+                            + "\t" + alertLog.errorMsg+ "\t" + dateFormat.format(alertLog.alertTime));
+                }
+                String[] stringData = listData.toArray(new String[0]);
+                listview.setAdapter(new DataAdapter(view.getContext(), stringData));
+            } else {
+                listData.add("暂未查询到数据");
+                String[] stringData = listData.toArray(new String[0]);
+                listview.setAdapter(new DataAdapter(view.getContext(), stringData));
+            }
+        }
+        if(SysData.listDataType.equals("calibration")) {
+            if (SysData.calibrations != null && !SysData.calibrations.isEmpty()) {
+                listData.add("序号\t\t时间\t\t\t\t\t原值\t\t滴定量\t\tK值\t\t新值");
+                for (Calibration calibration : SysData.calibrations) {
+                    listData.add(calibration.cid + "\t\t" + dateFormat.format(calibration.dateTime) + "\t\t" +
+                            calibration.byValue + "\t\t" + calibration.gmsjValue + "\t\t" + calibration.coefficient + "\t\t" + calibration.newValue);
+                }
+                String[] stringData = listData.toArray(new String[0]);
+                listview.setAdapter(new DataAdapter(view.getContext(), stringData));
+            } else {
+                listData.add("暂未查询到数据");
+                String[] stringData = listData.toArray(new String[0]);
+                listview.setAdapter(new DataAdapter(view.getContext(), stringData));
+            }
         }
     }
 
     //绘制曲线
     public void drawLine() {
+        SysData.readChartData(30, 0);       //从数据库中读取30条数据
         //结果数据绘制成折线图
-        for (int i = SysData.results.size() - 1; i >= 0; i--) {
-            addPoint(SysData.results.size() - i, SysData.results.get(i).dataValue);
+        for (int i = SysData.resultChart.size() - 1; i >= 0; i--) {
+            addPoint(SysData.resultChart.size() - i, SysData.resultChart.get(i).dataValue);
         }
     }
 
@@ -460,10 +575,10 @@ public class TabData extends Fragment {
 
         //根据点的横坐实时变幻坐标的视图范围
         Viewport port;
-        if (x > 52) {
-            port = initViewPort(x - 52, x);
+        if (x > 30) {
+            port = initViewPort(x - 30, x);
         } else {
-            port = initViewPort(0, 52);
+            port = initViewPort(0, 30);
         }
         lineChartView.setCurrentViewport(port);//当前窗口
 
@@ -535,7 +650,7 @@ public class TabData extends Fragment {
         lineChartData = initDatas(null);
         lineChartView.setLineChartData(lineChartData);
 
-        Viewport port = initViewPort(0, 52);
+        Viewport port = initViewPort(0, 30);
         lineChartView.setCurrentViewportWithAnimation(port);
         lineChartView.setInteractive(false);
         lineChartView.setScrollEnabled(true);
@@ -594,7 +709,7 @@ public class TabData extends Fragment {
         port.top = 10;
         port.bottom = 0;
         port.left = 0;
-        port.right = right + 52;
+        port.right = right + 30;
         return port;
     }
 
