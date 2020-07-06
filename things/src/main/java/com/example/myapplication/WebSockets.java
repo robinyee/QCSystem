@@ -306,7 +306,7 @@ public class WebSockets extends NanoWSD {
                 Log.i(TAG, "cmdData：" + cmdData);
                 try {
                     switch (cmdName) {
-                        case "nextStartTime":  //判断日期格式是否正确
+                        case "nextStartTime":  //判断日期格式是否正确，防止日期时间输入不全，导致的出错
                             if(cmdData.length() > 12) {
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                                 Date date = simpleDateFormat.parse(cmdData);
