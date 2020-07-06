@@ -411,7 +411,7 @@ var Vm = new Vue({
 				_this.respond = obj.respond;
 				_this.token = obj.token;
 				_this.username = obj.user;
-				_this.makeToast("用户名或密码错误，请重新输入", "错误", 'danger', 'b-toaster-top-center');
+				_this.makeToast("验证错误或登录超时，请重新登录", "错误", 'danger', 'b-toaster-top-center');
 				//_this.makeToast('success');
 			}
 			//控制台输出

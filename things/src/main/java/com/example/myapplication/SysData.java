@@ -153,6 +153,7 @@ public class SysData {
                 result.dataType = "COD";
                 result.dataValue = codValue;
                 MainActivity.db.resultDao().insert(result);
+                MainActivity.db.calibrationDao().deleteById(16); //删除16号校准数据
             }
         }).start();
     }
@@ -246,6 +247,17 @@ public class SysData {
             @Override
             public void run() {
                 MainActivity.db.alertLogDao().updateByFlag(System.currentTimeMillis());
+            }
+        }).start();
+    }
+
+    //删除一条校准记录
+    public static void delDataFromCalibration(final int id) {
+        Log.i("数据库", "删除一条校准记录");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.db.calibrationDao().deleteById(id); //删除16号校准数据
             }
         }).start();
     }

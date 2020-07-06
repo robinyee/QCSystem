@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 AppDatabase.class, "db_cod").build();  //创建数据库
         SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
         SysData.readChartData(30, 0);       //从数据库中读取30条数据
+        //SysData.delDataFromCalibration(16);         //删除一条校准记录
 
         //clearPreferences();
         //读取系统参数

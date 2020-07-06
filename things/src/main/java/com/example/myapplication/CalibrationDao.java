@@ -35,4 +35,7 @@ public interface CalibrationDao {
 
     @Query("DELETE FROM calibration WHERE time <= (:time)")
     void deleteByTime(Long time);
+
+    @Query("DELETE FROM calibration WHERE cid = (:id)")
+    void deleteById(int id);
 }

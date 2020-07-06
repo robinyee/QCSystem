@@ -8,33 +8,23 @@
     <meta name="generator" content="Jekyll v4.0.1">
 	<link rel="icon" href="favicon.ico">
     <title>高锰酸盐指数在线分析仪</title>
-	
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<!--	
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <script src="https://cdn.staticfile.org/vue/2.2.6/vue.js"></script>
-	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>-->
-	<script src="https://cdn.bootcdn.net/ajax/libs/feather-icons/4.9.0/feather.js"></script>
-	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>-->
-	<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>-->
-	<!--<script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="bootstrap.bundle.js"></script>-->
-	
-	
-	<!-- Add this to <head> -->
-	<!-- Load required Bootstrap and BootstrapVue CSS -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 	<link type="text/css" rel="stylesheet" href="https://unpkg.zhimg.com/bootstrap/dist/css/bootstrap.min.css" />
 	<link type="text/css" rel="stylesheet" href="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
-
-	<!-- Load polyfills to support older browsers -->
-	<script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
-
-	<!-- Load Vue followed by BootstrapVue -->
 	<script src="https://unpkg.zhimg.com/vue@latest/dist/vue.min.js"></script>
 	<script src="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-
-	<!-- Load the following for BootstrapVueIcons support -->
 	<script src="https://unpkg.zhimg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+-->	
+
+	<link type="text/css" rel="stylesheet" href="bootstrap.min.css" />
+	<link type="text/css" rel="stylesheet" href="bootstrap-vue.min.css" />
+	<script src="vue.min.js"></script>
+	<script src="bootstrap-vue.min.js"></script>
+	<script src="bootstrap-vue-icons.min.js"></script>
 	
 	<style>
       .bd-placeholder-img {
@@ -159,9 +149,9 @@
 						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS5 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS5')" >消解</button></dd>
 						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS6 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS6')" >滴定</button></dd>
 						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS7 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS7')" >水质测定</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS8 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('RUN_Reset')" >仪表复位</button></dd>
 						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS9 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS9')" >空白实验</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS10 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS10')" >试剂标定</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS8 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('RUN_Reset')" >仪表复位</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS10 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS10')" >标样测定</button></dd>
 						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS11 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS11')" >仪表校准</button></dd>
 						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS12 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('RUN_Stop')" >紧急停止</button></dd>
 					  </dl>
@@ -184,6 +174,13 @@
 
       
 </body>
+
+<!--加载库文件-->
+<script src="jquery.slim.min.js"></script>
+<script src="popper.min.js"></script>
+<script src="bootstrap.min.js"></script>
+<script src="feather.min.js"></script>	
+<!--加载库文件-->
 
 <script src="format.js"></script>
 <script src="socketcod.js"></script>

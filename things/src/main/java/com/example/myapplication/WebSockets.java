@@ -306,10 +306,14 @@ public class WebSockets extends NanoWSD {
                 Log.i(TAG, "cmdData：" + cmdData);
                 try {
                     switch (cmdName) {
-                        case "nextStartTime":
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                            Date date = simpleDateFormat.parse(cmdData);
-                            SysData.nextStartTime = date.getTime();
+                        case "nextStartTime":  //判断日期格式是否正确
+                            if(cmdData.length() > 12) {
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                Date date = simpleDateFormat.parse(cmdData);
+                                SysData.nextStartTime = date.getTime();
+                            } else {
+                                return;
+                            }
                             break;
                         case "startCycle":
                             SysData.startCycle = Integer.parseInt(cmdData);
@@ -569,10 +573,10 @@ public class WebSockets extends NanoWSD {
                     if(rss != null && !rss.isEmpty()) {
                         for (Result result : rss) {
                             JSONObject line = new JSONObject();
-                            line.put("ID", result.rid);
-                            line.put("Time", formater.format(result.dateTime));
+                            line.put("序号", result.rid);
+                            line.put("时间", formater.format(result.dateTime));
                             line.put("CODmn", result.dataValue + " mg/L");
-                            line.put("Remark", " ");
+                            line.put("备注", " ");
                             listObjects.add(line);
                         }
                     }
@@ -593,12 +597,12 @@ public class WebSockets extends NanoWSD {
                     if(rss != null && !rss.isEmpty()) {
                         for (AlertLog alertLog : rss) {
                             JSONObject line = new JSONObject();
-                            line.put("ID", alertLog.alertid);
-                            line.put("Time", formater.format(alertLog.alertTime));
-                            line.put("ErrorId", alertLog.errorId);
-                            line.put("ErrorMsg", alertLog.errorMsg);
-                            line.put("ResetFlag", alertLog.resetFlag);
-                            line.put("ResetTime", formater.format(alertLog.resetTime));
+                            line.put("序号", alertLog.alertid);
+                            line.put("时间", formater.format(alertLog.alertTime));
+                            line.put("出错代码", alertLog.errorId);
+                            line.put("出错信息", alertLog.errorMsg);
+                            line.put("复位标志", alertLog.resetFlag);
+                            line.put("复位时间", formater.format(alertLog.resetTime));
                             listObjects.add(line);
                         }
                     }
@@ -619,13 +623,13 @@ public class WebSockets extends NanoWSD {
                     if(rss != null && !rss.isEmpty()) {
                         for (Calibration calibration : rss) {
                             JSONObject line = new JSONObject();
-                            line.put("ID", calibration.cid);
-                            line.put("Time", formater.format(calibration.dateTime));
-                            line.put("OrgValue", calibration.byValue);
-                            line.put("CsnValue", calibration.csnValue);
-                            line.put("GmsjValue", calibration.gmsjValue);
-                            line.put("Coefficient", calibration.coefficient);
-                            line.put("NewValue", calibration.newValue);
+                            line.put("序号", calibration.cid);
+                            line.put("时间", formater.format(calibration.dateTime));
+                            line.put("原值", calibration.byValue);
+                            line.put("新值", calibration.newValue);
+                            line.put("系数", calibration.coefficient);
+                            line.put("草酸钠", calibration.csnValue);
+                            line.put("高锰酸钾", calibration.gmsjValue);
                             listObjects.add(line);
                         }
                     }
