@@ -602,7 +602,11 @@ public class WebSockets extends NanoWSD {
                             line.put("出错代码", alertLog.errorId);
                             line.put("出错信息", alertLog.errorMsg);
                             line.put("复位标志", alertLog.resetFlag);
-                            line.put("复位时间", formater.format(alertLog.resetTime));
+                            if(alertLog.resetTime != null) {
+                                line.put("复位时间", formater.format(alertLog.resetTime));
+                            } else {
+                                line.put("复位时间", " ");
+                            }
                             listObjects.add(line);
                         }
                     }

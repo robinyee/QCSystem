@@ -144,7 +144,7 @@ public class SysData {
 
     //保存测定值数据至数据库
     public static void saveDataToDB() {
-        Log.i("数据库", "添加数据");
+        Log.i("数据库", "添加测定结果数据");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -160,7 +160,7 @@ public class SysData {
 
     //保存校准数据至数据库
     public static void saveCalibrationDataToDB() {
-        Log.i("数据库", "添加数据");
+        Log.i("数据库", "添加校准数据");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -183,7 +183,7 @@ public class SysData {
 
     //保存报警记录数据至数据库
     public static void saveAlertToDB() {
-        Log.i("数据库", "添加数据");
+        Log.i("数据库", "添加报警信息数据");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -192,7 +192,7 @@ public class SysData {
                 alertLog.errorId = errorId;
                 alertLog.errorMsg = errorMsg;
                 alertLog.resetFlag = 0;
-                alertLog.resetTime = (long) 0;
+                alertLog.resetTime = null;
                 MainActivity.db.alertLogDao().insert(alertLog);
             }
         }).start();
@@ -200,7 +200,7 @@ public class SysData {
 
     //从数据库读取曲线数据
     public static void readChartData(final int num, final int start) {
-        Log.i("数据库", "读取数据");
+        Log.i("数据库", "读取趋势线数据");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -242,11 +242,12 @@ public class SysData {
 
     //复位报警记录
     public static void resetAlert() {
-        Log.i("数据库", "更新数据");
+        Log.i("数据库", "更新报警信息数据");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 MainActivity.db.alertLogDao().updateByFlag(System.currentTimeMillis());
+                Log.i("更新数据库", "resetTime:" + System.currentTimeMillis());
             }
         }).start();
     }

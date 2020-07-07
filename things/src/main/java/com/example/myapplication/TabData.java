@@ -516,8 +516,13 @@ public class TabData extends Fragment {
             if (SysData.alertLogs != null && !SysData.alertLogs.isEmpty()) {
                 listData.add("序号\t\t报警时间\t\t\t\t出错信息\t\t\t\t复位时间");
                 for (AlertLog alertLog : SysData.alertLogs) {
-                    listData.add(alertLog.alertid + "\t" + dateFormat.format(alertLog.alertTime) + "\t"
-                            + "\t" + alertLog.errorMsg+ "\t" + dateFormat.format(alertLog.alertTime));
+                    if(alertLog.resetTime != null) {
+                        listData.add(alertLog.alertid + "\t" + dateFormat.format(alertLog.alertTime) + "\t"
+                                + "\t" + alertLog.errorMsg + "\t" + dateFormat.format(alertLog.resetTime));
+                    } else {
+                        listData.add(alertLog.alertid + "\t" + dateFormat.format(alertLog.alertTime) + "\t"
+                                + "\t" + alertLog.errorMsg + "\t" + " ");
+                    }
                 }
                 String[] stringData = listData.toArray(new String[0]);
                 listview.setAdapter(new DataAdapter(view.getContext(), stringData));

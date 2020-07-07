@@ -615,10 +615,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 int errorid = 0;
-                String errorMsg = "";
                 do {
                     errorid = SysData.errorId;
-                    errorMsg = SysData.errorMsg;
                     //保存运行状态数据
                     if(SysData.isRun){
                         saveMeterStatus();  //仪器运行时定时保存仪器状态数据
@@ -657,6 +655,9 @@ public class MainActivity extends AppCompatActivity {
                             SysData.errorMsg = "蒸馏水试剂量低";
                             SysData.errorId = 9;
                         }
+                        if(errorid != SysData.errorId || errorid == 9) {
+                            SysData.saveAlertToDB();  //保存报警记录
+                        }
                     }
                     //加热器温度大于150度，反应器内温度高于100度，停止加热并报警
                     if(SysData.tempOut > 150 || SysData.tempIn > 110) {
@@ -665,6 +666,9 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "run: 停止加热");
                             SysData.errorMsg = "反应器温度过高";
                             SysData.errorId = 7;
+                            if(errorid != SysData.errorId || errorid == 7) {
+                                SysData.saveAlertToDB();  //保存报警记录
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -676,16 +680,14 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "run: 停止加热");
                             SysData.errorMsg = "主板温度过高";
                             SysData.errorId = 10;
+                            if(errorid != SysData.errorId || errorid == 10) {
+                                SysData.saveAlertToDB();  //保存报警记录
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
 
-                    if(SysData.errorId != 0) {
-                        if(errorid != SysData.errorId || errorMsg != SysData.errorMsg) {
-                            SysData.saveAlertToDB();  //保存报警记录
-                        }
-                    }
                 } while (true);
             }
         }).start();
