@@ -282,7 +282,7 @@ public class OutCom {
             sendBytes(askStr, true);
         }
         if(addr == 4) {
-            //读取仪表状态 03 03 00 04 00 00 XX XX
+            //读取仪表状态 03 03 00 04 00 01 XX XX
             Log.w(TAG,  "读取仪表状态");
             String askStr = "";
             int status = 0;
@@ -328,7 +328,7 @@ public class OutCom {
             if(b[5] == 1) {
                 Log.w(TAG, "上位机启动仪表开始测试");
                 if(!SysData.isRun) {
-                    SysGpio.s7_ShuiZhiCeDing();      //启动仪表
+                    SysGpio.s7_ShuiZhiCeDing();             //启动仪表
                     SysData.workFrom = "串口启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
                 }
                 String sendStr = bytes2HexString(b);
@@ -347,6 +347,10 @@ public class OutCom {
             }
             if(b[5] == 3) {
                 Log.w(TAG, "上位机启动仪表校准");
+                if(!SysData.isRun) {
+                    SysGpio.s11_Calibration();             //仪表校准
+                    SysData.workFrom = "串口启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
+                }
                 String sendStr = bytes2HexString(b);
                 sendBytes(sendStr, false);
             }
