@@ -33,7 +33,9 @@ public class SysData {
     static int didingDeviation = 720;           //开始滴定到出液体需要的步数
     static double originalValue = 0;            //校准前的cod值
     static double newValue = 0;                 //校准后的cod值
-    static double coefficient = 1.0;             //标定系数K值
+    static double coefficient = 1.0;            //标定系数K值
+    static double ccf = 1.0;                    //浓度修正因子，0.01浓度值为1.0，0.025浓度值为0.97
+
 
     //仪器运行状态
     static boolean isGetNetTime = false;        //是否已经获取到网络时间
@@ -120,11 +122,19 @@ public class SysData {
 
     //计算COD的值
     public static double calculationValue() {
+        if(caosuannaCon == 0.025) {
+            ccf = 0.97;    //0.025浓度的试剂修正值
+        } else {
+            ccf = 1.00;
+        }
         double k = caosuannaVolume / biaodingValue;
         didingSumVolume = didingNum * didingVolume;
         didingSumVolume = (double)Math.round(didingSumVolume*100)/100;  //取小数点后两位
-        codValue = ((gaomengsuanjiaVolume + didingSumVolume) * k - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
+        codValue = ((gaomengsuanjiaVolume + didingSumVolume) * k * ccf - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
         codValue = (double)Math.round(codValue*100)/100;  //取小数点后两位
+        if(codValue < 0) {
+            codValue = 0;    //当测定值小于0时，返回0
+        }
         return codValue;
     }
 

@@ -991,7 +991,7 @@ public class SysGpio {
                 SysGpio.readAd();
                 Log.d(TAG, "run: 滴定线程开始");
                 statusS6 = true;
-                int Difference = 20;  //滴定时模拟量下降的值大于这个差值判定为滴定终点
+                int Difference = 10;  //滴定时模拟量下降的值大于这个差值判定为滴定终点
 
                 //记录初始光电值，取10次采样的平均值
                 int light = 0;
@@ -1010,6 +1010,7 @@ public class SysGpio {
 
                 //重置滴定量
                 SysData.didingNum = 0;
+                int endDidingNum = 0; //记录滴定终端时滴数
                 int ddNum = 0;
                 //停止持续读取温度和模拟量
                 SysGpio.readTempFlag = false;
@@ -1075,43 +1076,29 @@ public class SysGpio {
                         //读取模拟量值
                         MainActivity.com0.getAd();
                         Thread.sleep(1600);
-                        //如果光电值降低5以上，等待10S
-                        if((SysData.startAdLight - SysData.adLight) >= (Difference / 2) ){
+                        //如果光电值降低Difference/4以上，等待2S
+                        if((SysData.startAdLight - SysData.adLight) >= (Difference / 4) ){
                             //读取温度
                             SysGpio.readTempFlag = true;
                             SysGpio.readAd();
-                            Thread.sleep(1000);
-                            //取10次采样的平均值
-                            light = 0;
-                            for(int i = 0; i < 10; i++) {
-                                //等待获取模拟量的值
-                                try {
-                                    Thread.sleep(200);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                light = light + SysData.adLight;
-                                endAdLight = light / (i + 1);
+                            Thread.sleep(3000);
+                            if(endDidingNum == 0) {
+                                endDidingNum = SysData.didingNum;
                             }
-                            if((SysData.startAdLight - endAdLight) >= Difference ) {
-                                Thread.sleep(20000);
-                                //取10次采样的平均值
-                                light = 0;
-                                for(int i = 0; i < 10; i++) {
-                                    //等待获取模拟量的值
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    light = light + SysData.adLight;
-                                    endAdLight = light / (i + 1);
-                                }
-                                if((SysData.startAdLight - endAdLight) >= Difference) {
-                                    Log.d(TAG, "滴定终点光电值：" + endAdLight);
+
+                            if((SysData.startAdLight - SysData.adLight) >= Difference ) {
+                                Thread.sleep(30000);
+
+                                if((SysData.startAdLight - SysData.adLight) >= Difference) {
+                                    Log.d(TAG, "滴定终点光电值：" + SysData.adLight);
                                     isEnd = true;
+                                    SysData.didingNum = endDidingNum;
+                                } else {
+                                    endDidingNum = 0;
                                 }
                             }
+                        } else {
+                            endDidingNum = 0;
                         }
                         SysData.startAdLight = (SysData.adLight > SysData.startAdLight) ? SysData.adLight : SysData.startAdLight;  //初始光电值取最大值
                         SysGpio.readTempFlag = false;  //停止循环读取温度

@@ -695,7 +695,7 @@ public class TabData extends Fragment {
 
     private Viewport initViewPort(float left, float right) {
         Viewport port = new Viewport();
-        port.top = 10;
+        port.top = 20;
         port.bottom = 0;
         port.left = left;
         port.right = right;
@@ -711,7 +711,7 @@ public class TabData extends Fragment {
 
     private Viewport initMaxViewPort(float right) {
         Viewport port = new Viewport();
-        port.top = 10;
+        port.top = 20;
         port.bottom = 0;
         port.left = 0;
         port.right = right + 30;

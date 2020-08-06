@@ -556,7 +556,7 @@
                     android:layout_marginLeft="20dp"
                     android:gravity="center"
                     android:imeOptions="actionDone"
-                    android:hint="输入草酸钠浓度"
+                    android:hint="输入1/2草酸钠浓度"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
                     android:textSize="14sp" />
@@ -565,6 +565,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:text="mol/L"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="1/2草酸钠浓度0.01或0.025"/>
             </TableRow>
             <TableRow>
                 <TextView
