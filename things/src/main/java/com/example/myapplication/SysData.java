@@ -132,9 +132,13 @@ public class SysData {
         didingSumVolume = (double)Math.round(didingSumVolume*100)/100;  //取小数点后两位
         codValue = ((gaomengsuanjiaVolume + didingSumVolume) * k * ccf - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
         codValue = (double)Math.round(codValue*100)/100;  //取小数点后两位
+        //数据检查，异常数据修正
         if(codValue < 0) {
             codValue = 0;    //当测定值小于0时，返回0
+        } else if (codValue > 25) {
+            codValue = 25;    //当测定值大于25时，返回25
         }
+        //返回COD值
         return codValue;
     }
 
