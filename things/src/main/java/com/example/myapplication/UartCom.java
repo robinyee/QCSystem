@@ -215,6 +215,11 @@ public class UartCom {
         sendBytes(cmdLine, true, 2);
     }
 
+    //注射泵初始化，修改默认地址，devId:进样泵-01，锰泵-02，钠泵-03
+    public void pumpInit(int devId){
+        byte[] cmdLine = new byte[] {(byte) 0xcc, (byte) 0x00, (byte) 0x00, (byte) 0xff, (byte) 0xee, (byte) 0xbb, (byte) 0xaa, (byte) devId, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0xdd};
+        sendBytes(cmdLine, true, 2);
+    };
 
     /**
      * 校验接收的数据是否正确

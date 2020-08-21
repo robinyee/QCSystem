@@ -168,76 +168,7 @@
                     android:text="0"/>
             </TableRow>
 
-            <TableRow>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:text="WIFI状态"/>
-                <TextView
-                    android:id="@+id/wifissid"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="left"
-                    android:layout_span="1"
-                    android:text="" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:text="IP地址"/>
-                <TextView
-                    android:id="@+id/localip"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_span="1"
-                    android:text="" />
 
-            </TableRow>
-            <TableRow>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="系统时间"/>
-                <TextView
-                    android:id="@+id/sysdate"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="10dp"
-                    android:gravity="left"
-                    android:layout_span="1"
-                    android:text="系统时间"/>
-                <!--<TextView
-                    android:id="@+id/systime"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text=""/>-->
-                <Button
-                    android:id="@+id/setuptime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_build_white_24dp"
-                    android:background="@android:drawable/list_selector_background"
-                    android:layout_marginLeft="20dp"
-                    android:layout_gravity="left"
-                    android:text="设置时间"/>
-                <ImageView
-                    android:id="@+id/imageViewZXing"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="fill"
-                    android:layout_marginLeft="20dp"/>
-            </TableRow>
         </TableLayout>
         <ImageView
             android:layout_width="match_parent"
@@ -712,7 +643,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_span="2"
-                    android:text="启动次数输入999即连续运行"/>
+                    android:text=""/>
                 <Switch
                     android:id="@+id/isLoop"
                     android:layout_width="wrap_content"
@@ -912,6 +843,79 @@
                     android:layout_gravity="left"
                     android:background="@android:drawable/list_selector_background"
                     android:text="重启仪表"/>
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="WIFI状态"/>
+                <TextView
+                    android:id="@+id/wifissid"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="left"
+                    android:layout_span="1"
+                    android:text="" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="IP地址"/>
+                <TextView
+                    android:id="@+id/localip"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_span="1"
+                    android:text="" />
+                <ImageView
+                    android:id="@+id/imageViewZXing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill"
+                    android:layout_marginLeft="20dp"/>
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="系统时间"/>
+                <TextView
+                    android:id="@+id/sysdate"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left"
+                    android:layout_span="3"
+                    android:text=""/>
+                <!--<TextView
+                    android:id="@+id/systime"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text=""/>-->
+                <Button
+                    android:id="@+id/setuptime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_build_white_24dp"
+                    android:background="@android:drawable/list_selector_background"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="left"
+                    android:layout_span="2"
+                    android:text="设置时间"/>
+
             </TableRow>
         </TableLayout>
 

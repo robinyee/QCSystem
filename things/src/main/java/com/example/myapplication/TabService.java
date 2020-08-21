@@ -254,7 +254,9 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutP1.setValue(aSwitchP1.isChecked());
-                } catch (IOException e) {
+                    Thread.sleep(1000);
+                    MainActivity.com0.pumpInit(1);
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -266,19 +268,23 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutP2.setValue(aSwitchP2.isChecked());
-                } catch (IOException e) {
+                    Thread.sleep(1000);
+                    MainActivity.com0.pumpInit(2);
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        //SwitchB1按钮点击
+        //SwitchP3按钮点击
         aSwitchP3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutP3.setValue(aSwitchP3.isChecked());
-                } catch (IOException e) {
+                    Thread.sleep(1000);
+                    MainActivity.com0.pumpInit(3);
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
