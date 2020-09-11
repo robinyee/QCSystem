@@ -858,7 +858,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="5dp"
-                    android:gravity="left"
+                    android:gravity="center"
                     android:layout_span="1"
                     android:text="" />
                 <TextView
@@ -873,6 +873,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="5dp"
+                    android:gravity="center"
                     android:layout_span="1"
                     android:text="" />
                 <ImageView
@@ -889,22 +890,31 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="10dp"
-                    android:text="系统时间"/>
+                    android:text="系统日期"/>
                 <TextView
                     android:id="@+id/sysdate"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="10dp"
-                    android:gravity="left"
-                    android:layout_span="3"
+                    android:gravity="center"
+                    android:layout_span="1"
                     android:text=""/>
-                <!--<TextView
-                    android:id="@+id/systime"
-                    android:layout_width="150dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text=""/>-->
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="系统时间"/>
+                <TextView
+                    android:id="@+id/systime"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:layout_span="1"
+                    android:text=""/>
                 <Button
                     android:id="@+id/setuptime"
                     android:layout_width="wrap_content"

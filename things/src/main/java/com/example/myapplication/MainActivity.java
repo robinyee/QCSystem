@@ -122,13 +122,16 @@ public class MainActivity extends AppCompatActivity {
         String ssid = getWifiSsid(getApplicationContext());
         SysData.wifiSsid = ssid;
 
+
         //获取网络ip地址
         SysData.localIpAddr = getLocalIpAddress();
-        //更新访问网址
-        updateNet();
 
-        //启动web服务
-        startWebService();
+        if(SysData.localIpAddr != null && SysData.localIpAddr.length >= 1) {
+            //更新访问网址
+            updateNet();
+            //启动web服务
+            startWebService();
+        }
 
         //前次正在测试中断电，自动复位
         if(SysData.isRun) {
@@ -370,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i < SysData.localIpAddr.length; i++) {
             Log.i("MainActivity", "本机IP地址：" + SysData.localIpAddr[i]);
         }
-        if(SysData.webIPAddr.equals("")) {
+        if(SysData.webIPAddr.equals("0.0.0.0")) {
             if(SysData.localIpAddr.length > 0) {
                 SysData.webIPAddr = SysData.localIpAddr[0];
             }
@@ -659,8 +662,8 @@ public class MainActivity extends AppCompatActivity {
                             SysData.saveAlertToDB();  //保存报警记录
                         }
                     }
-                    //加热器温度大于150度，反应器内温度高于100度，停止加热并报警
-                    if(SysData.tempOut > 150 || SysData.tempIn > 110) {
+                    //加热器温度大于200度，反应器内温度高于100度，停止加热并报警
+                    if(SysData.tempOut > 200 || SysData.tempIn > 110) {
                         try {
                             SysGpio.mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");
@@ -673,8 +676,8 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                    //主板温度高于50度，停止加热并报警
-                    if(SysData.tempBox >= 50) {
+                    //主板温度高于60度，停止加热并报警
+                    if(SysData.tempBox >= 60) {
                         try {
                             SysGpio.mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");

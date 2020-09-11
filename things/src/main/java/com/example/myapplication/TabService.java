@@ -254,8 +254,10 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutP1.setValue(aSwitchP1.isChecked());
-                    Thread.sleep(1000);
-                    MainActivity.com0.pumpInit(1);
+                    if(aSwitchP1.isChecked()) {
+                        Thread.sleep(1000);
+                        MainActivity.com0.pumpInit(1);
+                    }
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -268,8 +270,10 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutP2.setValue(aSwitchP2.isChecked());
-                    Thread.sleep(1000);
-                    MainActivity.com0.pumpInit(2);
+                    if(aSwitchP2.isChecked()) {
+                        Thread.sleep(1000);
+                        MainActivity.com0.pumpInit(2);
+                    }
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -282,8 +286,10 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutP3.setValue(aSwitchP3.isChecked());
-                    Thread.sleep(1000);
-                    MainActivity.com0.pumpInit(3);
+                    if(aSwitchP3.isChecked()) {
+                        Thread.sleep(1000);
+                        MainActivity.com0.pumpInit(3);
+                    }
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }

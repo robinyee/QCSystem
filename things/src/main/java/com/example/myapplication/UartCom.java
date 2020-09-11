@@ -126,9 +126,12 @@ public class UartCom {
                 }
                 //显示数据包的数据
                 //Log.v(TAG,"数据包长度：" + num);
+                /*
                 for(int i = 0; i < num; i++){
-                    //Log.v(TAG,i + ":" + data[i]);
+                    Log.v(TAG,i + ":" + data[i]);
                 }
+
+                 */
                 //去除数据数组的空值，解析数据
                 byte[] backData = new byte[num];
                 System.arraycopy(data, 0, backData, 0, num);
@@ -276,9 +279,14 @@ public class UartCom {
         }
         try {
             mUartDevice.write(bytes, bytes.length);
-            //Log.v(TAG, "已发送数据:" + bytes[0] + " " + bytes[1]  + " " + bytes[2] + " " + bytes[3] + " " + bytes[4]
-            //+ " " + bytes[5]  + " " + bytes[6] + " " + bytes[7]);
+            /*
+            Log.v(TAG, "已发送数据:");
+            for (byte x : bytes) {
+                //System.out.print(x);
+                //Log.w(TAG, "x" + x);
+            }
 
+             */
             return bytes.length;
         } catch (IOException e) {
             e.printStackTrace();

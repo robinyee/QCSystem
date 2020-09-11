@@ -174,7 +174,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="24V"/>
+                        android:text="AD"/>
                 </TableRow>
             </TableLayout>
 

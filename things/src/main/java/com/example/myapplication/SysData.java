@@ -25,6 +25,7 @@ public class SysData {
     static int didingStep = 50;                 //每滴滴定步数
     static double didingVolume = 0.1;           //每滴滴定体积
     static int didingNum = 0;                   //滴定的滴数
+    static int didingMax = 400;                 //最大滴数,计量标定-100，默认值-400
     static double didingSumVolume = 0;          //滴定的总体积
     static double kongbaiValue = 0.25;          //空白实验滴定高锰酸钾的量
     static double biaodingValue = 10.0;         //标定实验滴定高锰酸钾的量
@@ -62,7 +63,7 @@ public class SysData {
     static String httpAddr = "";                //http访问地址
     static String wifiIpAddr = "";              //无线网络ip地址
     static String[] localIpAddr;                //可用网络ip地址
-    static String webIPAddr = "";               //web服务ip地址
+    static String webIPAddr = "0.0.0.0";        //web服务ip地址
     static int webPort = 8080;                  //web服务端口
     static String wifiSsid = "";                //无线网络ssid
     static String wifiPass = "";                //无线网络密码

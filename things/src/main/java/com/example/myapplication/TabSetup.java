@@ -65,8 +65,8 @@ public class TabSetup extends Fragment {
     //private ImageButton buttonSetupWifi, timeSetup;
     private TimeManager timeManager = TimeManager.getInstance();
     private TextView httpAddr, localIp;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd/ HH:mm:ss");
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH时mm分ss秒");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     private SimpleDateFormat autoFormat = new SimpleDateFormat("MM/dd HH:mm");
     private EditText editSsid, editPass, editlocalip, editwebport;
     private EditText editNextStartTime, editStartCycle, editNumberTimes;
@@ -119,7 +119,7 @@ public class TabSetup extends Fragment {
         lave = (SysData.endXiaoJie > System.currentTimeMillis()) ? (SysData.endXiaoJie - System.currentTimeMillis()) / 1000 : 0;
         txtXiaoJieLave.setText(Long.toString(lave) + "秒");
         txtSysDate.setText(dateFormat.format(System.currentTimeMillis()));
-        //txtSysTime.setText(timeFormat.format(System.currentTimeMillis()));
+        txtSysTime.setText(timeFormat.format(System.currentTimeMillis()));
         //更新自动运行信息
         if(SysData.isUpdateTimes) {
             Log.i("变更自动运行参数", "isUpdateTimes：" + SysData.isUpdateTimes);
@@ -157,7 +157,7 @@ public class TabSetup extends Fragment {
         //httpAddr = view.findViewById(R.id.httpaddr);
         localIp = view.findViewById(R.id.localip);
         txtSysDate = view.findViewById(R.id.sysdate);
-        //txtSysTime = view.findViewById(R.id.systime);
+        txtSysTime = view.findViewById(R.id.systime);
         wifiName = view.findViewById(R.id.wifissid);
         buttonSetupWeb = view.findViewById(R.id.setupweb);
         buttonSetupWifi = view.findViewById(R.id.setupwifi);
@@ -207,8 +207,10 @@ public class TabSetup extends Fragment {
             editCom1.setText(SysData.deviceList.get(2));
         }
 
-        //更新网络TextView信息
-        setNetTxtInfo();
+        if(SysData.localIpAddr != null && SysData.localIpAddr.length >= 1) {
+            //更新网络TextView信息
+            setNetTxtInfo();
+        }
 
         //填充Edit数据
         setEditText();

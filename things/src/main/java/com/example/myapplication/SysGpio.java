@@ -442,7 +442,7 @@ public class SysGpio {
         try {
             //SysGpio.mGpioOutD8.setValue(true);  //开启排空阀排空反应器和管路中的液体
             SysGpio.mGpioOutP1.setValue(true);  //开启水样泵电源
-            Thread.sleep(1000);
+            Thread.sleep(3000);
             Log.d(TAG, "run: P1状态" + SysGpio.mGpioOutP1.getValue());
             Log.d(TAG, "run: 发送串口启动进样泵指令" );
 
@@ -490,7 +490,7 @@ public class SysGpio {
                         paikong();   //如果需要排空进样管路，进样前排空进样管内液体
                     }
                     SysGpio.mGpioOutP1.setValue(true);  //开启水样泵电源
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                     Log.d(TAG, "run: P1电源" + SysGpio.mGpioOutP1.getValue());
                     Log.d(TAG, "run: 发送串口启动进样泵指令" );
                     //注射泵状态查询
@@ -498,7 +498,7 @@ public class SysGpio {
                     //注射泵1状态正常时执行
                     if(SysData.Pump[1] == 0x00) {
                         //注射泵抽取液体
-                        MainActivity.com0.pumpCmd(1, "turn", 65);
+                        MainActivity.com0.pumpCmd(1, "turn", SysData.shuiyangStep);
                         Thread.sleep(41000);
                     }
                     //注射泵状态查询
@@ -537,6 +537,9 @@ public class SysGpio {
                     //首先排空试剂管中的试剂
                     SysGpio.mGpioOutD2.setValue(true);
                     Log.d(TAG, "run: D2状态" + SysGpio.mGpioOutD2.getValue());
+
+                    //等待3S
+                    Thread.sleep(1000);
 
                     //注射泵状态查询
                     pumpStatus(2, 1000);
@@ -589,7 +592,7 @@ public class SysGpio {
                     if(SysData.Pump[2] == 0x00) {
                         //注射泵压出液体
                         MainActivity.com0.pumpCmd(2, "push", SysData.liusuanStep);     //压出硫酸试剂
-                        Thread.sleep(7000);
+                        Thread.sleep(8000);
                     }
 
                     //注射泵状态查询
@@ -649,6 +652,7 @@ public class SysGpio {
                 try {
                     SysGpio.mGpioOutP2.setValue(true);
                     Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
+                    Thread.sleep(3000);
                     //Log.d(TAG, "run: 发送串口启动进样泵指令" );
 
                     //注射泵状态查询
@@ -732,7 +736,7 @@ public class SysGpio {
                 statusS4 = true;
                 try {
                     SysGpio.mGpioOutP3.setValue(true);
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                     //Log.d(TAG, "run: P3电源状态" + SysGpio.mGpioOutP3.getValue());
                     //Log.d(TAG, "run: 发送串口启动泵3指令" );
 
@@ -1102,7 +1106,7 @@ public class SysGpio {
                         }
                         SysData.startAdLight = (SysData.adLight > SysData.startAdLight) ? SysData.adLight : SysData.startAdLight;  //初始光电值取最大值
                         SysGpio.readTempFlag = false;  //停止循环读取温度
-                    } while (!isEnd && (SysData.startAdLight - SysData.adLight) < Difference && SysData.didingNum < 400);     //最多滴定200滴
+                    } while (!isEnd && (SysData.startAdLight - SysData.adLight) < Difference && SysData.didingNum < SysData.didingMax);     //最多滴定didingMax滴
 
                     //注射泵状态查询
                     pumpStatus(2, 1000);
@@ -1492,6 +1496,13 @@ public class SysGpio {
                 //持续搅拌
                 SysData.jiaoBanType = 2;
 
+                //等待1秒钟
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 //启动加草酸钠程序
                 s4_JiaCaoSuanNa();
                 //等待加草酸钠完成
@@ -1738,8 +1749,8 @@ public class SysGpio {
                 SysData.progressRate = 100;
                 SysData.isRun = false;
                 SysData.endTime = System.currentTimeMillis();
-                //测定时间大于1小时，则提示测定超时
-                if((SysData.endTime - SysData.startTime) / 1000 > 3600) {
+                //测定时间大于1.5小时，则提示测定超时
+                if((SysData.endTime - SysData.startTime) / 1000 > 5400) {
                     SysData.errorMsg = "测定超时";
                     SysData.errorId = 6;
                     SysData.saveAlertToDB();  //保存报警记录
@@ -1763,6 +1774,9 @@ public class SysGpio {
                 Log.d(TAG, "run: 启动仪表复位");
                 statusS8 = true;
                 statusS7 = false;
+                statusS9 = false;
+                statusS10 = false;
+                statusS11 = false;
                 SysData.statusMsg = "正在复位";
                 SysData.stopFlag = true;  //启动紧急停止
                 try {

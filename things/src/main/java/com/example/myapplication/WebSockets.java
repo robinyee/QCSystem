@@ -389,7 +389,11 @@ public class WebSockets extends NanoWSD {
                     object.put("endXiaoJie", SysData.endXiaoJie);
                     object.put("didingNum", SysData.didingNum);
                     object.put("didingSumVolume", SysData.didingSumVolume);
-                    object.put("deviceList", SysData.deviceList.get(2));
+                    if(SysData.deviceList.size() >= 3) {
+                        object.put("deviceList", SysData.deviceList.get(2));
+                    } else {
+                        object.put("deviceList", "null");
+                    }
                     object.put("webServiceFlag", SysData.webServiceFlag);
                     object.put("workType", SysData.workType);
                     object.put("workFrom", SysData.workFrom);
