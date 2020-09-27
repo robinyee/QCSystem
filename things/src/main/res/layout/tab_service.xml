@@ -290,7 +290,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="紧急停止"/>
+                        android:text="系统重置"/>
                 </TableRow>
             </TableLayout>
 

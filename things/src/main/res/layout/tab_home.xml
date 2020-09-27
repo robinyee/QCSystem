@@ -60,6 +60,11 @@
             android:layout_height="wrap_content"
             android:textSize="36sp"
             android:text="mg/L" />
+        <ImageView
+            android:id="@+id/imageViewQRCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill"/>
     </LinearLayout>
     <TextView
         android:id="@+id/txt2"

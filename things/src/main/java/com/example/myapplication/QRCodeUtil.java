@@ -35,7 +35,8 @@ public class QRCodeUtil {
      */
 
     public static Bitmap createQRCodeBitmap(String content, int width, int height){
-        return createQRCodeBitmap(content, width, height, "UTF-8", "H", "2", Color.BLACK, Color.WHITE);
+        return createQRCodeBitmap(content, width, height, "UTF-8", "H", "2", Color.argb(0xff, 0x18, 0xa4, 0x32), Color.WHITE);
+        //#18A432 绿色
     }
 
     /**

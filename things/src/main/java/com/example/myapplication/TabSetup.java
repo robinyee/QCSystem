@@ -73,7 +73,7 @@ public class TabSetup extends Fragment {
     private Switch switchIsLoop;
     private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
     private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
-    private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon, editDidingDeviation, editAdminPassword;
+    private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon, editDidingDeviation, editDidingMax, editDidingDifference, editAdminPassword;
     private EditText editCom0, editCom1, editCom1Addr, editCom1BaudRate;
     private RadioGroup radioGroup;
     private TableLayout tableParameter;
@@ -195,6 +195,8 @@ public class TabSetup extends Fragment {
         editBiaodingValue = view.findViewById(R.id.editBiaodingValue);
         editCaosuannaCon = view.findViewById(R.id.editCaosuannaCon);
         editDidingDeviation = view.findViewById(R.id.editDidingDeviation);
+        editDidingMax = view.findViewById(R.id.editDidingMax);
+        editDidingDifference = view.findViewById(R.id.editDidingDifference);
         //更多参数显示
         moreParameter = view.findViewById(R.id.moreParameter);
         tableParameter = view.findViewById(R.id.tableParameter);
@@ -546,6 +548,7 @@ public class TabSetup extends Fragment {
         editor.putLong("biaodingValue", Double.doubleToLongBits(SysData.biaodingValue));
         editor.putLong("caosuannaCon", Double.doubleToLongBits(SysData.caosuannaCon));
         editor.putInt("didingDeviation", SysData.didingDeviation);
+        editor.putInt("didingDifference", SysData.didingDifference);
         //系统参数
         editor.putString("localIpAddr", SysData.localIpAddr[0]);
         editor.putInt("webPort", SysData.webPort);
@@ -579,6 +582,8 @@ public class TabSetup extends Fragment {
         SysData.biaodingValue = Double.parseDouble(editBiaodingValue.getText().toString());
         SysData.caosuannaCon = Double.parseDouble(editCaosuannaCon.getText().toString());
         SysData.didingDeviation = Integer.parseInt(editDidingDeviation.getText().toString());
+        SysData.didingMax = Integer.parseInt(editDidingMax.getText().toString());
+        SysData.didingDifference = Integer.parseInt(editDidingDifference.getText().toString());
         //系统参数
         SysData.adminPassword = editAdminPassword.getText().toString();
         SysData.MODBUS_ADDR = Integer.parseInt(editCom1Addr.getText().toString());
@@ -597,7 +602,7 @@ public class TabSetup extends Fragment {
     private void creatQRCode(View view) {
         //生成网址的二维码
         ImageView mImageView = (ImageView) view.findViewById(R.id.imageViewZXing);
-        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(SysData.httpAddr, 60, 60);
+        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(SysData.httpAddr, 70, 70);
         mImageView.setImageBitmap(mBitmap);
     }
 
@@ -634,6 +639,8 @@ public class TabSetup extends Fragment {
         editBiaodingValue.setText(String.valueOf(SysData.biaodingValue));
         editCaosuannaCon.setText(String.valueOf(SysData.caosuannaCon));
         editDidingDeviation.setText(String.valueOf(SysData.didingDeviation));
+        editDidingMax.setText(String.valueOf(SysData.didingMax));
+        editDidingDifference.setText(String.valueOf(SysData.didingDifference));
     }
 
     //设置日期对话框

@@ -26,6 +26,7 @@ public class SysData {
     static double didingVolume = 0.1;           //每滴滴定体积
     static int didingNum = 0;                   //滴定的滴数
     static int didingMax = 400;                 //最大滴数,计量标定-100，默认值-400
+    static int didingDifference = 10;           //滴定时模拟量下降的值大于这个差值判定为滴定终点
     static double didingSumVolume = 0;          //滴定的总体积
     static double kongbaiValue = 0.25;          //空白实验滴定高锰酸钾的量
     static double biaodingValue = 10.0;         //标定实验滴定高锰酸钾的量

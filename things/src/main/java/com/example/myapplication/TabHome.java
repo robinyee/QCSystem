@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
 import android.os.Handler;
@@ -75,6 +76,11 @@ public class TabHome extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         textViewStatus = (TextView) view.findViewById(R.id.textStatus);
         buttonStartup = (ImageButton) view.findViewById(R.id.startup);
+
+        //生成网址的二维码
+        ImageView mImageView = (ImageView) view.findViewById(R.id.imageViewQRCode);
+        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(SysData.httpAddr, 70, 70);
+        mImageView.setImageBitmap(mBitmap);
 
         //显示界面数据
         updateUi();

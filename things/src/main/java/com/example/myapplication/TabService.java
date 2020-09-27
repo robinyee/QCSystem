@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -524,6 +525,8 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 if (aSwitchS12.isChecked() && !SysGpio.statusS12) {
                     SysGpio.s12_Stop();
+                    //提醒系统将重置
+                    Toast.makeText(getContext(),"正在重置系统，请稍后...", Toast.LENGTH_LONG).show();
                 }
             }
         });

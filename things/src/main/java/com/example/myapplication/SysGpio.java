@@ -434,7 +434,7 @@ public class SysGpio {
         } while(SysData.Pump[n] != 0x00);
     }
 
-    //测定前排空进样管
+    //测定前排空进样管，进水样、进标样、进空白样润洗管路，通过电磁阀D1控制
     public static void paikong() {
         Log.d(TAG, "run: 排空进样管路线程开始");
         //handler.sendEmptyMessage(MESSAGE_S1_ON);
@@ -470,7 +470,7 @@ public class SysGpio {
         Log.d(TAG, "run: 排空进样管线程结束");
     }
 
-    //S1进水样流程
+    //S1进样流程，进水样、进标样、进空白样，通过电磁阀D1控制
     public static void s1_JiaShuiYang() {
 
         new Thread(new Runnable() {
@@ -995,7 +995,7 @@ public class SysGpio {
                 SysGpio.readAd();
                 Log.d(TAG, "run: 滴定线程开始");
                 statusS6 = true;
-                int Difference = 10;  //滴定时模拟量下降的值大于这个差值判定为滴定终点
+                //int Difference = 10;  //滴定时模拟量下降的值大于这个差值判定为滴定终点
 
                 //记录初始光电值，取10次采样的平均值
                 int light = 0;
@@ -1081,7 +1081,7 @@ public class SysGpio {
                         MainActivity.com0.getAd();
                         Thread.sleep(1600);
                         //如果光电值降低Difference/4以上，等待2S
-                        if((SysData.startAdLight - SysData.adLight) >= (Difference / 4) ){
+                        if((SysData.startAdLight - SysData.adLight) >= (SysData.didingDifference / 4) ){
                             //读取温度
                             SysGpio.readTempFlag = true;
                             SysGpio.readAd();
@@ -1090,10 +1090,10 @@ public class SysGpio {
                                 endDidingNum = SysData.didingNum;
                             }
 
-                            if((SysData.startAdLight - SysData.adLight) >= Difference ) {
+                            if((SysData.startAdLight - SysData.adLight) >= SysData.didingDifference ) {
                                 Thread.sleep(30000);
 
-                                if((SysData.startAdLight - SysData.adLight) >= Difference) {
+                                if((SysData.startAdLight - SysData.adLight) >= SysData.didingDifference) {
                                     Log.d(TAG, "滴定终点光电值：" + SysData.adLight);
                                     isEnd = true;
                                     SysData.didingNum = endDidingNum;
@@ -1106,7 +1106,7 @@ public class SysGpio {
                         }
                         SysData.startAdLight = (SysData.adLight > SysData.startAdLight) ? SysData.adLight : SysData.startAdLight;  //初始光电值取最大值
                         SysGpio.readTempFlag = false;  //停止循环读取温度
-                    } while (!isEnd && (SysData.startAdLight - SysData.adLight) < Difference && SysData.didingNum < SysData.didingMax);     //最多滴定didingMax滴
+                    } while (!isEnd && (SysData.startAdLight - SysData.adLight) < SysData.didingDifference && SysData.didingNum < SysData.didingMax);     //最多滴定didingMax滴
 
                     //注射泵状态查询
                     pumpStatus(2, 1000);
@@ -1249,10 +1249,16 @@ public class SysGpio {
                     e.printStackTrace();
                 }
 
-                //标样测定、仪器校准开启电磁阀1，加入标样
-                if(!SysData.workType.equals("水质分析")){
+                //水质测定开电磁阀D1，标样测定、仪器校准关电磁阀D1
+                if(SysData.workType.equals("水质分析")){
                     try {
                         SysGpio.mGpioOutD1.setValue(true); //打开阀1
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        SysGpio.mGpioOutD1.setValue(false); //关开阀1
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -1334,8 +1340,8 @@ public class SysGpio {
                 }
                 Log.d(TAG, "水质测定:Max=" + afterAd + ",水质测定:Min=" + beforeAd);
 
-                //标样测定、仪器校准关闭电磁阀1
-                if(!SysData.workType.equals("水质分析")){
+                //测水样关闭电磁阀1
+                if(SysData.workType.equals("水质分析")){
                     try {
                         SysGpio.mGpioOutD1.setValue(false); //关闭阀1
                     } catch (IOException e) {
@@ -1397,6 +1403,17 @@ public class SysGpio {
                             SysData.errorMsg = "温度异常";
                             SysData.errorId = 7;
                             SysData.saveAlertToDB();  //保存报警记录
+                            try {
+                                Thread.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            //停止温度控制
+                            SysGpio.tempControlFlag = false;
+                            //开启搅拌程序
+                            SysData.jiaoBanType = -1;
+                            //启动复位程序
+                            s8_Reset();
                             return;
                         }
                         Thread.sleep(1000);
@@ -1865,6 +1882,7 @@ public class SysGpio {
                     SysGpio.mGpioOutP3.setValue(false);
                     SysGpio.mGpioOutLED.setValue(false);
                     SysGpio.mGpioOut24V.setValue(false);
+                    SysGpio.mGpioOutRE1.setValue(false);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -1915,9 +1933,8 @@ public class SysGpio {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -1927,6 +1944,8 @@ public class SysGpio {
                 SysData.isRun = false;
                 statusS12 = false;
                 Log.d(TAG, "run: 结束紧急停止");
+                //重启软件
+                System.exit(0);
             }
         }).start();
     }

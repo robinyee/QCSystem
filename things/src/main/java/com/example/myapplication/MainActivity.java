@@ -595,7 +595,8 @@ public class MainActivity extends AppCompatActivity {
         SysData.kongbaiValue = Double.longBitsToDouble(sp.getLong("kongbaiValue", 0));
         SysData.biaodingValue = Double.longBitsToDouble(sp.getLong("biaodingValue", 0));
         SysData.caosuannaCon = Double.longBitsToDouble(sp.getLong("caosuannaCon", 0));
-        SysData.didingDeviation = sp.getInt("didingDeviation", 12);
+        SysData.didingDeviation = sp.getInt("didingDeviation", 720);
+        SysData.didingDifference = sp.getInt("didingDifference", 10);
         //系统参数
         //SysData.localIpAddr[0] = sp.getString("localIpAddr", "");     //ip地址不需要存储
         SysData.webPort = sp.getInt("webPort", 0);
