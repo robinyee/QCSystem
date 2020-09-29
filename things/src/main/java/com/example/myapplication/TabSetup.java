@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -35,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -69,7 +71,8 @@ public class TabSetup extends Fragment {
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     private SimpleDateFormat autoFormat = new SimpleDateFormat("MM/dd HH:mm");
     private EditText editSsid, editPass, editlocalip, editwebport;
-    private EditText editNextStartTime, editStartCycle, editNumberTimes;
+    private EditText editNextStartTime, editStartCycle, editNumberTimes, editStartType;
+    private Spinner spinnerStartType;
     private Switch switchIsLoop;
     private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
     private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
@@ -171,6 +174,8 @@ public class TabSetup extends Fragment {
         editNextStartTime = view.findViewById(R.id.nextStartTime);
         editStartCycle = view.findViewById(R.id.startCycle);
         editNumberTimes = view.findViewById(R.id.numberTimes);
+//      editStartType = view.findViewById(R.id.startType);
+        spinnerStartType = view.findViewById(R.id.startType);
         switchIsLoop = view.findViewById(R.id.isLoop);
         editAdminPassword = view.findViewById(R.id.editAdminPassword);
         editCom0 = view.findViewById(R.id.editCom0);
@@ -286,6 +291,23 @@ public class TabSetup extends Fragment {
             }
         });
 
+        //选择定时执行的任务类型 0-空，1-水样测定，2-标样测定，3-仪表校准
+        spinnerStartType.setSelection(SysData.startType);
+        spinnerStartType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //选择列表项的操作
+                SysData.startType = position;
+                //saveMeterParameter();  //保存设定的参数
+                //Toast.makeText(getActivity(), "选择了:" + SysData.startType, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //未选中时候的操作
+            }
+        });
+
         //修改串口波特率
         editCom1BaudRate.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
@@ -370,16 +392,19 @@ public class TabSetup extends Fragment {
         switchIsLoop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!editStartCycle.getText().toString().equals("") && !editNumberTimes.getText().toString().equals("")) {
+                if(switchIsLoop.isChecked() && !editStartCycle.getText().toString().equals("") && !editNumberTimes.getText().toString().equals("")) {
                     SysData.startCycle = Integer.parseInt(editStartCycle.getText().toString());
                     SysData.numberTimes = Integer.parseInt(editNumberTimes.getText().toString());
                     SysData.isLoop = switchIsLoop.isChecked();
+                    saveEditText();
                     saveMeterParameter();  //保存设定的参数
-                } else {
-                    Toast.makeText(getActivity(), "周期或次数为空", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "定时启动已设置", Toast.LENGTH_SHORT).show();
+                } else if (switchIsLoop.isChecked()) {
+                    Toast.makeText(getActivity(), "周期、次数或测定类型不能空", Toast.LENGTH_SHORT).show();
                     switchIsLoop.setChecked(false);
+                } else {
+                    Toast.makeText(getActivity(), "定时启动已关闭", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -556,6 +581,7 @@ public class TabSetup extends Fragment {
         editor.putLong("nextStartTime", SysData.nextStartTime);
         editor.putInt("startCycle", SysData.startCycle);
         editor.putInt("numberTimes", SysData.numberTimes);
+        editor.putInt("startType", SysData.startType);
         editor.putString("adminPassword", SysData.adminPassword);
         editor.putInt("modbusAddr", SysData.MODBUS_ADDR);
         editor.putInt("baudRate", SysData.BAUD_RATE);
@@ -617,6 +643,7 @@ public class TabSetup extends Fragment {
         editNextStartTime.setText(autoFormat.format(SysData.nextStartTime));
         editStartCycle.setText(String.valueOf(SysData.startCycle));
         editNumberTimes.setText(String.valueOf(SysData.numberTimes));
+//        editStartType.setText(SysData.startType);
         switchIsLoop.setChecked(SysData.isLoop);
         editAdminPassword.setText(SysData.adminPassword);
         editCom1Addr.setText(String.valueOf(SysData.MODBUS_ADDR));

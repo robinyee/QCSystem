@@ -604,6 +604,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.nextStartTime = sp.getLong("nextStartTime", 0);
         SysData.startCycle = sp.getInt("startCycle", 0);
         SysData.numberTimes = sp.getInt("numberTimes", 0);
+        SysData.startType = sp.getInt("startType", 0);
         SysData.isNotice = sp.getBoolean("isNotice", false);
         SysData.isEmptyPipeline = sp.getBoolean("isEmptyPipeline", false);
         SysData.adminPassword = sp.getString("adminPassword", "nsy218");
@@ -699,7 +700,7 @@ public class MainActivity extends AppCompatActivity {
 
     //主程序循环进程，定时启动测定程序
     private void autoRun() {
-        Log.i("MainActivity", "保存仪表状态信息");
+        Log.i("MainActivity", "启动自动运行线程");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -707,16 +708,9 @@ public class MainActivity extends AppCompatActivity {
                     //定时启动程序，运行次数为999以上时，仪器一直定时运行不会停止。
                     long dtime = System.currentTimeMillis() - SysData.nextStartTime;
                     //定时启动测定程序
-                    if(SysData.isLoop && !SysData.isRun && dtime > 0 && dtime < 10000 && SysData.numberTimes > 0) {
+                    if(SysData.isLoop && !SysData.isRun && dtime > 0 && dtime < 15000 && SysData.numberTimes > 0) {
                         //启动测定流程
-                        SysGpio.s7_ShuiZhiCeDing();
-                        SysData.statusMsg = "启动测定程序";
-                        SysData.isRun = true;
-                        SysData.workFrom = "定时启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
-                        SysData.nextStartTime = SysData.nextStartTime + SysData.startCycle * 3600 * 1000;
-                        Log.i("MainActivity", "当前时间：" + System.currentTimeMillis() + " 下次启动时间：" + SysData.nextStartTime);
-                        SysData.numberTimes = (SysData.numberTimes >= 999) ? 999 : SysData.numberTimes - 1;
-                        SysData.isUpdateTimes = true;
+                        startAction(SysData.startType);
                     }
                     //循环运行，周期值设为0，次数设为需要运行的次数
                     if(SysData.isLoop && !SysData.isRun && SysData.startCycle == 0 && SysData.numberTimes > 0) {
@@ -726,21 +720,56 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         //启动测定流程
-                        SysGpio.s7_ShuiZhiCeDing();
-                        SysData.statusMsg = "启动测定程序";
-                        SysData.isRun = true;
+                        startAction(SysData.startType);
+                    }
+                    //计算下次启动时间
+                    if(SysData.nextStartTime < System.currentTimeMillis() && SysData.numberTimes > 0 && SysData.startCycle > 0 && SysData.isLoop) {
+                        SysData.nextStartTime = SysData.nextStartTime + SysData.startCycle * 3600 * 1000;
+                        Log.i("MainActivity", "当前时间：" + System.currentTimeMillis() + " 下次启动时间：" + SysData.nextStartTime);
+                        SysData.numberTimes = (SysData.numberTimes >= 999) ? 999 : SysData.numberTimes - 1;
+                        SysData.numberTimes = (SysData.numberTimes > 0) ? SysData.numberTimes : 0;
+                        SysData.isUpdateTimes = true;
+                    }
+                    if( SysData.startCycle == 0 && SysData.numberTimes > 0 && SysData.isLoop && !SysData.isRun) {
                         SysData.nextStartTime = System.currentTimeMillis();
                         SysData.numberTimes = (SysData.numberTimes > 0) ? SysData.numberTimes - 1 : 0;
                         SysData.isUpdateTimes = true;
                     }
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(10000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 } while (true);
             }
         }).start();
+    }
+
+    //启动不同类型的测定流程
+    public void startAction(int actionType) {
+        switch (actionType) {
+            case 0:
+                break;
+            case 1:
+                //启动水样测定流程
+                SysGpio.s7_ShuiZhiCeDing();
+                SysData.statusMsg = "启动水样测定程序";
+                break;
+            case 2:
+                //启动标样测定流程
+                SysGpio.s10_BiaoYangCeDing();
+                SysData.statusMsg = "启动标样测定程序";
+                break;
+            case 3:
+                //启动仪表校准流程
+                SysGpio.s11_Calibration();
+                SysData.statusMsg = "启动仪表校准程序";
+                break;
+        }
+        if(actionType > 0) {
+            SysData.isRun = true;
+            SysData.workFrom = "定时启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
+        }
     }
 
     //保存运行状态参数

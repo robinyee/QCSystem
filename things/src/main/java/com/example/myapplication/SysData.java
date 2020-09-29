@@ -75,6 +75,7 @@ public class SysData {
     static long nextStartTime = 0;              //下次启动时间
     static int startCycle = 1;                  //启动周期
     static int numberTimes = 0;                 //启动次数
+    static int startType = 0;                   //定时启动的类型：0-空; 1-水质测定; 2-标样测定; 3-仪表校准
     static boolean isUpdateTimes = false;       //是否需要更新自动启动信息
     static String adminUsername = "admin";      //管理员用户名
     static String adminPassword = "nsy218";     //管理员密码

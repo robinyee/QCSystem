@@ -1,0 +1,8 @@
+<resources>
+    <string-array name="actionTyep">
+        <item >无</item>
+        <item >水样测定</item>
+        <item >标样测定</item>
+        <item >仪表校准</item>
+    </string-array>
+</resources>
