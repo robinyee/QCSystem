@@ -18,7 +18,7 @@ public class OutCom {
     private int BAUD_RATE;
     private int DATA_BITS;
     private int STOP_BITS;
-    private int CHUNK_SIZE = 256;
+    private int CHUNK_SIZE = 1024;
     private UartDevice mUartDevice;
     private String backMsg;
 
@@ -103,35 +103,41 @@ public class OutCom {
                 //读取PC终端发来的数据
                 byte[] buffer = new byte[CHUNK_SIZE];
                 byte[] data = new byte[CHUNK_SIZE];
-                int read;
+                int read = 0;
                 int num = 0;
                 String msg = null;
 
                 while ((read = mUartDevice.read(buffer, buffer.length)) > 0) {
-                    System.arraycopy(buffer, 0, data, num, read);
-                    num = num + read;
-                    Thread.sleep(10);
+                    if((num + read) < CHUNK_SIZE) {
+                        System.arraycopy(buffer, 0, data, num, read);
+                        num = num + read;
+                        Thread.sleep(10);
+                    }
                 }
 
                 //显示数据包的数据
                 Log.v(TAG,"数据包长度：" + num);
-                /*
+
+                //显示数据内容
                 for(int i = 0; i < num; i++){
                     Log.v(TAG,i + ":" + data[i]);
                 }
 
-                 */
-                //去除数据数组的空值，解析数据
-                byte[] backData = new byte[num];
-                System.arraycopy(data, 0, backData, 0, num);
-                byteArrayToData(backData, num);   //提取数据
+                //正常数据长度8个字节
+                if(num == 8) {
+                    //去除数据数组的空值，解析数据
+                    byte[] backData = new byte[num];
+                    System.arraycopy(data, 0, backData, 0, num);
+                    byteArrayToData(backData, num);   //提取数据
+                }
 
             } catch (IOException e) {
                 Log.w(TAG, "Unable to transfer data over UART", e);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } finally {
+                return true;
             }
-            return true;
         }
 
         @Override
@@ -143,7 +149,7 @@ public class OutCom {
     //接收的byte[]数据解析
     public void byteArrayToData(byte[] b, int num) {
         //接收的数据进行校验
-        if(b.length >= 8) {
+        if(b.length == 8) {      //现场出现串口出错导致程序不正常，修改为只接收8个字节数据
             String rxData = bytes2HexString(b);
             Log.w(TAG, "收到的内容：" + rxData);
             String data = rxData.substring(0, rxData.length() - 4);
@@ -164,13 +170,14 @@ public class OutCom {
         } else {
             return;
         }
+        //如果地址和本机地址相同执行指令
         if( b[0] == SysData.MODBUS_ADDR) {
             Log.w(TAG,  "地址位正确：" + b[0]);
             Log.w(TAG,  "功能码：" + b[1]);
             switch (b[1]) {
                 case 0x01:
                     sendAckErr(b[1], 0x01);
-                    mods_01H();
+                    mods_01H(b, num);
                     putMsg(0x01, 0);
                     Log.w(TAG,  "功能码：" + b[1]);
                     break;
@@ -220,7 +227,7 @@ public class OutCom {
     }
 
     //处理指令01H
-    public void mods_01H() {
+    public void mods_01H(byte[] b, int num) {
 
     }
 

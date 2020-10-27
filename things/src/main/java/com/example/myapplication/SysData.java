@@ -26,7 +26,7 @@ public class SysData {
     static double didingVolume = 0.1;           //每滴滴定体积
     static int didingNum = 0;                   //滴定的滴数
     static int didingMax = 400;                 //最大滴数,计量标定-100，默认值-400
-    static int didingDifference = 10;           //滴定时模拟量下降的值大于这个差值判定为滴定终点
+    static int didingDifference = 20;           //滴定时模拟量下降的值大于这个差值判定为滴定终点
     static double didingSumVolume = 0;          //滴定的总体积
     static double kongbaiValue = 0.25;          //空白实验滴定高锰酸钾的量
     static double biaodingValue = 10.0;         //标定实验滴定高锰酸钾的量
@@ -49,8 +49,8 @@ public class SysData {
     static byte[] Pump = new byte[10];          //记录各泵的状态，十六进制数据，0x00-状态正常，0x01-帧错误，0x02-参数错误，0x03-光耦错误，0x04-电机忙，0xfe-任务挂起，0xff-未知错误
     static int startAdLight;                    //存储滴定前的光电值
     static String errorMsg = "";                //记录仪器出错信息
-    static String[] errorMsgList = {"无报警", "加水样出错", "加硫酸出错", "加高锰酸钾出错", "加草酸钠出错", "滴定超量", "测定超时", "反应器温度过高", "注射泵故障", "试剂量低", "主板温度过高"};
-    static int errorId = 0;                     //仪表出错代码 1-加水样出错，2-加硫酸出错，3-加高锰酸钾出错，4-加草酸钠出错，5-滴定超量，6-测定超时，7-反应器温度过高，8-注射泵故障， 9-试剂量低， 10-主板温度过高
+    static String[] errorMsgList = {"无报警", "加水样出错", "加硫酸出错", "加高锰酸钾出错", "加草酸钠出错", "滴定超量", "测定超时", "反应器温度过高", "注射泵故障", "试剂量低", "主板温度过高", "主板无法访问"};
+    static int errorId = 0;                     //仪表出错代码 1-加水样出错，2-加硫酸出错，3-加高锰酸钾出错，4-加草酸钠出错，5-滴定超量，6-测定超时，7-反应器温度过高，8-注射泵故障， 9-试剂量低， 10-主板温度过高， 11-访问系统时间出错
     static long startXiaojie;                   //消解开始时间
     static long endXiaoJie;                     //消解结束时间
     static int jiaoBanType = 0;                 //搅拌方式 0-停止搅拌，1-间歇搅拌，2-持续搅拌

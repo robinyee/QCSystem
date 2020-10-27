@@ -178,8 +178,12 @@ public class MainActivity extends AppCompatActivity {
             device.close();
             device = null;
         } catch (IOException e) {
-            Log.e(TAG, "Error while opening screen", e);
+            SysData.errorMsg = "访问系统时间出错";
+            SysData.errorId = 11;
+            Log.e(TAG, "访问Ds3231出错", e);
             throw new RuntimeException(e);
+        } finally {
+            return;
         }
     }
 
@@ -231,10 +235,13 @@ public class MainActivity extends AppCompatActivity {
             device.close();
             device = null;
         } catch (IOException e) {
-            Log.e(TAG, "Error while opening screen", e);
+            SysData.errorMsg = "访问系统时间出错";
+            SysData.errorId = 11;
+            Log.e(TAG, "访问Ds3231出错", e);
             throw new RuntimeException(e);
+        } finally {
+            return;
         }
-
     }
 
     //设置Ds3231时间
@@ -261,8 +268,12 @@ public class MainActivity extends AppCompatActivity {
             device.close();
             device = null;
         } catch (IOException e) {
-            Log.e(TAG, "Error while opening screen", e);
+            SysData.errorMsg = "访问系统时间出错";
+            SysData.errorId = 11;
+            Log.e(TAG, "访问Ds3231出错", e);
             throw new RuntimeException(e);
+        } finally {
+            return;
         }
 
     }
@@ -596,7 +607,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.biaodingValue = Double.longBitsToDouble(sp.getLong("biaodingValue", 0));
         SysData.caosuannaCon = Double.longBitsToDouble(sp.getLong("caosuannaCon", 0));
         SysData.didingDeviation = sp.getInt("didingDeviation", 720);
-        SysData.didingDifference = sp.getInt("didingDifference", 10);
+        SysData.didingDifference = sp.getInt("didingDifference", 20);
         //系统参数
         //SysData.localIpAddr[0] = sp.getString("localIpAddr", "");     //ip地址不需要存储
         SysData.webPort = sp.getInt("webPort", 0);
