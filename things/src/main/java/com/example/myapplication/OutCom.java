@@ -507,7 +507,7 @@ public class OutCom {
 
     /**
      * 计算CRC16校验码
-     *
+     * 修复，校验结果高位00时不显示00，出错
      * @param bytes
      * @return
      */
@@ -531,6 +531,10 @@ public class OutCom {
         String CRCStr = Integer.toHexString(CRC);
         if(CRCStr.length() == 3) {
             CRCStr = "0" + CRCStr;
+        } else if(CRCStr.length() == 2) {
+            CRCStr = "00" + CRCStr;
+        } else if(CRCStr.length() == 1) {
+            CRCStr = "000" + CRCStr;
         }
         return CRCStr;
     }

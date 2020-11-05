@@ -388,7 +388,7 @@ public class SysGpio {
                     }
 
                     //温度高于90度，间断加热
-                    if(SysData.tempIn > 90 && SysData.tempOut > 100) {
+                    if(SysData.tempIn > 90 && SysData.tempOut > 120) {
                         try {
                             mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");
