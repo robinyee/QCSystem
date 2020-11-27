@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/page_background"
     android:padding="16dp"
     android:orientation="vertical">
 
@@ -258,7 +257,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:theme="@style/MySwitch"
-                        android:text="仪表复位"/>
+                        android:text="更换试剂"/>
 
                 </TableRow>
                 <TableRow
@@ -377,7 +376,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:textSize="12sp"
-                        android:text="软件版本：1.0.2020.1027"/>
+                        android:text="软件版本：1.0.2020.1126"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
