@@ -84,6 +84,7 @@ var Vm = new Vue({
 		nextStartTime: 0,
 		startCycle: 0,
 		numberTimes: 0,
+		startType: 0,
 		isLoop: false,
 		xiaojieTemp: 0,
 		xiaojieTime: 0,
@@ -91,6 +92,7 @@ var Vm = new Vue({
 		deviceList: '',
 		BAUD_RATE: 9600,
 		MODBUS_ADDR: 3,
+		version: '1.0',
 		errorId: 0,
 		date: '',
 		time: '',
@@ -351,13 +353,14 @@ var Vm = new Vue({
 			}
 			if(obj.respond === 'CMD_No'){
 				_this.respond = obj.respond;
-				_this.makeToast("命令未执行，可能仪器正在运行", "出错", 'danger', 'b-toaster-top-right');
+				_this.makeToast("命令未执行，可能仪器正忙", "出错", 'danger', 'b-toaster-top-right');
 			}
 			if(obj.respond === 'GET_Setup'){
 				_this.respond = obj.respond;
 				_this.nextStartTime = obj.nextStartTime;
 				_this.startCycle = obj.startCycle;
 				_this.numberTimes = obj.numberTimes;
+				_this.startType = obj.startType;
 				_this.isLoop = obj.isLoop;
 				_this.xiaojieTemp = obj.xiaojieTemp;
 				_this.xiaojieTime = obj.xiaojieTime;
@@ -365,12 +368,15 @@ var Vm = new Vue({
 				_this.deviceList = obj.deviceList;
 				_this.BAUD_RATE = obj.BAUD_RATE;
 				_this.MODBUS_ADDR = obj.MODBUS_ADDR;
+				_this.version = obj.version;
+				_this.makeToast("参数已加载", "消息", 'success', 'b-toaster-top-right');
 			}
 			if(obj.respond === 'SET_Setup'){
 				_this.respond = obj.respond;
 				_this.nextStartTime = obj.nextStartTime;
 				_this.startCycle = obj.startCycle;
 				_this.numberTimes = obj.numberTimes;
+				_this.startType = obj.startType;
 				_this.isLoop = obj.isLoop;
 				_this.xiaojieTemp = obj.xiaojieTemp;
 				_this.xiaojieTime = obj.xiaojieTime;

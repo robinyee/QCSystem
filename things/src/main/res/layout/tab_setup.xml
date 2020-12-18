@@ -469,15 +469,7 @@
                     android:hint="输入端口"
                     android:singleLine="true"
                     android:textSize="14sp" />
-                <Button
-                    android:id="@+id/setupweb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:drawableLeft="@drawable/ic_replay_black_24dp"
-                    android:layout_gravity="left"
-                    android:background="@android:drawable/list_selector_background"
-                    android:text="启动WEB"/>
+
             </TableRow>
             <TableRow
                 android:layout_marginTop="10dp">
@@ -513,6 +505,15 @@
                     android:hint="通讯端口"
                     android:singleLine="true"
                     android:textSize="14sp" />
+                <Button
+                    android:id="@+id/reload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:drawableLeft="@drawable/ic_replay_black_24dp"
+                    android:layout_gravity="left"
+                    android:background="@android:drawable/list_selector_background"
+                    android:text="刷新参数"/>
             </TableRow>
             <TableRow
                 android:layout_marginTop="10dp">
@@ -537,6 +538,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="波特率"/>
+                <!--
                 <EditText
                     android:id="@+id/editComBaudRate"
                     android:layout_width="150dp"
@@ -547,6 +549,15 @@
                     android:inputType="number"
                     android:hint="波特率"
                     android:textSize="14sp" />
+                    -->
+                <Spinner
+                    android:id="@+id/spinnerComBaudRate"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:entries="@array/baudRateTyep" />
                 <Button
                     android:id="@+id/stopSys"
                     android:layout_width="wrap_content"

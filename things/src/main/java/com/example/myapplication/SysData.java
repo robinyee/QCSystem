@@ -59,6 +59,7 @@ public class SysData {
     static String workType = "水样分析";         //仪表工作类型 水样分析、标样测定、仪表校准、仪表复位
     static String workFrom = "未知";            //启动分析命令来自于 触摸屏、串口、Web、定时启动
     static double tempBox;                      //主板温度 DS3231芯片温度
+    static int ds3231Error = 0;                 //访问芯片DS3231出错的次数
 
     //系统参数
     static String httpAddr = "";                //http访问地址
@@ -76,7 +77,8 @@ public class SysData {
     static int startCycle = 1;                  //启动周期
     static int numberTimes = 0;                 //启动次数
     static int startType = 0;                   //定时启动的类型：0-空; 1-水质测定; 2-标样测定; 3-仪表校准
-    static boolean isUpdateTimes = false;       //是否需要更新自动启动信息
+    static boolean isUpdateAutoRun = false;     //是否需要更新自动启动信息
+    static boolean isUpdatnetwork = false;      //是否需要更新网络信息
     static String adminUsername = "admin";      //管理员用户名
     static String adminPassword = "nsy218";     //管理员密码
     static List<String> deviceList;             //串口通讯名称列表
@@ -84,6 +86,9 @@ public class SysData {
     static int DATA_BITS = 8;                   //外部串口通讯数据位
     static int STOP_BITS = 1;                   //外部串口通讯停止位
     static int MODBUS_ADDR = 3;                 //MODBUS地址位
+    static boolean isUpdateCom1 = false;        //是否需要更新串口参数
+    static int updateNum = 3;                   //界面更新次数
+    static String version = "1.0";              //软件版本
 
     //数据查询结果
     static List<Result> results = null;             //仪表测定结果数据

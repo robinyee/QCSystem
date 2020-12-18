@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initData();   //初始化异常捕获
         setContentView(R.layout.activity_main);
+        SysData.version = getString(R.string.version);
 
         //加载Tab页面
         loadTabPager();
@@ -177,10 +178,15 @@ public class MainActivity extends AppCompatActivity {
             // Close the device.
             device.close();
             device = null;
+            SysData.ds3231Error = 0;
         } catch (IOException e) {
-            SysData.errorMsg = "访问系统时间出错";
-            SysData.errorId = 11;
-            Log.e(TAG, "访问Ds3231出错", e);
+            SysData.ds3231Error ++;
+            //连续10次读取温度错误报警
+            if(SysData.ds3231Error > 10){
+                SysData.errorMsg = "访问系统时间出错";
+                SysData.errorId = 11;
+                Log.e(TAG, "访问Ds3231出错", e);
+            }
             throw new RuntimeException(e);
         } finally {
             return;
@@ -234,10 +240,15 @@ public class MainActivity extends AppCompatActivity {
             // Close the device.
             device.close();
             device = null;
+            SysData.ds3231Error = 0;
         } catch (IOException e) {
-            SysData.errorMsg = "访问系统时间出错";
-            SysData.errorId = 11;
-            Log.e(TAG, "访问Ds3231出错", e);
+            SysData.ds3231Error ++;
+            //连续10次错误报警
+            if(SysData.ds3231Error > 10){
+                SysData.errorMsg = "访问系统时间出错";
+                SysData.errorId = 11;
+                Log.e(TAG, "访问Ds3231出错", e);
+            }
             throw new RuntimeException(e);
         } finally {
             return;
@@ -267,10 +278,15 @@ public class MainActivity extends AppCompatActivity {
             // Close the device.
             device.close();
             device = null;
+            SysData.ds3231Error = 0;
         } catch (IOException e) {
-            SysData.errorMsg = "访问系统时间出错";
-            SysData.errorId = 11;
-            Log.e(TAG, "访问Ds3231出错", e);
+            SysData.ds3231Error ++;
+            //连续10次读取温度错误报警
+            if(SysData.ds3231Error > 10){
+                SysData.errorMsg = "访问系统时间出错";
+                SysData.errorId = 11;
+                Log.e(TAG, "访问Ds3231出错", e);
+            }
             throw new RuntimeException(e);
         } finally {
             return;
@@ -338,31 +354,40 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         SysGpio.gpioClose(); //关闭GPIO并注销
         com0.closeUart();   //关闭com0串口通信
-        com1.closeUart();   //关闭com1串口通信
+        if(SysData.deviceList.size() >= 3) {
+            com1.closeUart();   //关闭com1串口通信
+        }
     }
 
     //开启Web服务
     public static void startWebService() {
-        //启动web服务
-        webServer = new WebServer(SysData.webPort, mainApplication);
-        webSockets = new WebSockets(SysData.webPort + 1, mainApplication);
-        try {
-            webServer.start();
-            webSockets.start();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(SysData.localIpAddr != null && SysData.localIpAddr.length >= 1 && SysData.webPort > 0) {
+            //启动web服务
+            webServer = new WebServer(SysData.webPort, mainApplication);
+            webSockets = new WebSockets(SysData.webPort + 1, mainApplication);
+            try {
+                webServer.start();
+                webSockets.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+                SysData.webServiceFlag = false;
+            }
+            SysData.webServiceFlag = true;
+            Log.i("MainActivity", "WEB服务已启动");
+            Log.i("MainActivity", "WebHttp服务 http://" + SysData.webIPAddr + ":" + SysData.webPort);
+            Log.i("MainActivity", "WebSocket服务 ws://" + SysData.webIPAddr + ":" + (SysData.webPort + 1));
         }
-        SysData.webServiceFlag = true;
-        Log.i("MainActivity", "WEB服务已启动");
-        Log.i("MainActivity", "WebHttp服务 http://" + SysData.webIPAddr + ":" + SysData.webPort);
-        Log.i("MainActivity", "WebSocket服务 ws://" + SysData.webIPAddr + ":" +(SysData.webPort + 1));
     }
 
     //关闭Web服务
     public static void stopWebService() {
         //启动web服务
-        webServer.stop();
-        webSockets.stop();
+        if(webServer.wasStarted()) {
+            webServer.stop();
+        }
+        if(webSockets.wasStarted()) {
+            webSockets.stop();
+        }
         SysData.webServiceFlag = false;
         Log.i("MainActivity", "WEB服务停止：" + SysData.webServiceFlag);
     }
@@ -427,6 +452,7 @@ public class MainActivity extends AppCompatActivity {
     //获取WIFI SSID
     public static String getWifiSsid(Context context){
         WifiManager wifiManager=(WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(true);  //开启无线网络
         ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         String wifiName = wifiInfo.getExtraInfo();
@@ -474,6 +500,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(3);
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
@@ -739,12 +766,12 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("MainActivity", "当前时间：" + System.currentTimeMillis() + " 下次启动时间：" + SysData.nextStartTime);
                         SysData.numberTimes = (SysData.numberTimes >= 999) ? 999 : SysData.numberTimes - 1;
                         SysData.numberTimes = (SysData.numberTimes > 0) ? SysData.numberTimes : 0;
-                        SysData.isUpdateTimes = true;
+                        SysData.isUpdateAutoRun = true;
                     }
                     if( SysData.startCycle == 0 && SysData.numberTimes > 0 && SysData.isLoop && !SysData.isRun) {
                         SysData.nextStartTime = System.currentTimeMillis();
                         SysData.numberTimes = (SysData.numberTimes > 0) ? SysData.numberTimes - 1 : 0;
-                        SysData.isUpdateTimes = true;
+                        SysData.isUpdateAutoRun = true;
                     }
                     try {
                         Thread.sleep(10000);

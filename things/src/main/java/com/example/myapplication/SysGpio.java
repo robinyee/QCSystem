@@ -782,7 +782,7 @@ public class SysGpio {
                         //Log.d(TAG, "run: 泵3抽取气体" );
                         Thread.sleep(3000);
                     }
-                    SysGpio.mGpioOutD6.setValue(false);                                       //关闭D2电磁阀
+                    SysGpio.mGpioOutD6.setValue(false);                                       //关闭D6电磁阀
 
                     //注射泵状态查询
                     pumpStatus(3, 1000);
@@ -1821,7 +1821,7 @@ public class SysGpio {
                     pumpStatus(2, 1000); //注射泵状态查询
                     SysGpio.mGpioOutD2.setValue(false);
 
-                    if(SysData.errorId == 0) {
+                    if(isRun == false) {
                         if (SysData.Pump[2] == 0x00) {
                             //注射泵抽取液体
                             MainActivity.com0.pumpCmd(2, "pull", 12800);     //抽取高锰酸钾试剂
@@ -1855,8 +1855,26 @@ public class SysGpio {
                             Thread.sleep(20000);
                         }
 
+                        //注射泵状态查询
+                        pumpStatus(2, 1000);
+
+                        if(SysData.Pump[2] == 0x00) {
+                            //注射泵抽取液体
+                            MainActivity.com0.pumpCmd(2, "pull", 1600);     //注射泵吸气
+                            Thread.sleep(3000);
+                        }
+                        SysGpio.mGpioOutD2.setValue(false);                                       //关闭D2电磁阀
+
+                        //注射泵状态查询
+                        pumpStatus(2, 1000);
+
+                        if(SysData.Pump[2] == 0x00) {
+                            //注射泵抽取液体
+                            MainActivity.com0.pumpCmd(2, "back", 0);     //压出高锰酸钾试剂,返回0位
+                            Thread.sleep(3000);
+                        }
+
                         pumpStatus(2, 1000); //注射泵状态查询
-                        SysGpio.mGpioOutD2.setValue(false); //关闭D2电磁阀
                     }
 
                     //注射泵3清洗流程，更换试剂需清洗
@@ -1872,7 +1890,7 @@ public class SysGpio {
                     pumpStatus(3, 1000); //注射泵状态查询
                     SysGpio.mGpioOutD6.setValue(false);
 
-                    if(SysData.errorId == 0) {
+                    if(isRun == false) {
                         if (SysData.Pump[3] == 0x00) {
                             //注射泵抽取液体
                             MainActivity.com0.pumpCmd(3, "pull", 12800);     //抽取草酸钠试剂
@@ -1906,8 +1924,28 @@ public class SysGpio {
                             Thread.sleep(20000);
                         }
 
+                        //注射泵状态查询
+                        pumpStatus(3, 1000);
+
+                        if(SysData.Pump[3] == 0x00) {
+                            //注射泵抽取液体
+                            MainActivity.com0.pumpCmd(3, "pull", 1600);     //注射泵吸气
+                            //Log.d(TAG, "run: 泵3抽取气体" );
+                            Thread.sleep(3000);
+                        }
+                        SysGpio.mGpioOutD6.setValue(false);                                       //关闭D6电磁阀
+
+                        //注射泵状态查询
+                        pumpStatus(3, 1000);
+
+                        if(SysData.Pump[3] == 0x00) {
+                            //注射泵抽取液体
+                            MainActivity.com0.pumpCmd(3, "back", 0);     //压出草酸钠试剂,返回0位
+                            //Log.d(TAG, "run: 泵3返回起始位，排除剩余液体" );
+                            Thread.sleep(3000);
+                        }
+
                         pumpStatus(3, 1000); //注射泵状态查询
-                        SysGpio.mGpioOutD6.setValue(false); //关闭D6电磁阀
 
                     } else {
                         //等待30秒，排废液

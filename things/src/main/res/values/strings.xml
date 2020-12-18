@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="version">1.0.2020.1216</string>
 </resources>

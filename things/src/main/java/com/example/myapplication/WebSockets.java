@@ -284,13 +284,20 @@ public class WebSockets extends NanoWSD {
                     object.put("nextStartTime", formater.format(SysData.nextStartTime));
                     object.put("startCycle", SysData.startCycle);
                     object.put("numberTimes", SysData.numberTimes);
+                    object.put("startType", SysData.startType);
                     object.put("isLoop", SysData.isLoop);
                     object.put("xiaojieTemp", SysData.xiaojieTemp);
                     object.put("xiaojieTime", SysData.xiaojieTime);
                     object.put("biaodingValue", SysData.biaodingValue);
-                    object.put("deviceList", SysData.deviceList.get(2));
+                    //Log.i(TAG, "deviceList.size：" + SysData.deviceList.size());
+                    if(SysData.deviceList.size() >= 3) {
+                        object.put("deviceList", SysData.deviceList.get(2));
+                    } else {
+                        object.put("deviceList", "无");
+                    }
                     object.put("BAUD_RATE", SysData.BAUD_RATE);
                     object.put("MODBUS_ADDR", SysData.MODBUS_ADDR);
+                    object.put("version", SysData.version);
                     send(object.toString());
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
@@ -314,17 +321,26 @@ public class WebSockets extends NanoWSD {
                             } else {
                                 return;
                             }
+                            SysData.isUpdateAutoRun = true;
                             break;
                         case "startCycle":
                             SysData.startCycle = Integer.parseInt(cmdData);
+                            SysData.isUpdateAutoRun = true;
                             break;
                         case "numberTimes":
                             SysData.numberTimes = Integer.parseInt(cmdData);
+                            SysData.isUpdateAutoRun = true;
+                            break;
+                        case "startType":
+                            SysData.startType = Integer.parseInt(cmdData);
+                            Log.i(TAG, "设置测试类型：" + SysData.startType);
+                            SysData.isUpdateAutoRun = true;
                             break;
                         case "isLoop":
                             SysData.isLoop = Boolean.parseBoolean(cmdData);
                             Log.i(TAG, "cmdName：" + cmdName);
                             Log.i(TAG, "当前值：" + SysData.isLoop);
+                            SysData.isUpdateAutoRun = true;
                             break;
                         case "xiaojieTemp":
                             SysData.xiaojieTemp = Double.parseDouble(cmdData);
@@ -337,11 +353,16 @@ public class WebSockets extends NanoWSD {
                             break;
                         case "BAUD_RATE":
                             SysData.BAUD_RATE = Integer.parseInt(cmdData);
-                            MainActivity.com1.setBAUD_RATE(SysData.BAUD_RATE);
-                            Log.i(TAG, "已修改波特率：" + MainActivity.com1.getBAUD_RATE());
+                            if(SysData.deviceList.size() >= 3) {
+                                MainActivity.com1.setBAUD_RATE(SysData.BAUD_RATE);
+                                Log.i(TAG, "重启串口波特率：" + MainActivity.com1.getBAUD_RATE());
+                            }
+                            Log.i(TAG, "设置波特率：" + SysData.BAUD_RATE);
+                            SysData.isUpdateCom1 = true;
                             break;
                         case "MODBUS_ADDR":
                             SysData.MODBUS_ADDR = Integer.parseInt(cmdData);
+                            SysData.isUpdateCom1 = true;
                             break;
                         case "COM1":
                             if(cmdData.equals("Restart")){
@@ -356,11 +377,16 @@ public class WebSockets extends NanoWSD {
                     object.put("nextStartTime", formater.format(SysData.nextStartTime));
                     object.put("startCycle", SysData.startCycle);
                     object.put("numberTimes", SysData.numberTimes);
+                    object.put("startType", SysData.startType);
                     object.put("isLoop", SysData.isLoop);
                     object.put("xiaojieTemp", SysData.xiaojieTemp);
                     object.put("xiaojieTime", SysData.xiaojieTime);
                     object.put("biaodingValue", SysData.biaodingValue);
-                    object.put("deviceList", SysData.deviceList.get(2));
+                    if(SysData.deviceList.size() >= 3) {
+                        object.put("deviceList", SysData.deviceList.get(2));
+                    } else {
+                        object.put("deviceList", "无");
+                    }
                     object.put("BAUD_RATE", SysData.BAUD_RATE);
                     object.put("MODBUS_ADDR", SysData.MODBUS_ADDR);
                     send(object.toString());

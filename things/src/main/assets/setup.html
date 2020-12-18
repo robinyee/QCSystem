@@ -99,10 +99,10 @@
 	        <div class="col-md-4">
 				<div class="card mb-3">
 				  <h5 class="card-header">定时启动<span v-html="connected ? connecting : ''"></span></h5>
-				  <div class="card-body" style="min-height: 320px;">
+				  <div class="card-body" style="min-height: 360px;">
 				    <form>
 				    	<div class="form-group">
-				    	  <h6>待启动时间：<span class="badge badge-success">{{nextStartTime}}</span></h6>
+				    	  <h6>启动时间：<span class="badge badge-success">{{nextStartTime}}</span></h6>
 						  <p>
 						  <input type="date" id="date"  v-model="date" v-on:change="sendData('SET_Setup|nextStartTime|' + date + ' ' + time); nextStartTime = date + ' ' + time;"/>
 						  <input type="time" id="time"  v-model="time" v-on:change="sendData('SET_Setup|nextStartTime|' + date + ' ' + time); nextStartTime = date + ' ' + time;"/>
@@ -110,36 +110,66 @@
 				    	  <!--<input type="datetime" placeholder="输入下次启动时间" class="form-control">-->
 				    	</div>
 				    	<div class="form-group">
-				    	  <h6>启动周期[单位：小时]</h6>
+				    	  <h6>启动周期：[小时]</h6>
 				    	  <input type="text" placeholder="输入启动间隔时间" class="form-control" v-model="startCycle" v-on:change="sendData('SET_Setup|startCycle|' + startCycle)">
 				    	</div>
 				    	<div class="form-group">
-				    	  <h6>启动次数[输入999，不限次数]</h6>
+				    	  <h6>启动次数：[输入999，不限次数]</h6>
 				    	  <input type="text" placeholder="输入启动次数" class="form-control" v-model="numberTimes" v-on:change="sendData('SET_Setup|numberTimes|' + numberTimes)">
 				    	</div>
+						<div class="form-group">
+							<h6>启动方式：</h6>
+							<p>
+								<label for="select"></label>
+								<select id="select" v-model="startType" v-on:change="sendData('SET_Setup|startType|' + startType)">
+									<option value="0">无</option>
+									<option value="1">水样测定</option>
+									<option value="2">标样测定</option>
+									<option value="3">仪表校准</option>
+								</select>
+								<label for="select">  </label>
+								<button type="button" v-bind:class="isLoop ? 'btn btn-danger btn-sm' : 'btn btn-success btn-sm'"  @click="sendData('SET_Setup|isLoop|' + !isLoop); isLoop = !isLoop" >{{isLoop ? "定时已开启" : "定时已关闭"}}</button>
+							</p>
+						</div>
+						<!--<div class="form-group">
+							<h6>定时开关：</h6>
+							<p>
 				    	<button type="button" v-bind:class="isLoop ? 'btn btn-danger' : 'btn btn-success'"  @click="sendData('SET_Setup|isLoop|' + !isLoop); isLoop = !isLoop" >{{isLoop ? "定时已开启" : "定时已关闭"}}</button>
-				    </form>
+							</p>
+						</div>-->
+					</form>
 				  </div>
 				</div>
 			</div>
 			<div class="col-md-4">
 				<div class="card mb-3">
 				  <h5 class="card-header">仪表参数<span v-html="connected ? connecting : ''"></span></h5>
-				  <div class="card-body" style="min-height: 320px;">
+				  <div class="card-body" style="min-height: 360px;">
 				    <form>
 				    	<div class="form-group">
-				    	  <h6>消解温度[单位：℃]</h6>
+				    	  <h6>消解温度：[℃]</h6>
 				    	  <input type="text" placeholder="输入消解温度" class="form-control" v-model="xiaojieTemp" v-on:change="sendData('SET_Setup|xiaojieTemp|' + xiaojieTemp)">
 				    	</div>
 				    	<div class="form-group">
-				    	  <h6>消解时间[单位：分钟]</h6>
+				    	  <h6>消解时间：[秒]</h6>
 				    	  <input type="text" placeholder="输入消解时长" class="form-control" v-model="xiaojieTime" v-on:change="sendData('SET_Setup|xiaojieTime|' + xiaojieTime)">
 				    	</div>
 				    	<div class="form-group">
-				    	  <h6>试剂标定[试剂标定校准值]</h6>
+				    	  <h6>试剂标定：[试剂标定值]</h6>
 				    	  <input type="text" placeholder="输入标定值" class="form-control" v-model="biaodingValue" v-on:change="sendData('SET_Setup|biaodingValue|' + biaodingValue)">
 				    	</div>
-				    	<!--<button type="button" class="btn btn-success" @click="sendData('GET_Setup')" >保存参数</button>-->
+						<div class="form-group">
+							<h6>软件版本：</h6>
+							<p class="lead">
+								<span class="badge badge-success">CODmn V{{version}}</span>
+							</p>
+						</div>
+						<!--<div>
+							<h6>系统重启：</h6>
+							<p>
+								<button type="button" class="btn btn-success" @click="sendData('GET_Setup')" >重启仪表</button>
+							</p>
+				  		</div>-->
 				    </form>
 				  </div>
 				</div>
@@ -147,20 +177,20 @@
 			<div class="col-md-4">
 				<div class="card mb-3">
 				  <h5 class="card-header">系统信息<span v-html="connected ? connecting : ''"></span></h5>
-				  <div class="card-body" style="min-height: 320px;">
+				  <div class="card-body" style="min-height: 360px;">
 				    <form>
 				    	<div class="form-group">
-				    	  <h6>串口名称[USB串口]</h6>
+				    	  <h6>串口名称：[USB串口]</h6>
 				    	  <input type="text" placeholder="串口名称" class="form-control" v-model="deviceList">
 				    	</div>
 				    	<div class="form-group">
-				    	  <h6>RS485地址[Modbus协议地址]</h6>
+				    	  <h6>RS485地址：[Modbus协议]</h6>
 				    	  <input type="text" placeholder="输入串口通讯地址" class="form-control" v-model="MODBUS_ADDR" v-on:change="sendData('SET_Setup|MODBUS_ADDR|' + MODBUS_ADDR)">
 				    	</div>
 				    	<div class="form-group">
-							<h6>波特率[当前值：{{BAUD_RATE}}]</h6>
+							<h6>波特率：</h6>
 							<p>
-								<label for="select">选择</label>
+								<label for="select"></label>
 								<select id="select" v-model="BAUD_RATE" v-on:change="sendData('SET_Setup|BAUD_RATE|' + BAUD_RATE)">
 									<option value="9600">9600</option>
 									<option value="19200">19200</option>
@@ -170,7 +200,13 @@
 								<label for="select">bit/s</label>
 							</p>
 				    	</div>
-				    	<button type="button" class="btn btn-success" @click="sendData('GET_Setup')" >重新载入</button>
+						<div class="form-group">
+							<h6>系统参数：</h6>
+							<p>
+				    			<button type="button" class="btn btn-success btn-sm" @click="sendData('GET_Setup')" >重新载入</button>
+								<button type="button" class="btn btn-success btn-sm" @click="sendData('RUN_Stop')" >重启仪表</button>
+							</p>
+						</div>
 				    </form>
 				  </div>
 				</div>
