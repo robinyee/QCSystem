@@ -388,7 +388,7 @@ public class SysGpio {
                     }
 
                     //温度高于90度，间断加热
-                    if(SysData.tempIn > 90 && SysData.tempOut > 120) {
+                    if(SysData.tempIn > 90 && SysData.tempOut > 110) {
                         try {
                             mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");
@@ -539,7 +539,7 @@ public class SysGpio {
                     Log.d(TAG, "run: D2状态" + SysGpio.mGpioOutD2.getValue());
 
                     //等待3S
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
 
                     //注射泵状态查询
                     pumpStatus(2, 1000);
@@ -1245,6 +1245,9 @@ public class SysGpio {
                 try {
                     SysGpio.mGpioOut24V.setValue(true);
                     SysGpio.mGpioOutLED.setValue(true);
+                    SysGpio.mGpioOutP1.setValue(true);
+                    SysGpio.mGpioOutP2.setValue(true);
+                    SysGpio.mGpioOutP3.setValue(true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -1425,7 +1428,7 @@ public class SysGpio {
                 //记录加高锰酸钾前光电值
                 beforeAd = SysData.adLight;
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -1458,7 +1461,7 @@ public class SysGpio {
                 SysGpio.readTempFlag = true;
                 SysGpio.readAd();
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -1515,7 +1518,7 @@ public class SysGpio {
 
                 //等待1秒钟
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -1540,7 +1543,7 @@ public class SysGpio {
                 SysGpio.readTempFlag = true;
                 SysGpio.readAd();
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -1647,6 +1650,12 @@ public class SysGpio {
                     SysGpio.tempControlFlag = false;
                     //持续搅拌
                     SysData.jiaoBanType = 2;
+                    //等待3秒钟
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     //启动加草酸钠程序
                     s4_JiaCaoSuanNa();
                     //等待加草酸钠完成
