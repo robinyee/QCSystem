@@ -164,6 +164,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //程序退出时关闭资源
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SysGpio.gpioClose(); //关闭GPIO并注销
+        com0.closeUart();   //关闭com0串口通信
+        if(SysData.deviceList.size() >= 3) {
+            com1.closeUart();   //关闭com1串口通信
+        }
+        db.close();  //关闭数据库连接
+    }
+
     //获取Ds3231温度
     private void getDs3231Temp() {
         //Ds3231 device;
@@ -347,16 +359,6 @@ public class MainActivity extends AppCompatActivity {
         //监视应用异常
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(getApplicationContext());
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SysGpio.gpioClose(); //关闭GPIO并注销
-        com0.closeUart();   //关闭com0串口通信
-        if(SysData.deviceList.size() >= 3) {
-            com1.closeUart();   //关闭com1串口通信
-        }
     }
 
     //开启Web服务
