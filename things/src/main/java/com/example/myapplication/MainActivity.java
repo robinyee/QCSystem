@@ -704,7 +704,7 @@ public class MainActivity extends AppCompatActivity {
                             SysData.saveAlertToDB();  //保存报警记录
                         }
                     }
-                    //加热器温度大于200度，反应器内温度高于100度，停止加热并报警
+                    //加热器温度大于200度，反应器内温度高于110度，停止加热并报警
                     if(SysData.tempOut > 200 || SysData.tempIn > 110) {
                         try {
                             SysGpio.mGpioOutH1.setValue(false);

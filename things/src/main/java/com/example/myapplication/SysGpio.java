@@ -403,7 +403,7 @@ public class SysGpio {
                         }
                     }
                     //加热器温度大于150度，停止加热
-                    if(SysData.tempIn > 98 || SysData.tempOut > 150) {
+                    if(SysData.tempIn > 98 || SysData.tempOut > 130) {
                         try {
                             mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");
