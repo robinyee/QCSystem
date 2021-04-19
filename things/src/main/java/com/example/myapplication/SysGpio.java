@@ -534,6 +534,7 @@ public class SysGpio {
                     SysGpio.mGpioOutP2.setValue(true);
                     Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
 
+                    /*  取消抽取硫酸之前先向玻璃管吹起 2021年4月19日修改
                     //首先排空试剂管中的试剂
                     SysGpio.mGpioOutD2.setValue(true);
                     Log.d(TAG, "run: D2状态" + SysGpio.mGpioOutD2.getValue());
@@ -563,8 +564,17 @@ public class SysGpio {
                         MainActivity.com0.pumpCmd(2, "back", 0);     //排空容器中的硫酸
                         Thread.sleep(22000);
                     }
+                     */
 
                     //Log.d(TAG, "run: 发送串口启动进样泵指令" + num);
+
+                    //将注射泵切换到硫酸管路，此次为新增加开启D2、D3阀
+                    SysGpio.mGpioOutD2.setValue(true);
+                    Log.d(TAG, "run: D2状态" + SysGpio.mGpioOutD2.getValue());
+                    SysGpio.mGpioOutD3.setValue(true);
+                    Log.d(TAG, "run: D3状态" + SysGpio.mGpioOutD3.getValue());
+                    //等待3S
+                    Thread.sleep(3000);
 
                     //注射泵状态查询
                     pumpStatus(2, 1000);
@@ -601,13 +611,14 @@ public class SysGpio {
                     //注射泵2状态正常时执行
                     if(SysData.Pump[2] == 0x00) {
                         //注射泵抽取液体
-                        MainActivity.com0.pumpCmd(2, "pull", 1200);     //吸回管道剩余硫酸试剂
-                        Thread.sleep(3000);
+                        MainActivity.com0.pumpCmd(2, "pull", 2400);     //吸回管道剩余硫酸试剂，将1200改为2400，修改2021年4月19日
+                        Thread.sleep(6000);
                     }
-                    SysGpio.mGpioOutD5.setValue(false);                                       //关闭D5电磁阀
 
                     //注射泵状态查询
                     pumpStatus(2, 1000);
+                    SysGpio.mGpioOutD5.setValue(false);                                       //关闭D5电磁阀
+                    Thread.sleep(2000);
 
                     if(SysData.Pump[2] == 0x00) {
                         //注射泵抽取液体
