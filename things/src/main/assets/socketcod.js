@@ -1,11 +1,17 @@
 "use strict"
+
+//获取WebSocket服务器地址
+var Port = location.port; //获取端口号 8080
+var Host = location.hostname; //获取主机名 例如：192.168.0.1
+var Server = "ws://" + Host + ":" + (parseInt(Port) + 1);
+
 var Vm = new Vue({
     el: '#root',
     data: {
         consoleData: [], // 控制台日志
         messageData: [], // 消息记录
         instance: WebSocket, // ws instance
-        address: 'ws://10.10.0.139:8081',
+        address: Server,
         alert: {
             class: 'success',
             state: false,

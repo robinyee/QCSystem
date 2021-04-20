@@ -75,12 +75,15 @@ class WebServer extends NanoHTTPD {
                 reader = new BufferedReader(new InputStreamReader(mainContext.getAssets().open(filename)));
 
                 while ((line = reader.readLine()) != null) {
+                    /*
                     if(filename.equals("socket.js") && line.equals("        address: 'ws://127.0.0.1:9501',")){
                         line = "        address: 'ws://" + SysData.webIPAddr + ":" + (SysData.webPort + 1) + "',";
                     }
                     if(filename.equals("socketcod.js") && line.equals("        address: 'ws://10.10.0.139:8081',")){
                         line = "        address: 'ws://" + SysData.webIPAddr + ":" + (SysData.webPort + 1) + "',";
                     }
+
+                     */
                     response = response + line + "\n";
                 }
                 reader.close();
