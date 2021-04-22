@@ -87,6 +87,7 @@ var Vm = new Vue({
 		statusS12: false,
 		isEmptyPipeline: false,
 		isNotice: false,
+		isSaveLog: false,
 		nextStartTime: 0,
 		startCycle: 0,
 		numberTimes: 0,
@@ -351,6 +352,7 @@ var Vm = new Vue({
 				_this.statusS12 = obj.statusS12;
 				_this.isEmptyPipeline = obj.isEmptyPipeline;
 				_this.isNotice = obj.isNotice;
+				_this.isSaveLog = obj.isSaveLog;
 				_this.errorId = obj.errorId;
 			}
 			if(obj.respond === 'CMD_Ok'){

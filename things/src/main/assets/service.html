@@ -110,6 +110,7 @@
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="isNotice ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_isNotice')" >量低报警</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="isEmptyPipeline ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_isEmptyPipeline')" >前置润洗</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="errorId != 0 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CLS_Alert')" >清除报警</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="isSaveLog != 0 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_isSaveLog')" >保存日志</button></dd>
 					</dl>
 				  </div>
 				</div>

@@ -665,6 +665,9 @@ public class MainActivity extends AppCompatActivity {
                     //保存运行状态数据
                     if(SysData.isRun){
                         saveMeterStatus();  //仪器运行时定时保存仪器状态数据
+                        if(SysData.isSaveLog) {
+                            saveLog(); //保存运行日志
+                        }
                         try {
                             Thread.sleep(10000);  //10秒后保存数据，能记录isRun的false状态
                         } catch (InterruptedException e) {
@@ -734,6 +737,45 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 } while (true);
+            }
+        }).start();
+    }
+
+    //保存日志文件
+    private void saveLog() {
+        Log.i("MainActivity", "保存仪表运行日志");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd,HH:mm:ss");
+                String fileName = "log" + dateFormat.format(System.currentTimeMillis()) + ".txt";
+                try {
+                    FileOutputStream fos = openFileOutput(fileName, Context.MODE_APPEND);
+                    fos.write((dateFormat2.format(System.currentTimeMillis()) + ","
+                            + "codValue," + SysData.codValue + ","
+                            + "progressRate," + SysData.progressRate + ","
+                            + "statusMsg," + SysData.statusMsg + ","
+                            + "startTime," + dateFormat2.format(SysData.startTime) + ","
+                            + "endTime," + dateFormat2.format(SysData.endTime) + ","
+                            + "tempIn," + SysData.tempIn + ","
+                            + "tempOut," + SysData.tempOut + ","
+                            + "adLight," + SysData.adLight + ","
+                            + "errorMsg," + SysData.errorMsg + ","
+                            + "startXiaojie," + SysData.startXiaojie + ","
+                            + "endXiaoJie," + SysData.endXiaoJie + ","
+                            + "didingNum," + SysData.didingNum + ","
+                            + "didingSumVolume," + SysData.didingSumVolume + ","
+                            + "workType," + SysData.workType + ","
+                            + "workFrom," + SysData.workFrom + ","
+                            + "tempBox," + SysData.tempBox + "\n").getBytes());
+                    fos.close();
+                } catch (
+                        FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }

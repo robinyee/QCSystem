@@ -470,6 +470,7 @@ public class WebSockets extends NanoWSD {
                     object.put("statusS12",SysGpio.statusS12);
                     object.put("isEmptyPipeline",SysData.isEmptyPipeline);
                     object.put("isNotice",SysData.isNotice);
+                    object.put("isSaveLog",SysData.isSaveLog);
                     object.put("errorId",SysData.errorId);
                     send(object.toString());
                 } catch (JSONException | IOException e) {
@@ -578,6 +579,9 @@ public class WebSockets extends NanoWSD {
                                 break;
                             case "isNotice":
                                 SysData.isNotice = !SysData.isNotice;
+                                break;
+                            case "isSaveLog":
+                                SysData.isSaveLog = !SysData.isSaveLog;
                                 break;
                         }
                         JSONObject object = new JSONObject();

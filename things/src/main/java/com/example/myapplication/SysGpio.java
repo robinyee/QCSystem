@@ -29,6 +29,7 @@ public class SysGpio {
     static boolean readTempFlag = false; //是否持续读取温度
     static boolean tempControlFlag = false; //是否进行温度控制
     static int pumpTimeOut = 0;
+    static String workTypeId = "";   //运行工作类型的代码
 
     //仪器控制页面状态
     static boolean statusS1 = false;       //S1状态
@@ -1200,13 +1201,15 @@ public class SysGpio {
     //水质测定流程
     public static void s7_ShuiZhiCeDing() {
         SysData.workType = "水质分析";
+        workTypeId = "s7";
         statusS7 = true;
         analysis();
     }
 
     //空白测定流程
     public static void s9_KongBaiShiYan() {
-        SysData.workType = "标样测定";
+        SysData.workType = "空白测定";
+        workTypeId = "s9";
         statusS9 = true;
         analysis();   //启动分析流程
     }
@@ -1214,6 +1217,7 @@ public class SysGpio {
     //标样测定流程
     public static void s10_BiaoYangCeDing() {
         SysData.workType = "标样测定";
+        workTypeId = "s10";
         statusS10 = true;
         analysis();   //启动分析流程
     }
@@ -1221,6 +1225,7 @@ public class SysGpio {
     //仪表校准流程
     public static void s11_Calibration() {
         SysData.workType = "仪表校准";
+        workTypeId = "s11";
         statusS11 = true;
         analysis();   //启动分析流程
     }
@@ -1244,7 +1249,7 @@ public class SysGpio {
                 SysData.startTime = System.currentTimeMillis();
                 updateProgress();   //自动更新进度条
                 //仪表校准需要1个小时左右
-                if(SysData.workType.equals("仪表校准")){
+                if(workTypeId.equals("s11")){
                     SysData.endTime = System.currentTimeMillis() + 3600000;
                 } else {
                     SysData.endTime = System.currentTimeMillis() + 3000000;
@@ -1264,7 +1269,7 @@ public class SysGpio {
                 }
 
                 //水质测定开电磁阀D1，标样测定、仪器校准关电磁阀D1
-                if(SysData.workType.equals("水质分析")){
+                if(workTypeId.equals("s7")){
                     try {
                         SysGpio.mGpioOutD1.setValue(true); //打开阀1
                     } catch (IOException e) {
@@ -1339,6 +1344,23 @@ public class SysGpio {
 
                 } while(statusS1 == true);
 
+                //加水样结束后，关闭电磁阀1
+                try {
+                    SysGpio.mGpioOutD1.setValue(false); //关闭阀1
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                /*
+                if(workTypeId.equals("s7")){
+                    try {
+                        SysGpio.mGpioOutD1.setValue(false); //关闭阀1
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                 */
+
                 //判断是否有水样进入
                 if((afterAd - beforeAd) < 30) {
                     SysData.errorMsg = "加水样出错";
@@ -1353,15 +1375,6 @@ public class SysGpio {
                     return;
                 }
                 Log.d(TAG, "水质测定:Max=" + afterAd + ",水质测定:Min=" + beforeAd);
-
-                //测水样关闭电磁阀1
-                if(SysData.workType.equals("水质分析")){
-                    try {
-                        SysGpio.mGpioOutD1.setValue(false); //关闭阀1
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
 
                 //停止读取模拟量
                 SysGpio.readTempFlag = false;
@@ -1643,7 +1656,7 @@ public class SysGpio {
                 SysGpio.tempControlFlag = false;
 
                 //仪表校准，需要加入草酸钠，再滴定
-                if(SysData.workType.equals("仪表校准")){
+                if(workTypeId.equals("s11")){
                     //启动排水2秒钟
                     try {
                         SysGpio.mGpioOutD8.setValue(true);
@@ -1797,6 +1810,7 @@ public class SysGpio {
                 statusS9 = false;
                 statusS10 = false;
                 statusS11 = false;
+                workTypeId = "";
                 Log.d(TAG, "run: 结束分析流程");
                 Log.d(TAG, "run: COD值：" + SysData.codValue);
             }

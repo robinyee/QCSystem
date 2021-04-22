@@ -1,10 +1,15 @@
 package com.example.myapplication;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.Key;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -60,6 +65,7 @@ public class SysData {
     static String workFrom = "未知";            //启动分析命令来自于 触摸屏、串口、Web、定时启动
     static double tempBox;                      //主板温度 DS3231芯片温度
     static int ds3231Error = 0;                 //访问芯片DS3231出错的次数
+    static boolean isSaveLog = false;            //是否保存运行日志
 
     //系统参数
     static String httpAddr = "";                //http访问地址
@@ -131,9 +137,9 @@ public class SysData {
     //计算COD的值
     public static double calculationValue() {
         if(caosuannaCon == 0.025) {
-            ccf = 0.97;    //0.025浓度的试剂修正值
+            ccf = 1.00;    //0.025浓度的试剂修正值
         } else {
-            ccf = 1.00;
+            ccf = 1.00;    //0.01浓度的试剂修正值
         }
         double k = caosuannaVolume / biaodingValue;
         didingSumVolume = didingNum * didingVolume;
