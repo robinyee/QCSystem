@@ -1011,7 +1011,7 @@ public class SysGpio {
 
                 //记录初始光电值，取10次采样的平均值
                 int light = 0;
-                int endAdLight = 0;   //判断滴定结束时光电平均值
+                SimpleMovingAverage sma = new SimpleMovingAverage(10);  //光电值的10次滑动平均值
                 boolean isEnd = false;  //是否到达滴定终点
                 for(int i = 0; i < 10; i++) {
                     //等待获取模拟量的值
@@ -1022,6 +1022,8 @@ public class SysGpio {
                     }
                     light = light + SysData.adLight;
                     SysData.startAdLight = light / (i + 1);
+                    sma.addNewNumber(SysData.adLight);
+                    SysData.smaAdLight = sma.getMovingAverage();
                 }
 
                 //重置滴定量
@@ -1083,7 +1085,7 @@ public class SysGpio {
                         ddNum += 1;
                         SysData.didingNum = ddNum;
                         //SysData.didingNum = (ddNum > SysData.didingDeviation) ? ddNum - SysData.didingDeviation : 0;      //从滴定开始到液体到达管口滴定的次数和滴定过量的滴数，空管滴数9滴，过量滴数3滴
-                        if(ddNum >= 400){
+                        if(ddNum >= SysData.didingMax){
                             SysData.errorMsg = "滴定超量";
                             SysData.errorId = 5;
                             SysData.saveAlertToDB();  //保存报警记录
@@ -1093,7 +1095,7 @@ public class SysGpio {
                         MainActivity.com0.getAd();
                         Thread.sleep(1600);
                         //如果光电值降低Difference/4以上，等待2S
-                        if((SysData.startAdLight - SysData.adLight) >= (SysData.didingDifference / 4) ){
+                        if((SysData.smaAdLight - SysData.adLight) >= (SysData.didingDifference / 4) || (SysData.startAdLight - SysData.adLight) >= SysData.didingDifference ){
                             //读取温度
                             SysGpio.readTempFlag = true;
                             SysGpio.readAd();
@@ -1108,7 +1110,9 @@ public class SysGpio {
                                 if((SysData.startAdLight - SysData.adLight) >= SysData.didingDifference) {
                                     Log.d(TAG, "滴定终点光电值：" + SysData.adLight);
                                     isEnd = true;
-                                    SysData.didingNum = endDidingNum;
+                                    if(SysData.didingNum - endDidingNum <= 5) {  //如果滴定过量的滴数小于等于5滴，即减去滴定过量的滴数
+                                        SysData.didingNum = endDidingNum;
+                                    }
                                 } else {
                                     endDidingNum = 0;
                                 }
@@ -1116,6 +1120,8 @@ public class SysGpio {
                         } else {
                             endDidingNum = 0;
                         }
+                        sma.addNewNumber(SysData.adLight);
+                        SysData.smaAdLight = sma.getMovingAverage();
                         SysData.startAdLight = (SysData.adLight > SysData.startAdLight) ? SysData.adLight : SysData.startAdLight;  //初始光电值取最大值
                         SysGpio.readTempFlag = false;  //停止循环读取温度
                     } while (!isEnd && (SysData.startAdLight - SysData.adLight) < SysData.didingDifference && SysData.didingNum < SysData.didingMax);     //最多滴定didingMax滴

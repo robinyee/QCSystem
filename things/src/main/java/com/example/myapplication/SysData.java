@@ -51,6 +51,7 @@ public class SysData {
     static String statusMsg = "";               //仪器当前执行动作
     static double tempIn, tempOut;              //温度值，in反应器内温度，out加热器温度
     static int adLight, adBack;                 //adLight光电值，adBack备用模拟量
+    static double smaAdLight;                   //adLight光电值的滑动平均值
     static byte[] Pump = new byte[10];          //记录各泵的状态，十六进制数据，0x00-状态正常，0x01-帧错误，0x02-参数错误，0x03-光耦错误，0x04-电机忙，0xfe-任务挂起，0xff-未知错误
     static int startAdLight;                    //存储滴定前的光电值
     static String errorMsg = "";                //记录仪器出错信息
