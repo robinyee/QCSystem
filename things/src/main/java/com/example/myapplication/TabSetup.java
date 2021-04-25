@@ -610,50 +610,6 @@ public class TabSetup extends Fragment {
         }
     }
 
-    //保存仪表参数
-    public void saveMeterParameter() {
-        try {
-            //打开文件
-            final SharedPreferences.Editor editor = getActivity().getSharedPreferences("Parameter", MODE_PRIVATE).edit();
-            //仪器的参数
-            editor.putInt("shuiyangStep", SysData.shuiyangStep);
-            editor.putLong("shuiyangVolume", Double.doubleToLongBits(SysData.shuiyangVolume));
-            editor.putInt("liusuanStep", SysData.liusuanStep);
-            editor.putLong("liusuanVolume", Double.doubleToLongBits(SysData.liusuanVolume));
-            editor.putInt("caosuannaStep", SysData.caosuannaStep);
-            editor.putLong("caosuannaVolume", Double.doubleToLongBits(SysData.caosuannaVolume));
-            editor.putInt("gaomengsuanjiaStep", SysData.gaomengsuanjiaStep);
-            editor.putLong("gaomengsuanjiaVolume", Double.doubleToLongBits(SysData.gaomengsuanjiaVolume));
-            editor.putLong("xiaojieTemp", Double.doubleToLongBits(SysData.xiaojieTemp));
-            editor.putInt("xiaojieTime", SysData.xiaojieTime);
-            editor.putInt("didingStep", SysData.didingStep);
-            editor.putLong("didingVolume", Double.doubleToLongBits(SysData.didingVolume));
-            editor.putInt("didingNum", SysData.didingNum);
-            editor.putLong("didingSumVolume", Double.doubleToLongBits(SysData.didingSumVolume));
-            editor.putLong("kongbaiValue", Double.doubleToLongBits(SysData.kongbaiValue));
-            editor.putLong("biaodingValue", Double.doubleToLongBits(SysData.biaodingValue));
-            editor.putLong("caosuannaCon", Double.doubleToLongBits(SysData.caosuannaCon));
-            editor.putInt("didingDeviation", SysData.didingDeviation);
-            editor.putInt("didingDifference", SysData.didingDifference);
-            //系统参数
-            //editor.putString("localIpAddr", SysData.localIpAddr[0]);
-            editor.putInt("webPort", SysData.webPort);
-            editor.putBoolean("isLoop", SysData.isLoop);
-            editor.putLong("nextStartTime", SysData.nextStartTime);
-            editor.putInt("startCycle", SysData.startCycle);
-            editor.putInt("numberTimes", SysData.numberTimes);
-            editor.putInt("startType", SysData.startType);
-            editor.putString("adminPassword", SysData.adminPassword);
-            editor.putInt("modbusAddr", SysData.MODBUS_ADDR);
-            editor.putInt("baudRate", SysData.BAUD_RATE);
-            //提交保存
-            editor.apply();
-        } catch (Exception e){
-            Log.i(TAG, "保存参数出错！可能是文件正在打开");
-        }
-
-    }
-
     //保存Edit数据
     private void saveEditText() {
         //保存仪表参数的内容
@@ -733,6 +689,49 @@ public class TabSetup extends Fragment {
         editDidingDeviation.setText(String.valueOf(SysData.didingDeviation));
         editDidingMax.setText(String.valueOf(SysData.didingMax));
         editDidingDifference.setText(String.valueOf(SysData.didingDifference));
+    }
+
+    //保存仪表参数
+    public void saveMeterParameter() {
+        try {
+            //打开文件
+            final SharedPreferences.Editor editor = getActivity().getSharedPreferences("Parameter", MODE_PRIVATE).edit();
+            //仪器的参数
+            editor.putInt("shuiyangStep", SysData.shuiyangStep);
+            editor.putLong("shuiyangVolume", Double.doubleToLongBits(SysData.shuiyangVolume));
+            editor.putInt("liusuanStep", SysData.liusuanStep);
+            editor.putLong("liusuanVolume", Double.doubleToLongBits(SysData.liusuanVolume));
+            editor.putInt("caosuannaStep", SysData.caosuannaStep);
+            editor.putLong("caosuannaVolume", Double.doubleToLongBits(SysData.caosuannaVolume));
+            editor.putInt("gaomengsuanjiaStep", SysData.gaomengsuanjiaStep);
+            editor.putLong("gaomengsuanjiaVolume", Double.doubleToLongBits(SysData.gaomengsuanjiaVolume));
+            editor.putLong("xiaojieTemp", Double.doubleToLongBits(SysData.xiaojieTemp));
+            editor.putInt("xiaojieTime", SysData.xiaojieTime);
+            editor.putInt("didingStep", SysData.didingStep);
+            editor.putLong("didingVolume", Double.doubleToLongBits(SysData.didingVolume));
+            editor.putInt("didingNum", SysData.didingNum);
+            editor.putLong("didingSumVolume", Double.doubleToLongBits(SysData.didingSumVolume));
+            editor.putLong("kongbaiValue", Double.doubleToLongBits(SysData.kongbaiValue));
+            editor.putLong("biaodingValue", Double.doubleToLongBits(SysData.biaodingValue));
+            editor.putLong("caosuannaCon", Double.doubleToLongBits(SysData.caosuannaCon));
+            editor.putInt("didingDeviation", SysData.didingDeviation);
+            editor.putInt("didingDifference", SysData.didingDifference);
+            //系统参数
+            //editor.putString("localIpAddr", SysData.localIpAddr[0]);
+            editor.putInt("webPort", SysData.webPort);
+            editor.putBoolean("isLoop", SysData.isLoop);
+            editor.putLong("nextStartTime", SysData.nextStartTime);
+            editor.putInt("startCycle", SysData.startCycle);
+            editor.putInt("numberTimes", SysData.numberTimes);
+            editor.putInt("startType", SysData.startType);
+            editor.putString("adminPassword", SysData.adminPassword);
+            editor.putInt("modbusAddr", SysData.MODBUS_ADDR);
+            editor.putInt("baudRate", SysData.BAUD_RATE);
+            //提交保存
+            editor.apply();
+        } catch (Exception e){
+            Log.i(TAG, "保存参数出错！可能是文件正在打开");
+        }
     }
 
     //设置日期对话框

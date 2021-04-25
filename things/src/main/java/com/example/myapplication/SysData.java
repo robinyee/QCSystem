@@ -43,7 +43,6 @@ public class SysData {
     static double coefficient = 1.0;            //标定系数K值
     static double ccf = 1.0;                    //浓度修正因子，0.01浓度值为1.0，0.025浓度值为0.97
 
-
     //仪器运行状态
     static boolean isGetNetTime = false;        //是否已经获取到网络时间
     static boolean isRun = false;               //仪器是否运行

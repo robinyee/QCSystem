@@ -852,7 +852,7 @@ public class MainActivity extends AppCompatActivity {
     public void saveMeterStatus() {
         //打开文件
         final SharedPreferences.Editor editor = getSharedPreferences("Parameter", MODE_PRIVATE).edit();
-        //仪器的参数
+        //仪器的运行状态
         editor.putBoolean("isRun", SysData.isRun);
         editor.putInt("progressRate", SysData.progressRate);
         editor.putString("statusMsg", SysData.statusMsg);
@@ -860,9 +860,17 @@ public class MainActivity extends AppCompatActivity {
         editor.putLong("startTime", SysData.startTime);
         editor.putLong("endTime", SysData.endTime);
         editor.putLong("codValue", Double.doubleToLongBits(SysData.codValue));
+        //仪表的参数，web设置的参数
         editor.putBoolean("isLoop", SysData.isLoop);
         editor.putLong("nextStartTime", SysData.nextStartTime);
         editor.putInt("startCycle", SysData.startCycle);
+        editor.putInt("numberTimes", SysData.numberTimes);
+        editor.putInt("startType", SysData.startType);
+        editor.putLong("xiaojieTemp", Double.doubleToLongBits(SysData.xiaojieTemp));
+        editor.putInt("xiaojieTime", SysData.xiaojieTime);
+        editor.putLong("biaodingValue", Double.doubleToLongBits(SysData.biaodingValue));
+        editor.putInt("BAUD_RATE", SysData.BAUD_RATE);
+        editor.putInt("MODBUS_ADDR", SysData.MODBUS_ADDR);
         //提交保存
         editor.apply();
         Log.i("存储", "仪表状态已保存");

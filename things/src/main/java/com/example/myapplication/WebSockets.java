@@ -1,6 +1,7 @@
 package com.example.myapplication;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.android.things.pio.Gpio;
@@ -23,6 +24,7 @@ import java.util.List;
 import fi.iki.elonen.NanoWSD;
 
 import static android.content.ContentValues.TAG;
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class WebSockets extends NanoWSD {
