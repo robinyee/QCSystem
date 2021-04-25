@@ -361,7 +361,7 @@ var Vm = new Vue({
 			}
 			if(obj.respond === 'CMD_No'){
 				_this.respond = obj.respond;
-				_this.makeToast("仪器正在分析，请稍后再试！", "出错", 'danger', 'b-toaster-top-right');
+				_this.makeToast("仪器正在分析，请稍后再试！", "警告", 'danger', 'b-toaster-top-right');
 			}
 			if(obj.respond === 'GET_Setup'){
 				_this.respond = obj.respond;
