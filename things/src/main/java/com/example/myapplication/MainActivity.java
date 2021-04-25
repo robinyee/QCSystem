@@ -756,19 +756,13 @@ public class MainActivity extends AppCompatActivity {
                             + "codValue," + SysData.codValue + ","
                             + "progressRate," + SysData.progressRate + ","
                             + "statusMsg," + SysData.statusMsg + ","
-                            + "startTime," + dateFormat2.format(SysData.startTime) + ","
-                            + "endTime," + dateFormat2.format(SysData.endTime) + ","
                             + "tempIn," + SysData.tempIn + ","
                             + "tempOut," + SysData.tempOut + ","
                             + "adLight," + SysData.adLight + ","
-                            + "errorMsg," + SysData.errorMsg + ","
-                            + "startXiaojie," + SysData.startXiaojie + ","
-                            + "endXiaoJie," + SysData.endXiaoJie + ","
+                            + "startAdLight," + SysData.startAdLight + ","
+                            + "smaAdLight," + SysData.smaAdLight + ","
                             + "didingNum," + SysData.didingNum + ","
-                            + "didingSumVolume," + SysData.didingSumVolume + ","
-                            + "workType," + SysData.workType + ","
-                            + "workFrom," + SysData.workFrom + ","
-                            + "tempBox," + SysData.tempBox + "\n").getBytes());
+                            + "didingSumVolume," + SysData.didingSumVolume + "\n").getBytes());
                     fos.close();
                 } catch (
                         FileNotFoundException e) {
