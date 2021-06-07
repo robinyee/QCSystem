@@ -96,6 +96,9 @@ var Vm = new Vue({
 		xiaojieTemp: 0,
 		xiaojieTime: 0,
 		biaodingValue: 0,
+		slopeA: 0,
+		interceptB: 0,
+		trueValue: 0,
 		deviceList: '',
 		BAUD_RATE: 9600,
 		MODBUS_ADDR: 3,
@@ -373,6 +376,9 @@ var Vm = new Vue({
 				_this.xiaojieTemp = obj.xiaojieTemp;
 				_this.xiaojieTime = obj.xiaojieTime;
 				_this.biaodingValue = obj.biaodingValue;
+				_this.slopeA = obj.slopeA;
+				_this.interceptB = obj.interceptB;
+				_this.trueValue = obj.trueValue;
 				_this.deviceList = obj.deviceList;
 				_this.BAUD_RATE = obj.BAUD_RATE;
 				_this.MODBUS_ADDR = obj.MODBUS_ADDR;
@@ -389,6 +395,9 @@ var Vm = new Vue({
 				_this.xiaojieTemp = obj.xiaojieTemp;
 				_this.xiaojieTime = obj.xiaojieTime;
 				_this.biaodingValue = obj.biaodingValue;
+				_this.slopeA = obj.slopeA;
+				_this.interceptB = obj.interceptB;
+				_this.trueValue = obj.trueValue;
 				_this.deviceList = obj.deviceList;
 				_this.BAUD_RATE = obj.BAUD_RATE;
 				_this.MODBUS_ADDR = obj.MODBUS_ADDR;

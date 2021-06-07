@@ -77,6 +77,7 @@ public class TabSetup extends Fragment {
     private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
     private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
     private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon, editDidingDeviation, editDidingMax, editDidingDifference, editAdminPassword;
+    private EditText editSlopeA, editInterceptB, editTrueValue, editCorrectionValue;
     private EditText editCom0, editCom1, editCom1Addr, editCom1BaudRate;
     private RadioGroup radioGroup;
     private TableLayout tableParameter;
@@ -235,6 +236,11 @@ public class TabSetup extends Fragment {
         editDidingDeviation = view.findViewById(R.id.editDidingDeviation);
         editDidingMax = view.findViewById(R.id.editDidingMax);
         editDidingDifference = view.findViewById(R.id.editDidingDifference);
+        editSlopeA = view.findViewById(R.id.editSlopeA);
+        editInterceptB = view.findViewById(R.id.editInterceptB);
+        editTrueValue = view.findViewById(R.id.editTrueValue);
+        editCorrectionValue = view.findViewById(R.id.editCorrectionValue);
+
         //更多参数显示
         moreParameter = view.findViewById(R.id.moreParameter);
         tableParameter = view.findViewById(R.id.tableParameter);
@@ -631,6 +637,8 @@ public class TabSetup extends Fragment {
         SysData.didingDeviation = Integer.parseInt(editDidingDeviation.getText().toString());
         SysData.didingMax = Integer.parseInt(editDidingMax.getText().toString());
         SysData.didingDifference = Integer.parseInt(editDidingDifference.getText().toString());
+        SysData.slopeA = Double.parseDouble(editSlopeA.getText().toString());
+        SysData.interceptB = Double.parseDouble(editInterceptB.getText().toString());
         //系统参数
         SysData.adminPassword = editAdminPassword.getText().toString();
         SysData.MODBUS_ADDR = Integer.parseInt(editCom1Addr.getText().toString());
@@ -689,6 +697,10 @@ public class TabSetup extends Fragment {
         editDidingDeviation.setText(String.valueOf(SysData.didingDeviation));
         editDidingMax.setText(String.valueOf(SysData.didingMax));
         editDidingDifference.setText(String.valueOf(SysData.didingDifference));
+        editSlopeA.setText(String.valueOf(SysData.slopeA));
+        editInterceptB.setText(String.valueOf(SysData.interceptB));
+        editTrueValue.setText(String.valueOf(SysData.trueValue));
+        editCorrectionValue.setText(String.valueOf(SysData.codValue));
     }
 
     //保存仪表参数
@@ -716,6 +728,9 @@ public class TabSetup extends Fragment {
             editor.putLong("caosuannaCon", Double.doubleToLongBits(SysData.caosuannaCon));
             editor.putInt("didingDeviation", SysData.didingDeviation);
             editor.putInt("didingDifference", SysData.didingDifference);
+            editor.putLong("slopeA", Double.doubleToLongBits(SysData.slopeA));
+            editor.putLong("interceptB", Double.doubleToLongBits(SysData.interceptB));
+            editor.putLong("trueValue", Double.doubleToLongBits(SysData.trueValue));
             //系统参数
             //editor.putString("localIpAddr", SysData.localIpAddr[0]);
             editor.putInt("webPort", SysData.webPort);

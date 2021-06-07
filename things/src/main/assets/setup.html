@@ -147,23 +147,48 @@
 				  <div class="card-body" style="min-height: 360px;">
 				    <form>
 				    	<div class="form-group">
-				    	  <h6>消解温度：[℃]</h6>
-				    	  <input type="text" placeholder="输入消解温度" class="form-control" v-model="xiaojieTemp" v-on:change="sendData('SET_Setup|xiaojieTemp|' + xiaojieTemp)">
+				    	  <h6>校正斜率：</h6>
+				    	  <input type="text" placeholder="输入斜率" class="form-control" v-model="slopeA" v-on:change="sendData('SET_Setup|slopeA|' + slopeA)">
 				    	</div>
 				    	<div class="form-group">
-				    	  <h6>消解时间：[秒]</h6>
-				    	  <input type="text" placeholder="输入消解时长" class="form-control" v-model="xiaojieTime" v-on:change="sendData('SET_Setup|xiaojieTime|' + xiaojieTime)">
+				    	  <h6>校正截距：</h6>
+				    	  <input type="text" placeholder="输入截距" class="form-control" v-model="interceptB" v-on:change="sendData('SET_Setup|interceptB|' + interceptB)">
 				    	</div>
+						<div class="form-group">
+						  <h6>试剂标定：[{{ trueValue }}]</h6>
+						  <input type="text" placeholder="输入标定值" class="form-control" v-model="biaodingValue" v-on:change="sendData('SET_Setup|biaodingValue|' + biaodingValue)">
+						</div>
+						<!--
 				    	<div class="form-group">
-				    	  <h6>试剂标定：[试剂标定值]</h6>
-				    	  <input type="text" placeholder="输入标定值" class="form-control" v-model="biaodingValue" v-on:change="sendData('SET_Setup|biaodingValue|' + biaodingValue)">
+				    	  <h6>原始值：[Y]</h6>
+				    	  <input type="text" placeholder="原始值" class="form-control" v-model="trueValue" v-on:change="sendData('SET_Setup|trueValue|' + trueValue)">
 				    	</div>
+						-->
 						<div class="form-group">
 							<h6>软件版本：</h6>
 							<p class="lead">
 								<span class="badge badge-success">CODmn V{{version}}</span>
 							</p>
 						</div>
+						<!--
+						<div class="form-group">
+						  <h6>消解温度：[℃]</h6>
+						  <input type="text" placeholder="输入消解温度" class="form-control" v-model="xiaojieTemp" v-on:change="sendData('SET_Setup|xiaojieTemp|' + xiaojieTemp)">
+						</div>
+						<div class="form-group">
+						  <h6>消解时间：[秒]</h6>
+						  <input type="text" placeholder="输入消解时长" class="form-control" v-model="xiaojieTime" v-on:change="sendData('SET_Setup|xiaojieTime|' + xiaojieTime)">
+						</div>
+						<div class="form-group">
+						  <h6>试剂标定：[试剂标定值]</h6>
+						  <input type="text" placeholder="输入标定值" class="form-control" v-model="biaodingValue" v-on:change="sendData('SET_Setup|biaodingValue|' + biaodingValue)">
+						</div>
+						<div class="form-group">
+							<h6>软件版本：</h6>
+							<p class="lead">
+								<span class="badge badge-success">CODmn V{{version}}</span>
+							</p>
+						</div>-->
 						<!--<div>
 							<h6>系统重启：</h6>
 							<p>

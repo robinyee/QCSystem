@@ -1233,6 +1233,9 @@ public class SysGpio {
         SysData.workType = "仪表校准";
         workTypeId = "s11";
         statusS11 = true;
+        SysData.slopeA = 1;
+        SysData.interceptB = 0;
+        SysData.trueValue = 0;
         analysis();   //启动分析流程
     }
 

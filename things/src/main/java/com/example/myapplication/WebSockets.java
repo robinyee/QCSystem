@@ -291,6 +291,9 @@ public class WebSockets extends NanoWSD {
                     object.put("xiaojieTemp", SysData.xiaojieTemp);
                     object.put("xiaojieTime", SysData.xiaojieTime);
                     object.put("biaodingValue", SysData.biaodingValue);
+                    object.put("slopeA", SysData.slopeA);
+                    object.put("interceptB", SysData.interceptB);
+                    object.put("trueValue", SysData.trueValue);
                     //Log.i(TAG, "deviceList.size：" + SysData.deviceList.size());
                     if(SysData.deviceList.size() >= 3) {
                         object.put("deviceList", SysData.deviceList.get(2));
@@ -344,6 +347,12 @@ public class WebSockets extends NanoWSD {
                             Log.i(TAG, "当前值：" + SysData.isLoop);
                             SysData.isUpdateAutoRun = true;
                             break;
+                        case "slopeA":
+                            SysData.slopeA = Double.parseDouble(cmdData);
+                            break;
+                        case "interceptB":
+                            SysData.interceptB = Double.parseDouble(cmdData);
+                            break;
                         case "xiaojieTemp":
                             SysData.xiaojieTemp = Double.parseDouble(cmdData);
                             break;
@@ -384,6 +393,9 @@ public class WebSockets extends NanoWSD {
                     object.put("xiaojieTemp", SysData.xiaojieTemp);
                     object.put("xiaojieTime", SysData.xiaojieTime);
                     object.put("biaodingValue", SysData.biaodingValue);
+                    object.put("slopeA", SysData.slopeA);
+                    object.put("interceptB", SysData.interceptB);
+                    object.put("trueValue", SysData.trueValue);
                     if(SysData.deviceList.size() >= 3) {
                         object.put("deviceList", SysData.deviceList.get(2));
                     } else {

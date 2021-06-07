@@ -637,6 +637,9 @@ public class MainActivity extends AppCompatActivity {
         SysData.caosuannaCon = Double.longBitsToDouble(sp.getLong("caosuannaCon", 0));
         SysData.didingDeviation = sp.getInt("didingDeviation", 720);
         SysData.didingDifference = sp.getInt("didingDifference", 20);
+        SysData.slopeA = Double.longBitsToDouble(sp.getLong("slopeA", 1));
+        SysData.interceptB = Double.longBitsToDouble(sp.getLong("interceptB", 0));
+        SysData.trueValue = Double.longBitsToDouble(sp.getLong("trueValue", 0));
         //系统参数
         //SysData.localIpAddr[0] = sp.getString("localIpAddr", "");     //ip地址不需要存储
         SysData.webPort = sp.getInt("webPort", 0);
@@ -869,6 +872,9 @@ public class MainActivity extends AppCompatActivity {
         editor.putLong("xiaojieTemp", Double.doubleToLongBits(SysData.xiaojieTemp));
         editor.putInt("xiaojieTime", SysData.xiaojieTime);
         editor.putLong("biaodingValue", Double.doubleToLongBits(SysData.biaodingValue));
+        editor.putLong("slopeA", Double.doubleToLongBits(SysData.slopeA));
+        editor.putLong("interceptB", Double.doubleToLongBits(SysData.interceptB));
+        editor.putLong("trueValue", Double.doubleToLongBits(SysData.trueValue));
         editor.putInt("BAUD_RATE", SysData.BAUD_RATE);
         editor.putInt("MODBUS_ADDR", SysData.MODBUS_ADDR);
         //提交保存
