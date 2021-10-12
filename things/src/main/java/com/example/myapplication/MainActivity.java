@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
@@ -36,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -69,10 +71,12 @@ public class MainActivity extends AppCompatActivity {
     public static AppDatabase db;   //数据库
     public static PeripheralManager manager = PeripheralManager.getInstance();
     public static Ds3231 device;
+    public static Typeface typefaceStHeiTi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appFont();  //设置字体
         initData();   //初始化异常捕获
         setContentView(R.layout.activity_main);
         SysData.version = getString(R.string.version);
@@ -91,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         //打开数据库
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "db_cod").build();  //创建数据库
-        SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+        SysData.readData(SysData.numPerpage, (SysData.currentPage - 1) * SysData.numPerpage);  //从数据库读取数据
         SysData.readChartData(30, 0);       //从数据库中读取30条数据
         //SysData.delDataFromCalibration(16);         //删除一条校准记录
 
@@ -127,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         //获取网络ip地址
         SysData.localIpAddr = getLocalIpAddress();
 
-        if(SysData.localIpAddr != null && SysData.localIpAddr.length >= 1) {
+        if (SysData.localIpAddr != null && SysData.localIpAddr.length >= 1) {
             //更新访问网址
             updateNet();
             //启动web服务
@@ -135,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //前次正在测试中断电，自动复位
-        if(SysData.isRun) {
+        if (SysData.isRun) {
             SysGpio.s8_Reset();
             SysData.progressRate = 0;
         }
@@ -170,11 +174,28 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         SysGpio.gpioClose(); //关闭GPIO并注销
         com0.closeUart();   //关闭com0串口通信
-        if(SysData.deviceList.size() >= 3) {
+        if (SysData.deviceList.size() >= 3) {
             com1.closeUart();   //关闭com1串口通信
         }
         db.close();  //关闭数据库连接
     }
+
+    //软件使用字体
+    private void appFont() {
+        typefaceStHeiTi = Typeface.createFromAsset(getAssets(), "fonts/NotoSansHans-Medium.ttf");
+
+        try {
+            Field field = Typeface.class.getDeclaredField("DEFAULT"); //monospace
+            field.setAccessible(true);
+            field.set(null, typefaceStHeiTi);
+            Log.d(TAG, "设置字体成功");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     //获取Ds3231温度
     private void getDs3231Temp() {
@@ -195,8 +216,12 @@ public class MainActivity extends AppCompatActivity {
             SysData.ds3231Error ++;
             //连续10次读取温度错误报警
             if(SysData.ds3231Error > 10){
+                /*
                 SysData.errorMsg = "访问系统时间出错";
                 SysData.errorId = 11;
+
+                 */
+                Toast.makeText(getApplicationContext(),"读取时间芯片出错", Toast.LENGTH_LONG).show();
                 Log.e(TAG, "访问Ds3231出错", e);
             }
             throw new RuntimeException(e);
@@ -710,8 +735,8 @@ public class MainActivity extends AppCompatActivity {
                             SysData.saveAlertToDB();  //保存报警记录
                         }
                     }
-                    //加热器温度大于200度，反应器内温度高于110度，停止加热并报警
-                    if(SysData.tempOut > 200 || SysData.tempIn > 110) {
+                    //加热器温度大于160度，反应器内温度高于110度，停止加热并报警
+                    if(SysData.tempOut > 160 || SysData.tempIn > 110) {
                         try {
                             SysGpio.mGpioOutH1.setValue(false);
                             Log.d(TAG, "run: 停止加热");
@@ -720,6 +745,7 @@ public class MainActivity extends AppCompatActivity {
                             if(errorid != SysData.errorId || errorid == 7) {
                                 SysData.saveAlertToDB();  //保存报警记录
                             }
+                            SysGpio.s8_Reset();  //仪表复位，保护反应器
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

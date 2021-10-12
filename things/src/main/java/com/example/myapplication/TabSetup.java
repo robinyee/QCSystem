@@ -56,6 +56,7 @@ import java.util.TimeZone;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
+import static androidx.core.app.ActivityCompat.finishAffinity;
 
 public class TabSetup extends Fragment {
     View view;

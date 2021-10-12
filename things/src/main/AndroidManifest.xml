@@ -13,7 +13,8 @@
         android:maxSdkVersion="18" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
-    <application android:label="高锰酸盐指数在线分析仪">
+    <application android:label="高锰酸盐指数在线分析仪"
+        android:theme="@style/AppTheme">
         <uses-library android:name="com.google.android.things" />
 
         <activity android:name=".MainActivity"
@@ -25,6 +26,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <!--开机自动运行APP-->
 
             <intent-filter>
