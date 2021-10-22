@@ -163,6 +163,9 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        //注射泵初始化
+        SysGpio.pumpStart();
+
         //打开出口通讯
         openCom();
 
@@ -392,12 +395,14 @@ public class MainActivity extends AppCompatActivity {
             //启动web服务
             webServer = new WebServer(SysData.webPort, mainApplication);
             webSockets = new WebSockets(SysData.webPort + 1, mainApplication);
+            Log.i("MainActivity", "启动WEB服务...");
             try {
                 webServer.start();
                 webSockets.start();
             } catch (IOException e) {
                 e.printStackTrace();
                 SysData.webServiceFlag = false;
+                //Log.i("MainActivity", "WEB服务失败");
             }
             SysData.webServiceFlag = true;
             Log.i("MainActivity", "WEB服务已启动");
@@ -667,7 +672,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.trueValue = Double.longBitsToDouble(sp.getLong("trueValue", 0));
         //系统参数
         //SysData.localIpAddr[0] = sp.getString("localIpAddr", "");     //ip地址不需要存储
-        SysData.webPort = sp.getInt("webPort", 0);
+        SysData.webPort = sp.getInt("webPort", 8080);
         SysData.isLoop = sp.getBoolean("isLoop", false);
         SysData.nextStartTime = sp.getLong("nextStartTime", 0);
         SysData.startCycle = sp.getInt("startCycle", 0);

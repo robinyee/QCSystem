@@ -40,6 +40,7 @@
         android:text="2019/8/8 15:59" />
 
     <LinearLayout
+        android:id="@+id/textCodDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
@@ -60,11 +61,6 @@
             android:layout_height="wrap_content"
             android:textSize="36sp"
             android:text="mg/L" />
-        <ImageView
-            android:id="@+id/imageViewQRCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill"/>
     </LinearLayout>
     <TextView
         android:id="@+id/txt2"
@@ -87,13 +83,23 @@
         android:layout_marginLeft="4dp"
         android:text="系统待机" />
 
+    <ImageView
+        android:id="@+id/imageViewQRCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/progressBar"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="0dp"
+        android:layout_gravity="fill" />
+
     <ImageButton
         android:id="@+id/startup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/progressBar"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="20dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_play_circle_outline_black_24dp" />
 

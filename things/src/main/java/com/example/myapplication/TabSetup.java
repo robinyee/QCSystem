@@ -482,7 +482,8 @@ public class TabSetup extends Fragment {
                     if(SysData.localIpAddr != null && SysData.localIpAddr.length >= 1 && editwebport.getText().toString() != null){
                         //设置端口
                         SysData.webPort = Integer.parseInt(editwebport.getText().toString());
-                        if(SysData.webPort > 0) {
+                        saveMeterParameter();
+                        if(SysData.webPort > 1024) {
                             //重启web服务
                             MainActivity.stopWebService();
                             MainActivity.startWebService();
@@ -495,6 +496,8 @@ public class TabSetup extends Fragment {
                             saveMeterParameter();
                             Toast.makeText(getActivity(), "WEB服务已开启", Toast.LENGTH_SHORT).show();
                             //httpAddr.setText(SysData.httpAddr);   //抛出异常测试
+                        } else {
+                            Toast.makeText(getActivity(), "端口设置失败，请使用大于1024的端口", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(getActivity(), "端口或IP地址有误，WEB服务未能开启", Toast.LENGTH_SHORT).show();

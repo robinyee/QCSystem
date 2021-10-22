@@ -2091,4 +2091,37 @@ public class SysGpio {
         }).start();
     }
 
+    //注射泵初始化
+
+    public static void pumpStart() {
+        new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    Log.d(TAG, "run: 注射泵初始化");
+                    SysGpio.mGpioOutP2.setValue(true);
+                    SysGpio.mGpioOutP3.setValue(true);
+                    Thread.sleep(3000);
+                    pumpStatus(2, 1000); //注射泵2状态查询
+                    if(SysData.Pump[2] == 0x00) {
+                        //注射泵返回0位
+                        MainActivity.com0.pumpCmd(2, "back", 0);     //注射泵2返回0位
+                        Thread.sleep(1000);
+                    }
+                    pumpStatus(3, 1000); //注射泵3状态查询
+                    if(SysData.Pump[3] == 0x00) {
+                        //注射泵返回0位
+                        MainActivity.com0.pumpCmd(3, "back", 0);     //注射泵3返回0位
+                        Thread.sleep(1000);
+                    }
+                    Thread.sleep(30000);
+                    SysGpio.mGpioOutP2.setValue(false);
+                    SysGpio.mGpioOutP3.setValue(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }
