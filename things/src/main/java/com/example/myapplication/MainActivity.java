@@ -750,7 +750,9 @@ public class MainActivity extends AppCompatActivity {
                             if(errorid != SysData.errorId || errorid == 7) {
                                 SysData.saveAlertToDB();  //保存报警记录
                             }
-                            SysGpio.s8_Reset();  //仪表复位，保护反应器
+                            if(SysGpio.statusS8 != true) {
+                                SysGpio.s8_Reset();  //仪表复位，保护反应器
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
