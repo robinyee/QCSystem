@@ -48,7 +48,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="标样名称"
+            android:text="标样"
             android:textColor="@color/colorPrimary"
             android:textSize="36sp" />
         <TextView
