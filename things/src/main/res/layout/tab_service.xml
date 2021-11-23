@@ -21,12 +21,13 @@
                 android:text="系统维护"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/line2"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/line2" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -39,141 +40,158 @@
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <TableRow
-                    android:layout_marginTop="10dp">
+
+                <TableRow android:layout_marginTop="10dp">
 
                     <Switch
                         android:id="@+id/d1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="D1" />
+                        android:text="V1"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/d2"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="D2"/>
+                        android:text="V2"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/d3"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="D3"/>
+                        android:text="V3"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/d4"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="D4"/>
+                        android:text="V4"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/d5"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="D5"/>
+                        android:text="V5"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/d6"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="D6"/>
+                        android:text="V6"
+                        android:theme="@style/MySwitch" />
                 </TableRow>
-                <TableRow
-                    android:layout_marginTop="10dp">
+
+                <TableRow android:layout_marginTop="10dp">
+
                     <Switch
                         android:id="@+id/d7"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="D7"/>
+                        android:text="V7"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/d8"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="D8"/>
+                        android:text="V8"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/p1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="P1"/>
+                        android:text="P1"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/p2"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="P2"/>
+                        android:text="P2"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/p3"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="P3"/>
+                        android:text="P3"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/h1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="H1"/>
+                        android:text="S1"
+                        android:theme="@style/MySwitch" />
                 </TableRow>
-                <TableRow
-                    android:layout_marginTop="10dp">
+
+                <TableRow android:layout_marginTop="10dp">
+
                     <Switch
                         android:id="@+id/dc1"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="M1F"/>
+                        android:text="M1F"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/dc1_r"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="M1R"/>
+                        android:text="M1R"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/dc2"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="M2F"/>
+                        android:text="M2F"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/dc2_r"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="M2R"/>
+                        android:text="M2R"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/led"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="L1"/>
+                        android:text="L1"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/v24"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="AD"/>
+                        android:text="AD"
+                        android:theme="@style/MySwitch" />
                 </TableRow>
             </TableLayout>
 
@@ -181,9 +199,9 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/line2"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/line2" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -197,108 +215,119 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TableRow
-                    android:layout_marginTop="10dp">
+                <TableRow android:layout_marginTop="10dp">
+
                     <Switch
                         android:id="@+id/s1"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="进水样"/>
+                        android:text="氨氮标样"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/s2"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="加硫酸"/>
+                        android:text="总氮标样"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/s3"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="加高锰酸钾"/>
+                        android:text="总磷标样"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/s4"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="加草酸钠"/>
+                        android:text="COD标样"
+                        android:theme="@style/MySwitch" />
                 </TableRow>
-                <TableRow
-                    android:layout_marginTop="10dp">
+
+                <TableRow android:layout_marginTop="10dp">
+
                     <Switch
                         android:id="@+id/s5"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="消解"/>
+                        android:text="氨氮加标"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/s6"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="滴定"/>
+                        android:text="总氮加标"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/s7"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="水质测定"/>
+                        android:text="总磷加标"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/s8"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="更换试剂"/>
+                        android:text="COD加标"
+                        android:theme="@style/MySwitch" />
 
                 </TableRow>
-                <TableRow
-                    android:layout_marginTop="10dp">
+
+                <TableRow android:layout_marginTop="10dp">
+
                     <Switch
                         android:id="@+id/s9"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="空白实验"/>
+                        android:text="仪器初始化"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/s10"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="标样测定"/>
+                        android:text="仪表清洗"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/s11"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="仪表校准"/>
+                        android:text="系统复位"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/s12"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="系统重置"/>
+                        android:text="重新启动"
+                        android:theme="@style/MySwitch" />
                 </TableRow>
             </TableLayout>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/line2"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/line2" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -311,90 +340,102 @@
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <TableRow
-                    android:layout_marginTop="10dp">
+
+                <TableRow android:layout_marginTop="10dp">
+
                     <Switch
                         android:id="@+id/switchIn1"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="硫酸"/>
+                        android:text="氨氮母液"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/switchIn2"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:theme="@style/MySwitch"
-                        android:text="高锰酸钾"/>
+                        android:text="总氮母液"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/switchIn3"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:theme="@style/MySwitch"
-                        android:text="草酸钠"/>
+                        android:text="总磷母液"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/switchIn4"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:theme="@style/MySwitch"
-                        android:text="蒸馏水"/>
+                        android:text="COD母液"
+                        android:theme="@style/MySwitch" />
                 </TableRow>
-                <TableRow
-                    android:layout_marginTop="10dp">
+
+                <TableRow android:layout_marginTop="10dp">
+
                     <Switch
                         android:id="@+id/switchIsNotice"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:theme="@style/MySwitch"
-                        android:text="缺试剂报警"/>
+                        android:text="清洗液"
+                        android:theme="@style/MySwitch" />
+
                     <Switch
                         android:id="@+id/switchIsEmptyPipeline"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:theme="@style/MySwitch"
-                        android:text="是否润洗"/>
+                        android:text="纯水"
+                        android:theme="@style/MySwitch" />
                 </TableRow>
             </TableLayout>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/line2"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/line2" />
+
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TableRow>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:textSize="12sp"
-                        android:text="软件版本："/>
+                        android:text="软件版本："
+                        android:textSize="12sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="0dp"
-                        android:textSize="12sp"
-                        android:text="@string/version"/>
+                        android:text="@string/version"
+                        android:textSize="12sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:textSize="12sp"
-                        android:text="硬件版本：1.0"/>
+                        android:text="硬件版本：1.0"
+                        android:textSize="12sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:textSize="12sp"
-                        android:text="发布日期：2109年10月"/>
+                        android:text="发布日期：2021年10月"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
