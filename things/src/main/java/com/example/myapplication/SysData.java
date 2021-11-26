@@ -23,29 +23,7 @@ public class SysData {
     static double liusuanVolume = 5.0;          //加硫酸的体积
     static int caosuannaStep = 5200;            //加草酸钠的步数
     static double caosuannaVolume = 10.0;       //加草酸钠的体积
-    static int gaomengsuanjiaStep = 5200;       //加高锰酸钾的步数
-    static double gaomengsuanjiaVolume = 10.0;  //加高锰酸钾的体积
-    static double xiaojieTemp = 92;             //消解温度
-    static int xiaojieTime = 1500;              //消解时长
-    static int didingStep = 50;                 //每滴滴定步数
-    static double didingVolume = 0.1;           //每滴滴定体积
-    static int didingNum = 0;                   //滴定的滴数
-    static int didingMax = 400;                 //最大滴数,计量标定-100，默认值-400
-    static int didingDifference = 20;           //滴定时模拟量下降的值大于这个差值判定为滴定终点
-    static double didingSumVolume = 0;          //滴定的总体积
-    static double kongbaiValue = 0.25;          //空白实验滴定高锰酸钾的量
-    static double biaodingValue = 10.0;         //标定实验滴定高锰酸钾的量
-    static double caosuannaCon = 0.01;          //草酸钠的浓度
-    static double codValue = 0;                 //测定的cod值
-    static int didingDeviation = 720;           //开始滴定到出液体需要的步数
-    static double originalValue = 0;            //校准前的cod值
-    static double newValue = 0;                 //校准后的cod值
-    static double coefficient = 1.0;            //标定系数K值
-    static double ccf = 1.0;                    //浓度修正因子，0.01浓度值为1.0，0.025浓度值为0.97
-    static double slopeA = 1.0;                 //斜率
-    static double interceptB = 0;               //截距
-    static double trueValue = 0;                //真实值
-    static boolean isCorrection = true;         //计算结果是否修正
+
 
     //仪器运行状态
     static boolean isGetNetTime = false;        //是否已经获取到网络时间
@@ -138,56 +116,6 @@ public class SysData {
     static boolean caosuannaStatus;                 //草酸钠试剂量，true-有试剂，false-无试剂
     static boolean zhengliushuiStatus;              //蒸馏水试剂量，true-有试剂，false-无试剂
 
-    //计算COD的值
-    public static double calculationValue() {
-        //不同试剂浓度影响因子
-        if(caosuannaCon == 0.025) {
-            ccf = 1.00;    //0.025浓度的试剂修正值
-        } else {
-            ccf = 1.00;    //0.01浓度的试剂修正值
-        }
-
-        //计算CODMn的值
-        double k = caosuannaVolume / biaodingValue;
-        didingSumVolume = didingNum * didingVolume;
-        didingSumVolume = (double)Math.round(didingSumVolume*1000)/1000;  //取小数点后三位
-        codValue = ((gaomengsuanjiaVolume + didingSumVolume) * k * ccf - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
-        codValue = (double)Math.round(codValue*100)/100;
-
-        //用斜率截距计算修正值
-        if(isCorrection) {
-            trueValue = codValue;
-            slopeA = (double)Math.round(slopeA*1000)/1000;
-            interceptB = (double)Math.round(interceptB*1000)/1000;
-            codValue = (slopeA * codValue) + interceptB;
-        }
-
-        //取小数点后两位
-        codValue = (double)Math.round(codValue*100)/100;
-
-        //数据检查，异常数据修正
-        if(codValue < 0) {
-            codValue = 0;    //当测定值小于0时，返回0
-        } else if (codValue > 25) {
-            codValue = 25;    //当测定值大于25时，返回25
-        }
-        //返回COD值
-        return codValue;
-    }
-
-    //计算校准后的新值
-    public static double calibrationValue() {
-        double orgDidingVolume = didingSumVolume;
-        didingSumVolume = didingNum * didingVolume;
-        didingSumVolume = (double)Math.round(didingSumVolume*100)/100;  //取小数点后两位
-        biaodingValue = didingSumVolume;
-        coefficient = caosuannaVolume / didingSumVolume;
-        originalValue = ((gaomengsuanjiaVolume + orgDidingVolume) * 1 - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
-        originalValue = (double)Math.round(originalValue*100)/100;  //取小数点后两位
-        newValue = ((gaomengsuanjiaVolume + orgDidingVolume) * coefficient - caosuannaVolume) * caosuannaCon * 8 * 1000 / shuiyangVolume;
-        newValue = (double)Math.round(newValue*100)/100;  //取小数点后两位
-        return newValue;
-    }
 
     //保存测定值数据至数据库
     public static void saveDataToDB() {
