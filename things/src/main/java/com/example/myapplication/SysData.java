@@ -17,7 +17,46 @@ import javax.crypto.spec.SecretKeySpec;
 public class SysData {
 
     //仪器的参数
-    static int shuiyangStep = 65;               //水样泵旋转圈数
+    static int inletWaterStep = 65;             //水样泵旋转圈数
+    static boolean startSupplySamples = false;  //是否开始供样
+    static int waterType = 0;                   //水样的类型
+
+    static double NH3Volume = 250.0;            //氨氮标样体积
+    static int NH3WaterStep = 150;              //氨氮标样步数
+    static int NH3SampleAStep = 10;             //氨氮标样A添加步数
+    static int NH3SampleBStep = 20;             //氨氮标样B添加步数
+    static int NH3SampleCStep = 30;             //氨氮标样C添加步数
+    static int NH3SampleOStep = 10;             //氨氮加标回收添加步数
+
+    static double TPVolume = 250.0;             //总磷标样体积
+    static int TPWaterStep = 150;               //总磷标样步数
+    static int TPSampleAStep = 10;              //总磷标样A添加步数
+    static int TPSampleBStep = 20;              //总磷标样B添加步数
+    static int TPSampleCStep = 30;              //总磷标样C添加步数
+    static int TPSampleOStep = 10;              //总磷加标回收添加步数
+
+    static double TNVolume = 250.0;             //总氮标样体积
+    static int TNWaterStep = 150;               //总氮标样步数
+    static int TNSampleAStep = 10;              //总氮标样A添加步数
+    static int TNSampleBStep = 20;              //总氮标样B添加步数
+    static int TNSampleCStep = 30;              //总氮标样C添加步数
+    static int TNSampleOStep = 10;              //总氮加标回收添加步数
+
+    static double CODVolume = 250.0;            //COD标样体积
+    static int CODWaterStep = 150;              //COD标样步数
+    static int CODSampleAStep = 10;             //COD标样A添加步数
+    static int CODSampleBStep = 20;             //COD标样B添加步数
+    static int CODSampleCStep = 30;             //COD标样C添加步数
+    static int CODSampleOStep = 10;             //COD加标回收添加步数
+
+    //生成数组
+    static double[] volumes = {NH3Volume,TPVolume,TNVolume,CODVolume};                              //水样体积数组 0-氨氮，1-总磷，2-总氮，3-COD
+    static int[] waterStep = {NH3WaterStep,TPWaterStep,TNWaterStep,CODWaterStep};                   //水样步数数组 0-氨氮，1-总磷，2-总氮，3-COD
+    static int[][] sampleStep = {{NH3SampleAStep,NH3SampleBStep,NH3SampleCStep,NH3SampleOStep},     //氨氮加母液步数数组
+                                 {TPSampleAStep,TPSampleBStep,TPSampleCStep,TPSampleOStep},         //总磷加母液步数数组
+                                 {TNSampleAStep,TNSampleBStep,TNSampleCStep,TNSampleOStep},         //总氮加母液步数数组
+                                 {CODSampleAStep,CODSampleBStep,CODSampleCStep,CODSampleOStep}};    //COD加母液步数数组
+
     static double shuiyangVolume = 100.0;       //水样的液体体积
     static int liusuanStep = 3200;              //加硫酸的步数
     static double liusuanVolume = 5.0;          //加硫酸的体积
@@ -116,7 +155,36 @@ public class SysData {
     static boolean caosuannaStatus;                 //草酸钠试剂量，true-有试剂，false-无试剂
     static boolean zhengliushuiStatus;              //蒸馏水试剂量，true-有试剂，false-无试剂
 
+    //保存报警记录数据至数据库
+    public static void saveAlertToDB() {
+        Log.i("数据库", "添加报警信息数据");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AlertLog alertLog = new AlertLog();
+                alertLog.alertTime = System.currentTimeMillis();
+                alertLog.errorId = errorId;
+                alertLog.errorMsg = errorMsg;
+                alertLog.resetFlag = 0;
+                alertLog.resetTime = null;
+                MainActivity.db.alertLogDao().insert(alertLog);
+            }
+        }).start();
+    }
 
+    //复位报警记录
+    public static void resetAlert() {
+        Log.i("数据库", "更新报警信息数据");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.db.alertLogDao().updateByFlag(System.currentTimeMillis());
+                Log.i("更新数据库", "resetTime:" + System.currentTimeMillis());
+            }
+        }).start();
+    }
+
+/*
     //保存测定值数据至数据库
     public static void saveDataToDB() {
         Log.i("数据库", "添加测定结果数据");
@@ -156,22 +224,6 @@ public class SysData {
         }).start();
     }
 
-    //保存报警记录数据至数据库
-    public static void saveAlertToDB() {
-        Log.i("数据库", "添加报警信息数据");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                AlertLog alertLog = new AlertLog();
-                alertLog.alertTime = System.currentTimeMillis();
-                alertLog.errorId = errorId;
-                alertLog.errorMsg = errorMsg;
-                alertLog.resetFlag = 0;
-                alertLog.resetTime = null;
-                MainActivity.db.alertLogDao().insert(alertLog);
-            }
-        }).start();
-    }
 
     //从数据库读取曲线数据
     public static void readChartData(final int num, final int start) {
@@ -215,18 +267,6 @@ public class SysData {
         }).start();
     }
 
-    //复位报警记录
-    public static void resetAlert() {
-        Log.i("数据库", "更新报警信息数据");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                MainActivity.db.alertLogDao().updateByFlag(System.currentTimeMillis());
-                Log.i("更新数据库", "resetTime:" + System.currentTimeMillis());
-            }
-        }).start();
-    }
-
     //删除一条校准记录
     public static void delDataFromCalibration(final int id) {
         Log.i("数据库", "删除一条校准记录");
@@ -237,5 +277,5 @@ public class SysData {
             }
         }).start();
     }
-
+*/
 }

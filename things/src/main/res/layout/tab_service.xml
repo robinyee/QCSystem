@@ -48,7 +48,7 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="V1"
+                        android:text="D1"
                         android:theme="@style/MySwitch" />
 
                     <Switch
@@ -56,7 +56,7 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="V2"
+                        android:text="D2"
                         android:theme="@style/MySwitch" />
 
                     <Switch
@@ -64,7 +64,7 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="V3"
+                        android:text="D3"
                         android:theme="@style/MySwitch" />
 
                     <Switch
@@ -72,7 +72,7 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="V4"
+                        android:text="D4"
                         android:theme="@style/MySwitch" />
 
                     <Switch
@@ -80,7 +80,7 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="V5"
+                        android:text="D5"
                         android:theme="@style/MySwitch" />
 
                     <Switch
@@ -88,7 +88,7 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="V6"
+                        android:text="D6"
                         android:theme="@style/MySwitch" />
                 </TableRow>
 
@@ -99,7 +99,7 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="V7"
+                        android:text="D7"
                         android:theme="@style/MySwitch" />
 
                     <Switch
@@ -107,7 +107,7 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="V8"
+                        android:text="D8"
                         android:theme="@style/MySwitch" />
 
                     <Switch
@@ -139,7 +139,7 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="S1"
+                        android:text="H1"
                         android:theme="@style/MySwitch" />
                 </TableRow>
 

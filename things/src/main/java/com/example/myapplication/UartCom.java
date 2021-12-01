@@ -210,6 +210,8 @@ public class UartCom {
                 break;
             case "turn" : cmdLine[2] = (byte) 0x46;
                 break;
+            case "switch" : cmdLine[2] = (byte) 0x44;
+                break;
         }
         if(num > 0){
             cmdLine[3] = (byte) num;
