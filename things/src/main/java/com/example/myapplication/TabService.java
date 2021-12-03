@@ -29,6 +29,7 @@ public class TabService extends Fragment {
             aSwitchP2, aSwitchP3, aSwitchH1, aSwitchLED, aSwitchV24, aSwitchDC1, aSwitchRE1, aSwitchDC2, aSwitchRE2;
     private Switch aSwitchS1, aSwitchS2, aSwitchS3, aSwitchS4, aSwitchS5, aSwitchS6, aSwitchS7, aSwitchS8,
             aSwitchS9, aSwitchS10, aSwitchS11, aSwitchS12;
+    private Switch aSwitchC1, aSwitchC2, aSwitchC3, aSwitchC4, aSwitchC5, aSwitchC6;
     private Switch aSwitchIn1, aSwitchIn2, aSwitchIn3, aSwitchIn4, aSwitchIsNotice, aSwitchIsEmptyPipeline;
     private Button buttonNH3Start, buttonTPStart, buttonTNStart, buttonCODStart;
 
@@ -71,6 +72,15 @@ public class TabService extends Fragment {
             aSwitchRE1.setChecked(SysGpio.mGpioOutRE1.getValue());
             aSwitchDC2.setChecked(SysGpio.mGpioOutDC2.getValue());
             aSwitchRE2.setChecked(SysGpio.mGpioOutRE2.getValue());
+
+            //多通道阀切换
+            SysGpio.statusSwtch();
+            aSwitchC1.setChecked(SysGpio.statusC1);
+            aSwitchC2.setChecked(SysGpio.statusC2);
+            aSwitchC3.setChecked(SysGpio.statusC3);
+            aSwitchC4.setChecked(SysGpio.statusC4);
+            aSwitchC5.setChecked(SysGpio.statusC5);
+            aSwitchC6.setChecked(SysGpio.statusC6);
 
             //流程控制
             aSwitchS1.setChecked(SysGpio.statusS1);
@@ -119,6 +129,14 @@ public class TabService extends Fragment {
         aSwitchRE1 = (Switch) view.findViewById(R.id.dc1_r);
         //aSwitchDC2 = (Switch) view.findViewById(R.id.dc2);
         //aSwitchRE2 = (Switch) view.findViewById(R.id.dc2_r);
+
+        //流程控制Switch按钮赋值
+        aSwitchC1 = (Switch) view.findViewById(R.id.c1);
+        aSwitchC2 = (Switch) view.findViewById(R.id.c2);
+        aSwitchC3 = (Switch) view.findViewById(R.id.c3);
+        aSwitchC4 = (Switch) view.findViewById(R.id.c4);
+        aSwitchC5 = (Switch) view.findViewById(R.id.c5);
+        aSwitchC6 = (Switch) view.findViewById(R.id.c6);
 
         //流程控制Switch按钮赋值
         aSwitchS1 = (Switch) view.findViewById(R.id.s1_inletWater);
@@ -317,6 +335,94 @@ public class TabService extends Fragment {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+            }
+        });
+
+        //SwitchRE1按钮点击
+        aSwitchRE1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    SysGpio.mGpioOutRE1.setValue(aSwitchRE1.isChecked());
+                    if(SysGpio.mGpioOutRE1.getValue()) {
+                        SysGpio.mGpioOutDC1.setValue(false);
+                        aSwitchDC1.setChecked(false);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //SwitchC1多通道阀到1通道
+        aSwitchC1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchC1.isChecked() && !SysGpio.statusC1) {
+                        //切换多通道阀到指定通道
+                        SysData.reagentChannel = 1;
+                        MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
+                }
+            }
+        });
+
+        //SwitchC2多通道阀到2通道
+        aSwitchC2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchC2.isChecked() && !SysGpio.statusC2) {
+                    //切换多通道阀到指定通道
+                    SysData.reagentChannel = 2;
+                    MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
+                }
+            }
+        });
+
+        //SwitchC3多通道阀到3通道
+        aSwitchC3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchC3.isChecked() && !SysGpio.statusC3) {
+                    //切换多通道阀到指定通道
+                    SysData.reagentChannel = 3;
+                    MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
+                }
+            }
+        });
+
+        //SwitchC4多通道阀到4通道
+        aSwitchC4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchC4.isChecked() && !SysGpio.statusC4) {
+                    //切换多通道阀到指定通道
+                    SysData.reagentChannel = 4;
+                    MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
+                }
+            }
+        });
+
+        //SwitchC5多通道阀到5通道
+        aSwitchC5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchC5.isChecked() && !SysGpio.statusC5) {
+                    //切换多通道阀到指定通道
+                    SysData.reagentChannel = 5;
+                    MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
+                }
+            }
+        });
+
+        //SwitchC6多通道阀到6通道
+        aSwitchC6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchC6.isChecked() && !SysGpio.statusC6) {
+                    //切换多通道阀到指定通道
+                    SysData.reagentChannel = 6;
+                    MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
                 }
             }
         });

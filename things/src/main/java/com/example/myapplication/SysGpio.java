@@ -27,6 +27,14 @@ public class SysGpio {
     static String workTypeId = "";   //运行工作类型的代码
 
     //仪器控制页面状态
+    static boolean statusC1 = false;       //C1状态
+    static boolean statusC2 = false;       //C2状态
+    static boolean statusC3 = false;       //C3状态
+    static boolean statusC4 = false;       //C4状态
+    static boolean statusC5 = false;       //C5状态
+    static boolean statusC6 = false;       //C6状态
+
+    //仪器控制页面状态
     static boolean statusS1 = false;       //S1状态
     static boolean statusS2 = false;       //S2状态
     static boolean statusS3 = false;       //S3状态
@@ -66,6 +74,23 @@ public class SysGpio {
     private static final String GPIO_IN_3 = "BCM20";
     private static final String GPIO_IN_4 = "BCM26";
 
+    //多通道阀状态
+    public static void statusSwtch() {
+        statusC1 = false;       //C1状态
+        statusC2 = false;       //C2状态
+        statusC3 = false;       //C3状态
+        statusC4 = false;       //C4状态
+        statusC5 = false;       //C5状态
+        statusC6 = false;       //C6状态
+        switch (SysData.reagentChannel) {
+            case 1 : statusC1 = true;
+            case 2 : statusC2 = true;
+            case 3 : statusC3 = true;
+            case 4 : statusC4 = true;
+            case 5 : statusC5 = true;
+            case 6 : statusC6 = true;
+        }
+    }
 
     public static void gpioInit() {
         manager = PeripheralManager.getInstance();
@@ -253,6 +278,9 @@ public class SysGpio {
             Log.d(TAG, "run: P1状态" + SysGpio.mGpioOutP1.getValue());
             Log.d(TAG, "run: 发送串口启动进样泵指令" );
 
+            //清洗试剂管路
+            addReagent(2, 20);
+
             //注射泵状态查询
             pumpStatus(1, 1000);
 
@@ -319,7 +347,8 @@ public class SysGpio {
             //多通道阀状态正常时执行
             if(SysData.Pump[2] == 0x00) {
                 //切换多通道阀到指定通道
-                MainActivity.com0.pumpCmd(2, "switch", reagentChannel);
+                SysData.reagentChannel = reagentChannel;
+                MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
                 Thread.sleep(3000);
             }
             //注射泵状态查询
@@ -333,7 +362,8 @@ public class SysGpio {
             //多通道阀状态正常时执行
             if(SysData.Pump[2] == 0x00) {
                 //切换多通道阀到指定通道
-                MainActivity.com0.pumpCmd(2, "switch", 1);
+                SysData.reagentChannel = 1;
+                MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
                 Thread.sleep(3000);
             }
             //注射泵状态查询
