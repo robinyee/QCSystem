@@ -61,7 +61,7 @@ public class TabService extends Fragment {
             aSwitchD8.setChecked(SysGpio.mGpioOutD8.getValue());
             aSwitchP1.setChecked(SysGpio.mGpioOutP1.getValue());
             aSwitchP2.setChecked(SysGpio.mGpioOutP2.getValue());
-            aSwitchP3.setChecked(SysGpio.mGpioOutP3.getValue());
+            //aSwitchP3.setChecked(SysGpio.mGpioOutP3.getValue());
             aSwitchH1.setChecked(SysGpio.mGpioOutH1.getValue());
             aSwitchLED.setChecked(SysGpio.mGpioOutLED.getValue());
             aSwitchV24.setChecked(SysGpio.mGpioOut24V.getValue());
@@ -105,32 +105,26 @@ public class TabService extends Fragment {
         aSwitchD4 = (Switch) view.findViewById(R.id.d4);
         aSwitchD5 = (Switch) view.findViewById(R.id.d5);
         aSwitchD6 = (Switch) view.findViewById(R.id.d6);
-        aSwitchD7 = (Switch) view.findViewById(R.id.d7);
+        //aSwitchD7 = (Switch) view.findViewById(R.id.d7);
         aSwitchD8 = (Switch) view.findViewById(R.id.d8);
         aSwitchP1 = (Switch) view.findViewById(R.id.p1);
         aSwitchP2 = (Switch) view.findViewById(R.id.p2);
         aSwitchP3 = (Switch) view.findViewById(R.id.p3);
-        aSwitchH1 = (Switch) view.findViewById(R.id.h1);
-        aSwitchLED = (Switch) view.findViewById(R.id.led);
-        aSwitchV24 = (Switch) view.findViewById(R.id.v24);
+        //aSwitchH1 = (Switch) view.findViewById(R.id.h1);
+        //aSwitchLED = (Switch) view.findViewById(R.id.led);
+        //aSwitchV24 = (Switch) view.findViewById(R.id.v24);
         aSwitchDC1 = (Switch) view.findViewById(R.id.dc1);
         aSwitchRE1 = (Switch) view.findViewById(R.id.dc1_r);
-        aSwitchDC2 = (Switch) view.findViewById(R.id.dc2);
-        aSwitchRE2 = (Switch) view.findViewById(R.id.dc2_r);
+        //aSwitchDC2 = (Switch) view.findViewById(R.id.dc2);
+        //aSwitchRE2 = (Switch) view.findViewById(R.id.dc2_r);
 
         //流程控制Switch按钮赋值
-        aSwitchS1 = (Switch) view.findViewById(R.id.s1);
-        aSwitchS2 = (Switch) view.findViewById(R.id.s2);
-        aSwitchS3 = (Switch) view.findViewById(R.id.s3);
-        aSwitchS4 = (Switch) view.findViewById(R.id.s4);
-        aSwitchS5 = (Switch) view.findViewById(R.id.s5);
-        aSwitchS6 = (Switch) view.findViewById(R.id.s6);
-        aSwitchS7 = (Switch) view.findViewById(R.id.s7);
-        aSwitchS8 = (Switch) view.findViewById(R.id.s8);
-        aSwitchS9 = (Switch) view.findViewById(R.id.s9);
-        aSwitchS10 = (Switch) view.findViewById(R.id.s10);
-        aSwitchS11 = (Switch) view.findViewById(R.id.s11);
-        aSwitchS12 = (Switch) view.findViewById(R.id.s12);
+        aSwitchS1 = (Switch) view.findViewById(R.id.s1_inletWater);
+        aSwitchS2 = (Switch) view.findViewById(R.id.s2_addReagent);
+        aSwitchS3 = (Switch) view.findViewById(R.id.s3_supplySamples);
+        aSwitchS4 = (Switch) view.findViewById(R.id.s4_initialize);
+        aSwitchS5 = (Switch) view.findViewById(R.id.s5_reset);
+        aSwitchS6 = (Switch) view.findViewById(R.id.s6_reboot);
 
         //输入状态Switch
         aSwitchIn1 = (Switch) view.findViewById(R.id.switchIn1);
@@ -225,18 +219,6 @@ public class TabService extends Fragment {
             }
         });
 
-        //SwitchD7按钮点击
-        aSwitchD7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    SysGpio.mGpioOutD7.setValue(aSwitchD7.isChecked());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
         //SwitchD8按钮点击
         aSwitchD8.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -256,7 +238,7 @@ public class TabService extends Fragment {
                 try {
                     SysGpio.mGpioOutP1.setValue(aSwitchP1.isChecked());
                     if(aSwitchP1.isChecked()) {
-                        Thread.sleep(1000);
+                        Thread.sleep(3000);
                         MainActivity.com0.pumpInit(1);
                     }
                 } catch (IOException | InterruptedException e) {
@@ -272,7 +254,7 @@ public class TabService extends Fragment {
                 try {
                     SysGpio.mGpioOutP2.setValue(aSwitchP2.isChecked());
                     if(aSwitchP2.isChecked()) {
-                        Thread.sleep(1000);
+                        Thread.sleep(3000);
                         MainActivity.com0.pumpInit(2);
                     }
                 } catch (IOException | InterruptedException e) {
@@ -286,56 +268,14 @@ public class TabService extends Fragment {
             @Override
             public void onClick(View view) {
                 try {
-                    SysGpio.mGpioOutP3.setValue(aSwitchP3.isChecked());
-                    if(aSwitchP3.isChecked()) {
-                        Thread.sleep(1000);
-                        MainActivity.com0.pumpInit(3);
-                    }
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        //SwitchH1按钮点击
-        aSwitchH1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    SysGpio.mGpioOutH1.setValue(aSwitchH1.isChecked());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        //SwitchLED按钮点击
-        aSwitchLED.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    SysGpio.mGpioOutLED.setValue(aSwitchLED.isChecked());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        //SwitchV24按钮点击
-        aSwitchV24.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    SysGpio.mGpioOut24V.setValue(aSwitchV24.isChecked());
-                    if(aSwitchV24.isChecked() && SysData.isRun == false) {
-                        //开始读取模拟量
-                        SysGpio.readTempFlag = true;
-                        SysGpio.readAd();
+                    if(aSwitchP3.isChecked()){
+                        SysData.microPumpOn = true;
+                        SysGpio.microPumpRun(0);
+                        aSwitchP3.setChecked(false);
                     } else {
-                        //停止读取模拟量
-                        SysGpio.readTempFlag = false;
+                        SysData.microPumpOn = false;
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -373,179 +313,71 @@ public class TabService extends Fragment {
             }
         });
 
-        //SwitchDC2按钮点击
-        aSwitchDC2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    SysGpio.mGpioOutDC2.setValue(aSwitchDC2.isChecked());
-                    if(SysGpio.mGpioOutDC2.getValue()) {
-                        SysGpio.mGpioOutRE2.setValue(false);
-                        aSwitchRE2.setChecked(false);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        //SwitchRE2按钮点击
-        aSwitchRE2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    SysGpio.mGpioOutRE2.setValue(aSwitchRE2.isChecked());
-                    if(SysGpio.mGpioOutRE2.getValue()) {
-                        SysGpio.mGpioOutDC2.setValue(false);
-                        aSwitchDC2.setChecked(false);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
         //SwitchS1进水样按钮点击
         aSwitchS1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS1.isChecked() && !SysGpio.statusS1) {
-                    SysGpio.s1_JiaShuiYang();
+                    SysGpio.inletWater(SysData.inletWaterStep);
+                    SysGpio.statusS1 = false;
                 }
             }
         });
 
-        //SwitchS2加硫酸按钮点击
+        //SwitchS2添加试剂
         aSwitchS2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS2.isChecked() && !SysGpio.statusS2) {
-                    SysGpio.s2_JiaLiuSuan();
+                    SysGpio.addReagent(SysData.reagentChannel, SysData.addReagentStep);
+                    SysGpio.statusS2 = false;
                 }
             }
         });
 
-        //SwitchS3加高锰酸钾按钮点击
+        //SwitchS3混合溶液、供样、清洗
         aSwitchS3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS3.isChecked() && !SysGpio.statusS3) {
-                    SysGpio.s3_JiaGaoMengSuanJIa();
+                    SysGpio.supplySamples();
+                    SysGpio.statusS3 = false;
                 }
             }
         });
 
-        //SwitchS4加草酸钠按钮点击
+        //SwitchS4仪表初始化
         aSwitchS4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS4.isChecked() && !SysGpio.statusS4) {
-                    SysGpio.s4_JiaCaoSuanNa();
+                    SysGpio.initialize();
+                    SysGpio.statusS4 = false;
                 }
             }
         });
 
-        //SwitchS5消解按钮点击
+        //SwitchS5关闭所有电源
         aSwitchS5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS5.isChecked() && !SysGpio.statusS5) {
-                    SysGpio.s5_XiaoJie();
+                    SysGpio.powerOff();
+                    SysGpio.statusS5 = false;
                 }
             }
         });
 
-        //SwitchS6滴定按钮点击
+        //SwitchS6重新启动
         aSwitchS6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (aSwitchS6.isChecked() && !SysGpio.statusS6) {
-                    SysGpio.s6_DiDing();
-                }
-            }
-        });
-
-        //SwitchS7水质测定按钮点击
-        aSwitchS7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (aSwitchS7.isChecked() && !SysGpio.statusS7) {
-                    SysGpio.s7_ShuiZhiCeDing();
-                    SysData.workFrom = "触摸屏启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
-                }
-            }
-        });
-
-        //SwitchS8仪器复位按钮点击
-        aSwitchS8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (aSwitchS8.isChecked() && !SysGpio.statusS8) {
-                    SysGpio.s8_Reset();
-                }
-            }
-        });
-
-        //SwitchS9空白实验按钮点击
-        aSwitchS9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (aSwitchS9.isChecked() && !SysGpio.statusS9) {
-                    SysGpio.s9_KongBaiShiYan();
-                    SysData.workFrom = "触摸屏启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
-                }
-            }
-        });
-
-        //SwitchS10标样测定按钮点击
-        aSwitchS10.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (aSwitchS10.isChecked() && !SysGpio.statusS10) {
-                    SysGpio.s10_BiaoYangCeDing();
-                    SysData.workFrom = "触摸屏启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
-                }
-            }
-        });
-
-        //SwitchS11仪器校准按钮点击
-        aSwitchS11.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (aSwitchS11.isChecked() && !SysGpio.statusS11) {
-                    SysGpio.s11_Calibration();
-                    SysData.workFrom = "触摸屏启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
-                }
-            }
-        });
-
-        //SwitchS12紧急停止按钮点击
-        aSwitchS12.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (aSwitchS12.isChecked() && !SysGpio.statusS12) {
-                    SysGpio.s12_Stop();
                     //提醒系统将重置
                     Toast.makeText(getContext(),"正在重置系统，请稍后...", Toast.LENGTH_LONG).show();
+                    //重启软件
+                    System.exit(0);
                 }
-            }
-        });
-
-        //SwitchIsNotice按钮点击
-        aSwitchIsNotice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SysData.isNotice = aSwitchIsNotice.isChecked();
-                saveMeterParameter();
-            }
-        });
-
-        //SwitchIsEmptyPipeline按钮点击
-        aSwitchIsEmptyPipeline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SysData.isEmptyPipeline = aSwitchIsEmptyPipeline.isChecked();
-                saveMeterParameter();
             }
         });
 

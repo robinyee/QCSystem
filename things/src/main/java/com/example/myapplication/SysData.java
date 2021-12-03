@@ -20,6 +20,9 @@ public class SysData {
     static int inletWaterStep = 65;             //水样泵旋转圈数
     static boolean startSupplySamples = false;  //是否开始供样
     static int waterType = 0;                   //水样的类型
+    static boolean microPumpOn = false;         //启动微量泵
+    static int reagentChannel = 1;              //当前通道号
+    static int addReagentStep = 20;             //添加试剂的步数
 
     static double NH3Volume = 250.0;            //氨氮标样体积
     static int NH3WaterStep = 150;              //氨氮标样步数

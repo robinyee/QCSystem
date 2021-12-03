@@ -229,7 +229,7 @@ public class SysGpio {
     //微量泵启动运行
     public static void microPumpRun(int step){
         //启动微量泵添加试剂
-        while (step > 0) {
+        while (step > 0 || SysData.microPumpOn) {
             try {
                 SysGpio.mGpioOutP3.setValue(true);  //微量泵加液
                 Thread.sleep(150);
@@ -402,7 +402,8 @@ public class SysGpio {
             @Override
             public void run() {
                 Log.d(TAG, "run: 开始配制标样");
-
+                updateProgress();  //更新进度条
+                isRun = true;
                 //原水样
                 if(sampleType == 1) {
                     return;
@@ -448,12 +449,15 @@ public class SysGpio {
                 }
                 //进度条到达100
                 SysData.progressRate = 100;
+                isRun = false;
             }
         }).start();
     }
     //关闭所有电源
     public static void powerOff() {
         try {
+            Log.d(TAG, "run: 关闭所有部件电源");
+            Thread.sleep(3000);
             SysGpio.mGpioOutD1.setValue(false);
             SysGpio.mGpioOutD2.setValue(false);
             SysGpio.mGpioOutD3.setValue(false);
@@ -471,27 +475,37 @@ public class SysGpio {
         }
     }
 
+    //仪表初始化
+    public static void initialize() {
+        try {
+            Log.d(TAG, "run: 仪器初始化");
+            SysGpio.mGpioOutP1.setValue(true);
+            SysGpio.mGpioOutP2.setValue(true);
+            SysGpio.mGpioOutD8.setValue(true);
+            Thread.sleep(3000);
+            addReagent(3, 20); //加入母液
+            addReagent(4, 20); //加入母液
+            addReagent(5, 20); //加入母液
+            addReagent(6, 20); //加入母液
+            addReagent(2, 20); //加入母液
+            addReagent(1, 20); //加入母液
+            cleaning();//清洗容器
+            SysGpio.mGpioOutD4.setValue(true);
+            cleaning();//清洗容器
+            powerOff();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     //更新进度条
     public static void updateProgress() {
         new Thread(new Runnable() {
             public void run() {
-
-                //紧急停止
-                if(SysData.stopFlag) {
-                    return;
-                }
-
                 do {
-
-                    //紧急停止
-                    if(SysData.stopFlag) {
-                        return;
-                    }
-
                     if (SysData.progressRate < 95) {
                         SysData.progressRate = (int) ((System.currentTimeMillis() - SysData.startTime) / 1000 / 12);
                     }
-
                     //暂停30秒
                     try {
                         Thread.sleep(30000);
@@ -510,56 +524,6 @@ public class SysGpio {
                         SysData.progressRate = 0;
                     }
                 } while (isRun && SysData.progressRate < 100);
-            }
-        }).start();
-    }
-
-    //紧急停止流程
-    public static void s12_Stop() {
-        new Thread(new Runnable() {
-
-            public void run() {
-                Log.d(TAG, "run: 启动紧急停止");
-                statusS12 = true;
-                SysData.statusMsg = "紧急停止";
-                SysData.stopFlag = true;  //启动紧急停止
-
-                //停止所有输出
-                try {
-                    SysGpio.mGpioOutH1.setValue(false);
-                    SysGpio.mGpioOut24V.setValue(false);
-                    SysGpio.mGpioOutLED.setValue(false);
-                    SysGpio.mGpioOutP1.setValue(false);
-                    SysGpio.mGpioOutP2.setValue(false);
-                    SysGpio.mGpioOutP3.setValue(false);
-                    SysGpio.mGpioOutD1.setValue(false);
-                    SysGpio.mGpioOutD2.setValue(false);
-                    SysGpio.mGpioOutD3.setValue(false);
-                    SysGpio.mGpioOutD4.setValue(false);
-                    SysGpio.mGpioOutD5.setValue(false);
-                    SysGpio.mGpioOutD6.setValue(false);
-                    SysGpio.mGpioOutD7.setValue(false);
-                    SysGpio.mGpioOutD8.setValue(false);
-                    SysGpio.mGpioOutDC1.setValue(false);
-                    SysGpio.mGpioOutRE1.setValue(false);
-                    SysGpio.mGpioOutDC2.setValue(false);
-                    SysGpio.mGpioOutRE2.setValue(false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                SysData.stopFlag = false; //紧急停止结束
-                SysData.statusMsg = "系统待机";
-                SysData.progressRate = 0;
-                SysData.isRun = false;
-                statusS12 = false;
-                Log.d(TAG, "run: 结束紧急停止");
-                //重启软件
-                System.exit(0);
             }
         }).start();
     }

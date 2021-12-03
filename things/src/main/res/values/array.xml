@@ -11,4 +11,12 @@
         <item >38400</item>
         <item >115200</item>
     </string-array>
+    <string-array name="sampleTyep">
+        <item >原水样</item>
+        <item >空白样</item>
+        <item >标样A</item>
+        <item >标样B</item>
+        <item >标样C</item>
+        <item >加标回收</item>
+    </string-array>
 </resources>
