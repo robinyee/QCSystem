@@ -302,13 +302,13 @@
                         android:textSize="14sp"
                         android:gravity="center"
                         android:entries="@array/sampleTyep" />
-                    <Switch
-                        android:id="@+id/switch_NH3_start"
+                    <Button
+                        android:id="@+id/button_NH3_start"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="启动"
-                        android:theme="@style/MySwitch" />
+                        android:background="@android:drawable/list_selector_background"
+                        android:text="启动" />
                 </TableRow>
 
                 <TableRow android:layout_marginTop="10dp">
@@ -325,13 +325,13 @@
                         android:textSize="14sp"
                         android:gravity="center"
                         android:entries="@array/sampleTyep" />
-                    <Switch
-                        android:id="@+id/switch_TP_start"
+                    <Button
+                        android:id="@+id/button_TP_start"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="启动"
-                        android:theme="@style/MySwitch" />
+                        android:background="@android:drawable/list_selector_background"
+                        android:text="启动" />
                 </TableRow>
 
                 <TableRow android:layout_marginTop="10dp">
@@ -348,13 +348,13 @@
                         android:textSize="14sp"
                         android:gravity="center"
                         android:entries="@array/sampleTyep" />
-                    <Switch
-                        android:id="@+id/switch_TN_start"
+                    <Button
+                        android:id="@+id/button_TN_start"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="启动"
-                        android:theme="@style/MySwitch" />
+                        android:background="@android:drawable/list_selector_background"
+                        android:text="启动" />
                 </TableRow>
 
                 <TableRow android:layout_marginTop="10dp">
@@ -371,13 +371,13 @@
                         android:textSize="14sp"
                         android:gravity="center"
                         android:entries="@array/sampleTyep" />
-                    <Switch
-                        android:id="@+id/switch_COD_start"
+                    <Button
+                        android:id="@+id/button_COD_start"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="启动"
-                        android:theme="@style/MySwitch" />
+                        android:background="@android:drawable/list_selector_background"
+                        android:text="启动" />
                 </TableRow>
 
             </TableLayout>

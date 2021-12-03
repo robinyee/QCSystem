@@ -75,7 +75,6 @@ public class TabHome extends Fragment {
         textViewCODValue = (TextView) view.findViewById(R.id.textCodValue);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         textViewStatus = (TextView) view.findViewById(R.id.textStatus);
-        buttonStartup = (ImageButton) view.findViewById(R.id.startup);
 
         //生成网址的二维码
         ImageView mImageView = (ImageView) view.findViewById(R.id.imageViewQRCode);
@@ -118,7 +117,7 @@ public class TabHome extends Fragment {
     private void updateUi() {
         curDate = new Date(System.currentTimeMillis());
         textViewTime.setText(formater.format(curDate)); //显示当前时间
-        textViewCODValue.setText(" " + SysData.codValue);
+        textViewCODValue.setText(" ");
         progressBar.setProgress(SysData.progressRate);
         textViewStatus.setText(SysData.statusMsg);
         if(!SysData.errorMsg.equals("")) {
@@ -143,14 +142,7 @@ public class TabHome extends Fragment {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //启动测定流程
-                        SysGpio.s7_ShuiZhiCeDing();
-                        SysData.statusMsg = "启动测定程序";
-                        SysData.isRun = true;
-                        SysData.workFrom = "触摸屏";           //启动分析命令来自于 触摸屏、串口、Web、
-                        //SysData.progressRate = 1;
-                        //buttonStartup.setImageResource(R.drawable.ic_stop_black_24dp);
-                        Log.i("MainActivity", "状态=" + SysData.statusMsg);
+
                     }
                 });
         altDialog.setNegativeButton("取消",

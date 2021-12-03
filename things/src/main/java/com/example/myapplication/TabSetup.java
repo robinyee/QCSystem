@@ -111,36 +111,6 @@ public class TabSetup extends Fragment {
 
     //刷新界面输出状态
     public void uiUpdate() {
-        //显示状态数据
-        txtTempIn.setText(Double.toString(SysData.tempIn) + "℃");
-        txtTempOut.setText(Double.toString(SysData.tempOut) + "℃");
-        txtAdLight.setText(Integer.toString(SysData.adLight));
-        txtAdLight1.setText(Integer.toString(SysData.startAdLight));
-        txtDidingNum.setText(Integer.toString(SysData.didingNum)); //4为注射泵开始滴定到有高锰酸钾出来的数量
-        txtDidingSumVolume.setText(Double.toString(SysData.didingSumVolume));
-        if(SysData.startXiaojie != 0) txtXiaoJieStart.setText(timeFormat.format(SysData.startXiaojie));
-        if(SysData.startTime != 0) txtStarttime.setText(timeFormat.format(SysData.startTime));
-        if(SysData.endTime != 0) txtEndtime.setText(timeFormat.format(SysData.endTime));
-        lave = (SysData.endXiaoJie > System.currentTimeMillis()) ? (SysData.endXiaoJie - System.currentTimeMillis()) / 1000 : 0;
-        txtXiaoJieLave.setText(Long.toString(lave) + "秒");
-        txtSysDate.setText(dateFormat.format(System.currentTimeMillis()));
-        txtSysTime.setText(timeFormat.format(System.currentTimeMillis()));
-
-        //更新自动运行信息
-        if(SysData.isUpdateAutoRun) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            updateAutoRun();
-            SysData.updateNum--;
-            if(SysData.updateNum <= 0) {
-                SysData.isUpdateAutoRun = false;
-                saveMeterParameter();
-                SysData.updateNum = 3;
-            }
-        }
 
         //更新网络信息
         if(SysData.isUpdatnetwork){
@@ -180,22 +150,6 @@ public class TabSetup extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.tab_setup, container, false);
         //状态数据
-        txtTempIn = view.findViewById(R.id.tempin);
-        txtTempOut = view.findViewById(R.id.tempout);
-        txtAdLight = view.findViewById(R.id.adlight);
-        txtAdLight1 = view.findViewById(R.id.adlight1);
-        txtDidingNum = view.findViewById(R.id.didingnum);
-        txtDidingSumVolume = view.findViewById(R.id.didingSumVolume);
-        txtXiaoJieStart = view.findViewById(R.id.xiaojiestart);
-        txtXiaoJieLave = view.findViewById(R.id.xiaojielave);
-        txtStarttime = view.findViewById(R.id.starttime);
-        txtEndtime = view.findViewById(R.id.endtime);
-        timeSetup = view.findViewById(R.id.setuptime);
-        //httpAddr = view.findViewById(R.id.httpaddr);
-        localIp = view.findViewById(R.id.localip);
-        txtSysDate = view.findViewById(R.id.sysdate);
-        txtSysTime = view.findViewById(R.id.systime);
-        wifiName = view.findViewById(R.id.wifissid);
         buttonReload = view.findViewById(R.id.reload);
         buttonSetupWifi = view.findViewById(R.id.setupwifi);
         buttonSaveData = view.findViewById(R.id.saveData);
@@ -217,30 +171,6 @@ public class TabSetup extends Fragment {
         editCom1Addr = view.findViewById(R.id.editComAddr);
         //editCom1BaudRate = view.findViewById(R.id.editComBaudRate);
         spinnerCom1BaudRate = view.findViewById(R.id.spinnerComBaudRate);
-
-        //仪表参数
-        editShuiyangStep = view.findViewById(R.id.editShuiyangStep);
-        editShuiyangVolume = view.findViewById(R.id.editShuiyangVolume);
-        editLiusuanStep = view.findViewById(R.id.editLiusuanStep);
-        editLiusuanVolume = view.findViewById(R.id.editLiusuanVolume);
-        editCaosuannaStep = view.findViewById(R.id.editCaosuannaStep);
-        editCaosuannaVolume = view.findViewById(R.id.editCaosuannaVolume);
-        editGaomengsuanjiaStep = view.findViewById(R.id.editGaomengsuanjiaStep);
-        editGaomengsuanjiaVolume = view.findViewById(R.id.editGaomengsuanjiaVolume);
-        editDidingStep = view.findViewById(R.id.editDidingStep);
-        editDidingVolume = view.findViewById(R.id.editDidingVolume);
-        editXiaojieTemp = view.findViewById(R.id.editXiaojieTemp);
-        editXiaojieTime = view.findViewById(R.id.editXiaojieTime);
-        editKongbaiValue = view.findViewById(R.id.editKongbaiValue);
-        editBiaodingValue = view.findViewById(R.id.editBiaodingValue);
-        editCaosuannaCon = view.findViewById(R.id.editCaosuannaCon);
-        editDidingDeviation = view.findViewById(R.id.editDidingDeviation);
-        editDidingMax = view.findViewById(R.id.editDidingMax);
-        editDidingDifference = view.findViewById(R.id.editDidingDifference);
-        editSlopeA = view.findViewById(R.id.editSlopeA);
-        editInterceptB = view.findViewById(R.id.editInterceptB);
-        editTrueValue = view.findViewById(R.id.editTrueValue);
-        editCorrectionValue = view.findViewById(R.id.editCorrectionValue);
 
         //更多参数显示
         moreParameter = view.findViewById(R.id.moreParameter);
@@ -491,8 +421,6 @@ public class TabSetup extends Fragment {
                             MainActivity.updateNet();
                             //显示WEB访问地址
                             //httpAddr.setText(SysData.httpAddr);
-                            //生成网址的二维码
-                            creatQRCode(getView());
                             saveMeterParameter();
                             Toast.makeText(getActivity(), "WEB服务已开启", Toast.LENGTH_SHORT).show();
                             //httpAddr.setText(SysData.httpAddr);   //抛出异常测试
@@ -518,10 +446,6 @@ public class TabSetup extends Fragment {
                 Toast.makeText(getActivity(), "重新载入参数", Toast.LENGTH_SHORT).show();
             }
         });
-
-        //生成网址的二维码
-        creatQRCode(view);
-
 
         //点击显示更多参数
         moreParameter.setOnClickListener(new View.OnClickListener() {
@@ -623,26 +547,12 @@ public class TabSetup extends Fragment {
     //保存Edit数据
     private void saveEditText() {
         //保存仪表参数的内容
-        SysData.shuiyangStep = Integer.parseInt(editShuiyangStep.getText().toString());
         SysData.shuiyangVolume = Double.parseDouble(editShuiyangVolume.getText().toString());
         SysData.liusuanStep = Integer.parseInt(editLiusuanStep.getText().toString());
         SysData.liusuanVolume = Double.parseDouble(editLiusuanVolume.getText().toString());
         SysData.caosuannaStep = Integer.parseInt(editCaosuannaStep.getText().toString());
         SysData.caosuannaVolume = Double.parseDouble(editCaosuannaVolume.getText().toString());
-        SysData.gaomengsuanjiaStep = Integer.parseInt(editGaomengsuanjiaStep.getText().toString());
-        SysData.gaomengsuanjiaVolume = Double.parseDouble(editGaomengsuanjiaVolume.getText().toString());
-        SysData.didingStep = Integer.parseInt(editDidingStep.getText().toString());
-        SysData.didingVolume = Double.parseDouble(editDidingVolume.getText().toString());
-        SysData.xiaojieTemp = Double.parseDouble(editXiaojieTemp.getText().toString());
-        SysData.xiaojieTime = Integer.parseInt(editXiaojieTime.getText().toString());
-        SysData.kongbaiValue = Double.parseDouble(editKongbaiValue.getText().toString());
-        SysData.biaodingValue = Double.parseDouble(editBiaodingValue.getText().toString());
-        SysData.caosuannaCon = Double.parseDouble(editCaosuannaCon.getText().toString());
-        SysData.didingDeviation = Integer.parseInt(editDidingDeviation.getText().toString());
-        SysData.didingMax = Integer.parseInt(editDidingMax.getText().toString());
-        SysData.didingDifference = Integer.parseInt(editDidingDifference.getText().toString());
-        SysData.slopeA = Double.parseDouble(editSlopeA.getText().toString());
-        SysData.interceptB = Double.parseDouble(editInterceptB.getText().toString());
+
         //系统参数
         SysData.adminPassword = editAdminPassword.getText().toString();
         SysData.MODBUS_ADDR = Integer.parseInt(editCom1Addr.getText().toString());
@@ -655,14 +565,6 @@ public class TabSetup extends Fragment {
         SysData.webIPAddr = editlocalip.getText().toString();
         SysData.webPort = Integer.parseInt(editwebport.getText().toString());
          */
-    }
-
-    //生成网址的二维码
-    private void creatQRCode(View view) {
-        //生成网址的二维码
-        ImageView mImageView = (ImageView) view.findViewById(R.id.imageViewZXing);
-        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(SysData.httpAddr, 70, 70);
-        mImageView.setImageBitmap(mBitmap);
     }
 
     //填充Edit数据
@@ -683,28 +585,11 @@ public class TabSetup extends Fragment {
         //editCom1BaudRate.setText(String.valueOf(SysData.BAUD_RATE));
 
         //填充仪表参数的内容
-        editShuiyangStep.setText(String.valueOf(SysData.shuiyangStep));
         editShuiyangVolume.setText(String.valueOf(SysData.shuiyangVolume));
         editLiusuanStep.setText(String.valueOf(SysData.liusuanStep));
         editLiusuanVolume.setText(String.valueOf(SysData.liusuanVolume));
         editCaosuannaStep.setText(String.valueOf(SysData.caosuannaStep));
         editCaosuannaVolume.setText(String.valueOf(SysData.caosuannaVolume));
-        editGaomengsuanjiaStep.setText(String.valueOf(SysData.gaomengsuanjiaStep));
-        editGaomengsuanjiaVolume.setText(String.valueOf(SysData.gaomengsuanjiaVolume));
-        editDidingStep.setText(String.valueOf(SysData.didingStep));
-        editDidingVolume.setText(String.valueOf(SysData.didingVolume));
-        editXiaojieTemp.setText(String.valueOf(SysData.xiaojieTemp));
-        editXiaojieTime.setText(String.valueOf(SysData.xiaojieTime));
-        editKongbaiValue.setText(String.valueOf(SysData.kongbaiValue));
-        editBiaodingValue.setText(String.valueOf(SysData.biaodingValue));
-        editCaosuannaCon.setText(String.valueOf(SysData.caosuannaCon));
-        editDidingDeviation.setText(String.valueOf(SysData.didingDeviation));
-        editDidingMax.setText(String.valueOf(SysData.didingMax));
-        editDidingDifference.setText(String.valueOf(SysData.didingDifference));
-        editSlopeA.setText(String.valueOf(SysData.slopeA));
-        editInterceptB.setText(String.valueOf(SysData.interceptB));
-        editTrueValue.setText(String.valueOf(SysData.trueValue));
-        editCorrectionValue.setText(String.valueOf(SysData.codValue));
     }
 
     //保存仪表参数
@@ -713,28 +598,12 @@ public class TabSetup extends Fragment {
             //打开文件
             final SharedPreferences.Editor editor = getActivity().getSharedPreferences("Parameter", MODE_PRIVATE).edit();
             //仪器的参数
-            editor.putInt("shuiyangStep", SysData.shuiyangStep);
             editor.putLong("shuiyangVolume", Double.doubleToLongBits(SysData.shuiyangVolume));
             editor.putInt("liusuanStep", SysData.liusuanStep);
             editor.putLong("liusuanVolume", Double.doubleToLongBits(SysData.liusuanVolume));
             editor.putInt("caosuannaStep", SysData.caosuannaStep);
             editor.putLong("caosuannaVolume", Double.doubleToLongBits(SysData.caosuannaVolume));
-            editor.putInt("gaomengsuanjiaStep", SysData.gaomengsuanjiaStep);
-            editor.putLong("gaomengsuanjiaVolume", Double.doubleToLongBits(SysData.gaomengsuanjiaVolume));
-            editor.putLong("xiaojieTemp", Double.doubleToLongBits(SysData.xiaojieTemp));
-            editor.putInt("xiaojieTime", SysData.xiaojieTime);
-            editor.putInt("didingStep", SysData.didingStep);
-            editor.putLong("didingVolume", Double.doubleToLongBits(SysData.didingVolume));
-            editor.putInt("didingNum", SysData.didingNum);
-            editor.putLong("didingSumVolume", Double.doubleToLongBits(SysData.didingSumVolume));
-            editor.putLong("kongbaiValue", Double.doubleToLongBits(SysData.kongbaiValue));
-            editor.putLong("biaodingValue", Double.doubleToLongBits(SysData.biaodingValue));
-            editor.putLong("caosuannaCon", Double.doubleToLongBits(SysData.caosuannaCon));
-            editor.putInt("didingDeviation", SysData.didingDeviation);
-            editor.putInt("didingDifference", SysData.didingDifference);
-            editor.putLong("slopeA", Double.doubleToLongBits(SysData.slopeA));
-            editor.putLong("interceptB", Double.doubleToLongBits(SysData.interceptB));
-            editor.putLong("trueValue", Double.doubleToLongBits(SysData.trueValue));
+
             //系统参数
             //editor.putString("localIpAddr", SysData.localIpAddr[0]);
             editor.putInt("webPort", SysData.webPort);
