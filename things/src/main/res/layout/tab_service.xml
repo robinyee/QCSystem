@@ -267,8 +267,37 @@
                         android:text="重新启动"
                         android:theme="@style/MySwitch" />
                 </TableRow>
+                <TableRow android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="选择标样类型"/>
+                    <Spinner
+                        android:id="@+id/spinner_WaterType"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:entries="@array/waterTyep" />
+                    <Spinner
+                        android:id="@+id/spinner_SampleType"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:entries="@array/sampleTyep" />
+                    <Switch
+                        android:id="@+id/s7_start"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="启动"
+                        android:theme="@style/MySwitch" />
+                </TableRow>
             </TableLayout>
-
+<!--
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -381,7 +410,7 @@
                 </TableRow>
 
             </TableLayout>
-
+-->
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

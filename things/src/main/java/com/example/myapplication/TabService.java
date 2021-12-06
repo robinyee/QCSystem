@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ public class TabService extends Fragment {
     private Switch aSwitchC1, aSwitchC2, aSwitchC3, aSwitchC4, aSwitchC5, aSwitchC6;
     private Switch aSwitchIn1, aSwitchIn2, aSwitchIn3, aSwitchIn4, aSwitchIsNotice, aSwitchIsEmptyPipeline;
     private Button buttonNH3Start, buttonTPStart, buttonTNStart, buttonCODStart;
+    private Spinner spinnerWaterType, spinnerSampleType;
 
     //获取线程发送的Msg信息，更新对于UI界面
     static final int UI_UPDATE = 100;
@@ -146,11 +148,17 @@ public class TabService extends Fragment {
         aSwitchS5 = (Switch) view.findViewById(R.id.s5_reset);
         aSwitchS6 = (Switch) view.findViewById(R.id.s6_reboot);
 
-        //启动按钮
+        //选择标样类型
+        spinnerWaterType = view.findViewById(R.id.spinner_WaterType);
+        spinnerSampleType = view.findViewById(R.id.spinner_SampleType);
+        aSwitchS7 = (Switch) view.findViewById(R.id.s7_start);
+        /*
         buttonNH3Start = (Button) view.findViewById(R.id.button_NH3_start);
         buttonTPStart = (Button) view.findViewById(R.id.button_TP_start);
         buttonTNStart = (Button) view.findViewById(R.id.button_TN_start);
         buttonCODStart = (Button) view.findViewById(R.id.button_COD_start);
+
+         */
 
         //输入状态Switch
         aSwitchIn1 = (Switch) view.findViewById(R.id.switchIn1);
@@ -495,8 +503,21 @@ public class TabService extends Fragment {
             }
         });
 
+        //SwitchS7启动配制标样流程
+        aSwitchS7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS7.isChecked() && !SysGpio.statusS7) {
+                    SysData.waterType = spinnerWaterType.getSelectedItemPosition() + 1;
+                    SysData.sampleType = spinnerSampleType.getSelectedItemPosition() + 1;
+                    SysGpio.preparationWaterSamples(SysData.waterType, SysData.sampleType);
+                }
+            }
+        });
+
         return view;
     }
+
 
     //保存仪表参数
     public void saveMeterParameter() {

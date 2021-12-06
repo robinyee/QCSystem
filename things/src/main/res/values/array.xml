@@ -11,6 +11,12 @@
         <item >38400</item>
         <item >115200</item>
     </string-array>
+    <string-array name="waterTyep">
+        <item >氨氮</item>
+        <item >总磷</item>
+        <item >总氮</item>
+        <item >COD</item>
+    </string-array>
     <string-array name="sampleTyep">
         <item >原水样</item>
         <item >空白样</item>
