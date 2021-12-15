@@ -62,18 +62,18 @@ public class TabService extends Fragment {
             aSwitchD4.setChecked(SysGpio.mGpioOutD4.getValue());
             aSwitchD5.setChecked(SysGpio.mGpioOutD5.getValue());
             aSwitchD6.setChecked(SysGpio.mGpioOutD6.getValue());
-            aSwitchD7.setChecked(SysGpio.mGpioOutD7.getValue());
+            //aSwitchD7.setChecked(SysGpio.mGpioOutD7.getValue());
             aSwitchD8.setChecked(SysGpio.mGpioOutD8.getValue());
             aSwitchP1.setChecked(SysGpio.mGpioOutP1.getValue());
             aSwitchP2.setChecked(SysGpio.mGpioOutP2.getValue());
             //aSwitchP3.setChecked(SysGpio.mGpioOutP3.getValue());
-            aSwitchH1.setChecked(SysGpio.mGpioOutH1.getValue());
-            aSwitchLED.setChecked(SysGpio.mGpioOutLED.getValue());
-            aSwitchV24.setChecked(SysGpio.mGpioOut24V.getValue());
+            //aSwitchH1.setChecked(SysGpio.mGpioOutH1.getValue());
+            //aSwitchLED.setChecked(SysGpio.mGpioOutLED.getValue());
+            //aSwitchV24.setChecked(SysGpio.mGpioOut24V.getValue());
             aSwitchDC1.setChecked(SysGpio.mGpioOutDC1.getValue());
             aSwitchRE1.setChecked(SysGpio.mGpioOutRE1.getValue());
-            aSwitchDC2.setChecked(SysGpio.mGpioOutDC2.getValue());
-            aSwitchRE2.setChecked(SysGpio.mGpioOutRE2.getValue());
+            //aSwitchDC2.setChecked(SysGpio.mGpioOutDC2.getValue());
+            //aSwitchRE2.setChecked(SysGpio.mGpioOutRE2.getValue());
 
             //多通道阀切换
             SysGpio.statusSwtch();
@@ -93,10 +93,10 @@ public class TabService extends Fragment {
             aSwitchS6.setChecked(SysGpio.statusS6);
             aSwitchS7.setChecked(SysGpio.statusS7);
             aSwitchS8.setChecked(SysGpio.statusS8);
-            aSwitchS9.setChecked(SysGpio.statusS9);
-            aSwitchS10.setChecked(SysGpio.statusS10);
-            aSwitchS11.setChecked(SysGpio.statusS11);
-            aSwitchS12.setChecked(SysGpio.statusS12);
+            //aSwitchS9.setChecked(SysGpio.statusS9);
+            //aSwitchS10.setChecked(SysGpio.statusS10);
+            //aSwitchS11.setChecked(SysGpio.statusS11);
+            //aSwitchS12.setChecked(SysGpio.statusS12);
 
             //端子输入信息
             aSwitchIn1.setChecked(SysGpio.mGpioIn1.getValue());
@@ -147,6 +147,7 @@ public class TabService extends Fragment {
         aSwitchS4 = (Switch) view.findViewById(R.id.s4_initialize);
         aSwitchS5 = (Switch) view.findViewById(R.id.s5_reset);
         aSwitchS6 = (Switch) view.findViewById(R.id.s6_reboot);
+        aSwitchS8 = (Switch) view.findViewById(R.id.s8_clean);
 
         //选择标样类型
         spinnerWaterType = view.findViewById(R.id.spinner_WaterType);
@@ -271,11 +272,7 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutP1.setValue(aSwitchP1.isChecked());
-                    if(aSwitchP1.isChecked()) {
-                        Thread.sleep(3000);
-                        MainActivity.com0.pumpInit(1);
-                    }
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -287,11 +284,7 @@ public class TabService extends Fragment {
             public void onClick(View view) {
                 try {
                     SysGpio.mGpioOutP2.setValue(aSwitchP2.isChecked());
-                    if(aSwitchP2.isChecked()) {
-                        Thread.sleep(3000);
-                        MainActivity.com0.pumpInit(2);
-                    }
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -440,8 +433,7 @@ public class TabService extends Fragment {
             @Override
             public void onClick(View view) {
                 if (aSwitchS1.isChecked() && !SysGpio.statusS1) {
-                    SysGpio.inletWater(SysData.inletWaterStep);
-                    SysGpio.statusS1 = false;
+                    SysGpio.s1_inletWater(SysData.inletWaterStep);
                 }
             }
         });
@@ -451,8 +443,7 @@ public class TabService extends Fragment {
             @Override
             public void onClick(View view) {
                 if (aSwitchS2.isChecked() && !SysGpio.statusS2) {
-                    SysGpio.addReagent(SysData.reagentChannel, SysData.addReagentStep);
-                    SysGpio.statusS2 = false;
+                    SysGpio.s2_addReagent(SysData.reagentChannel, SysData.addReagentStep);
                 }
             }
         });
@@ -462,8 +453,7 @@ public class TabService extends Fragment {
             @Override
             public void onClick(View view) {
                 if (aSwitchS3.isChecked() && !SysGpio.statusS3) {
-                    SysGpio.supplySamples();
-                    SysGpio.statusS3 = false;
+                    SysGpio.s3_supplySamples();
                 }
             }
         });
@@ -473,8 +463,7 @@ public class TabService extends Fragment {
             @Override
             public void onClick(View view) {
                 if (aSwitchS4.isChecked() && !SysGpio.statusS4) {
-                    SysGpio.initialize();
-                    SysGpio.statusS4 = false;
+                    SysGpio.s4_initialize();
                 }
             }
         });
@@ -511,6 +500,16 @@ public class TabService extends Fragment {
                     SysData.waterType = spinnerWaterType.getSelectedItemPosition() + 1;
                     SysData.sampleType = spinnerSampleType.getSelectedItemPosition() + 1;
                     SysGpio.preparationWaterSamples(SysData.waterType, SysData.sampleType);
+                }
+            }
+        });
+
+        //SwitchS8清洗
+        aSwitchS8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (aSwitchS8.isChecked() && !SysGpio.statusS8) {
+                    SysGpio.s8_cleaning();
                 }
             }
         });

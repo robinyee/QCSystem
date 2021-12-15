@@ -87,6 +87,7 @@ public class TabHome extends Fragment {
         //发送消息刷新页面
         handler.sendEmptyMessageDelayed(0, 0);
 
+        /*
         //点击Startup按钮
         buttonStartup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +99,8 @@ public class TabHome extends Fragment {
             }
             }
         });
+
+         */
 
         //点击报警图标显示对话框
         imageWarning.setOnClickListener(new View.OnClickListener() {

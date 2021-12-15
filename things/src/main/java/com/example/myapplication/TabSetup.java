@@ -187,17 +187,17 @@ public class TabSetup extends Fragment {
 
         if(SysData.localIpAddr != null && SysData.localIpAddr.length >= 1) {
             //更新网络TextView信息
-            setNetTxtInfo();
+            //setNetTxtInfo();
         }
 
         //填充Edit数据
-        setEditText();
+        //setEditText();
 
         //刷新界面信息
-        uiUpdate();
+        //uiUpdate();
         message = handlerUpdate.obtainMessage(UI_UPDATE);
         handlerUpdate.sendMessageDelayed(message, 1000);
-
+/*
         //点击时间设置按钮
         timeSetup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,6 +205,8 @@ public class TabSetup extends Fragment {
                 showDateDialog("SetTime");
             }
         });
+
+ */
 
         //定时启动时间设定
         editNextStartTime.setOnClickListener(new View.OnClickListener() {

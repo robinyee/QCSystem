@@ -29,7 +29,7 @@ class WebServer extends NanoHTTPD {
         if (uri.equals("/run")) {
             //如果仪器在空闲状态时启动分析流程
             if (SysData.isRun == false) {
-                SysGpio.s7_ShuiZhiCeDing();
+                //SysGpio.s7_ShuiZhiCeDing();
                 filename = "run_ok.html";
             } else {
                 filename = "run_no.html";

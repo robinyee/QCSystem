@@ -95,15 +95,15 @@ public class MainActivity extends AppCompatActivity {
         //打开数据库
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "db_cod").build();  //创建数据库
-        SysData.readData(SysData.numPerpage, (SysData.currentPage - 1) * SysData.numPerpage);  //从数据库读取数据
-        SysData.readChartData(30, 0);       //从数据库中读取30条数据
+        //SysData.readData(SysData.numPerpage, (SysData.currentPage - 1) * SysData.numPerpage);  //从数据库读取数据
+        //SysData.readChartData(30, 0);       //从数据库中读取30条数据
         //SysData.delDataFromCalibration(16);         //删除一条校准记录
 
         //clearPreferences();
         //读取系统参数
-        readMeterParameter();
+        //readMeterParameter();
         //读取上次仪表状态
-        readMeterStatus();
+        //readMeterStatus();
         //清除保存的数据
         //clearPreferences();
 
@@ -140,15 +140,15 @@ public class MainActivity extends AppCompatActivity {
 
         //前次正在测试中断电，自动复位
         if (SysData.isRun) {
-            SysGpio.s8_Reset();
+            //SysGpio.s8_Reset();
             SysData.progressRate = 0;
         }
 
         //启动循环进程定时保存仪表状态信息
-        saveStatusRun();
+        //saveStatusRun();
 
         //自动运行测定程序
-        autoRun();
+        //autoRun();
 
         Log.i("外部存储", "是否有权限写外部存储：" + isExternalStorageWritable());
 
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //注射泵初始化
-        SysGpio.pumpStart();
+        //SysGpio.pumpStart();
 
         //打开出口通讯
         openCom();
@@ -642,7 +642,7 @@ public class MainActivity extends AppCompatActivity {
                 true);
         dialogTime.show();
     }
-
+/*
     //读取仪表参数
     public void readMeterParameter() {
         //打开文件
@@ -685,7 +685,8 @@ public class MainActivity extends AppCompatActivity {
         SysData.BAUD_RATE = sp.getInt("baudRate", 9600);
         //Log.i("读取参数", "试剂量报警信息" + SysData.isNotice);
     }
-
+*/
+    /*
     //主程序循环进程，定时保存仪器状态
     private void saveStatusRun() {
         Log.i("MainActivity", "保存仪表状态信息");
@@ -751,7 +752,7 @@ public class MainActivity extends AppCompatActivity {
                                 SysData.saveAlertToDB();  //保存报警记录
                             }
                             if(SysGpio.statusS8 != true) {
-                                SysGpio.s8_Reset();  //仪表复位，保护反应器
+                                //SysGpio.s8_Reset();  //仪表复位，保护反应器
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -777,6 +778,8 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+     */
+/*
     //保存日志文件
     private void saveLog() {
         Log.i("MainActivity", "保存仪表运行日志");
@@ -809,7 +812,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
     }
-
+*/
+    /*
     //主程序循环进程，定时启动测定程序
     private void autoRun() {
         Log.i("MainActivity", "启动自动运行线程");
@@ -857,6 +861,8 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+     */
+/*
     //启动不同类型的测定流程
     public void startAction(int actionType) {
         switch (actionType) {
@@ -957,7 +963,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
-
+*/
     /* 检测是否可以写外部文件 */
     public boolean isExternalStorageWritable() {
 

@@ -248,7 +248,8 @@ public class OutCom {
             //读取仪表cod值 03 03 00 00 00 01 XX XX
             Log.w(TAG,  "读取仪表cod值");
             String askStr,dataStr;
-            int codValue = (int) (SysData.codValue * 100);
+            //int codValue = (int) (SysData.codValue * 100);
+            int codValue = 0;
             //codValue = 1023;
             askStr = "";
             byte[] askByte = new byte[]{(byte) b[0], (byte) b[1], (byte) 0x02};
@@ -335,7 +336,7 @@ public class OutCom {
             if(b[5] == 1) {
                 Log.w(TAG, "上位机启动仪表开始测试");
                 if(!SysData.isRun) {
-                    SysGpio.s7_ShuiZhiCeDing();             //启动仪表
+                    //SysGpio.s7_ShuiZhiCeDing();             //启动仪表
                     SysData.workFrom = "串口启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
                 }
                 String sendStr = bytes2HexString(b);
@@ -344,7 +345,7 @@ public class OutCom {
             if(b[5] == 2) {
                 Log.w(TAG, "上位机启动仪表复位");
                 if(!SysGpio.statusS8) {
-                    SysGpio.s8_Reset();                     //仪表复位
+                    //SysGpio.s8_Reset();                     //仪表复位
                 }
                 SysData.errorId = 0;                        //复位错误代码
                 SysData.errorMsg = "";                      //复位错误信息
@@ -355,7 +356,7 @@ public class OutCom {
             if(b[5] == 3) {
                 Log.w(TAG, "上位机启动仪表校准");
                 if(!SysData.isRun) {
-                    SysGpio.s11_Calibration();             //仪表校准
+                    //SysGpio.s11_Calibration();             //仪表校准
                     SysData.workFrom = "串口启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
                 }
                 String sendStr = bytes2HexString(b);

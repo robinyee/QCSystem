@@ -236,7 +236,7 @@ public class WebSockets extends NanoWSD {
             //启动水质分析流程
             if(cmd.endsWith("RUN_Start")) {
                 if(!SysData.isRun) {
-                    SysGpio.s7_ShuiZhiCeDing();
+                    //SysGpio.s7_ShuiZhiCeDing();
                     SysData.workFrom = "Web启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
                     try {
                         JSONObject object = new JSONObject();
@@ -258,7 +258,7 @@ public class WebSockets extends NanoWSD {
             }
             //仪表紧急停止
             if(cmd.endsWith("RUN_Stop")) {
-                SysGpio.s12_Stop();
+                //SysGpio.s12_Stop();
                 try {
                     JSONObject object = new JSONObject();
                     object.put("respond", "仪表已紧急停止");
@@ -269,7 +269,7 @@ public class WebSockets extends NanoWSD {
             }
             //仪表复位
             if(cmd.endsWith("RUN_Reset")) {
-                SysGpio.s8_Reset();
+                //SysGpio.s8_Reset();
                 try {
                     JSONObject object = new JSONObject();
                     object.put("respond", "仪表已运行复位程序,大约需要5分钟完成复位程序");
@@ -281,7 +281,9 @@ public class WebSockets extends NanoWSD {
             //获取仪表参数
             if(cmd.endsWith("GET_Setup")) {
                 try {
+
                     JSONObject object = new JSONObject();
+                    /*
                     object.put("respond", "GET_Setup");
                     object.put("nextStartTime", formater.format(SysData.nextStartTime));
                     object.put("startCycle", SysData.startCycle);
@@ -302,7 +304,11 @@ public class WebSockets extends NanoWSD {
                     }
                     object.put("BAUD_RATE", SysData.BAUD_RATE);
                     object.put("MODBUS_ADDR", SysData.MODBUS_ADDR);
+
+                     */
                     object.put("version", SysData.version);
+
+
                     send(object.toString());
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
@@ -347,6 +353,7 @@ public class WebSockets extends NanoWSD {
                             Log.i(TAG, "当前值：" + SysData.isLoop);
                             SysData.isUpdateAutoRun = true;
                             break;
+                            /*
                         case "slopeA":
                             SysData.slopeA = Double.parseDouble(cmdData);
                             break;
@@ -362,6 +369,8 @@ public class WebSockets extends NanoWSD {
                         case "biaodingValue":
                             SysData.biaodingValue = Double.parseDouble(cmdData);
                             break;
+
+                             */
                         case "BAUD_RATE":
                             SysData.BAUD_RATE = Integer.parseInt(cmdData);
                             if(SysData.deviceList.size() >= 3) {
@@ -385,6 +394,7 @@ public class WebSockets extends NanoWSD {
                     }
                     JSONObject object = new JSONObject();
                     object.put("respond", "SET_Setup");
+                    /*
                     object.put("nextStartTime", formater.format(SysData.nextStartTime));
                     object.put("startCycle", SysData.startCycle);
                     object.put("numberTimes", SysData.numberTimes);
@@ -403,6 +413,8 @@ public class WebSockets extends NanoWSD {
                     }
                     object.put("BAUD_RATE", SysData.BAUD_RATE);
                     object.put("MODBUS_ADDR", SysData.MODBUS_ADDR);
+
+                     */
                     send(object.toString());
                 } catch (IOException | JSONException | ParseException e) {
                     e.printStackTrace();
@@ -416,7 +428,7 @@ public class WebSockets extends NanoWSD {
                     object.put("isRun", SysData.isRun);
                     Date curDate = new Date(System.currentTimeMillis());
                     object.put("sysTime", formater.format(curDate));
-                    object.put("codValue", SysData.codValue);
+                    //object.put("codValue", SysData.codValue);
                     object.put("progressRate", SysData.progressRate);
                     object.put("statusMsg", SysData.statusMsg);
                     object.put("startTime", formater.format(SysData.startTime));
@@ -427,8 +439,8 @@ public class WebSockets extends NanoWSD {
                     object.put("errorMsg", SysData.errorMsg);
                     object.put("startXiaojie", SysData.startXiaojie);
                     object.put("endXiaoJie", SysData.endXiaoJie);
-                    object.put("didingNum", SysData.didingNum);
-                    object.put("didingSumVolume", SysData.didingSumVolume);
+                    //object.put("didingNum", SysData.didingNum);
+                    //object.put("didingSumVolume", SysData.didingSumVolume);
                     if(SysData.deviceList.size() >= 3) {
                         object.put("deviceList", SysData.deviceList.get(2));
                     } else {
@@ -541,51 +553,51 @@ public class WebSockets extends NanoWSD {
                                 SysGpio.mGpioOutRE1.setValue(!SysGpio.mGpioOutRE1.getValue());
                                 break;
                             case "statusS1":
-                                SysGpio.s1_JiaShuiYang();
+                                //SysGpio.s1_JiaShuiYang();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS2":
-                                SysGpio.s2_JiaLiuSuan();
+                                //SysGpio.s2_JiaLiuSuan();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS3":
-                                SysGpio.s3_JiaGaoMengSuanJIa();
+                                //SysGpio.s3_JiaGaoMengSuanJIa();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS4":
-                                SysGpio.s4_JiaCaoSuanNa();
+                                //SysGpio.s4_JiaCaoSuanNa();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS5":
-                                SysGpio.s5_XiaoJie();
+                                //SysGpio.s5_XiaoJie();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS6":
-                                SysGpio.s6_DiDing();
+                                //SysGpio.s6_DiDing();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS7":
-                                SysGpio.s7_ShuiZhiCeDing();
+                                //SysGpio.s7_ShuiZhiCeDing();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS8":
-                                SysGpio.s8_Reset();
+                                //SysGpio.s8_Reset();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS9":
-                                SysGpio.s9_KongBaiShiYan();
+                                //SysGpio.s9_KongBaiShiYan();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS10":
-                                SysGpio.s10_BiaoYangCeDing();
+                                //SysGpio.s10_BiaoYangCeDing();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS11":
-                                SysGpio.s11_Calibration();
+                                //SysGpio.s11_Calibration();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "statusS12":
-                                SysGpio.s12_Stop();
+                                //SysGpio.s12_Stop();
                                 SysData.workFrom = "Web启动";
                                 break;
                             case "isEmptyPipeline":

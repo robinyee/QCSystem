@@ -78,12 +78,12 @@ public class TabData extends Fragment {
         view = inflater.inflate(R.layout.tab_data, container, false);
 
         //初始化控件
-        mChartView = (LineChartView) view.findViewById(R.id.chart); //显示趋势图
+        //mChartView = (LineChartView) view.findViewById(R.id.chart); //显示趋势图
         listview = (ListView) view.findViewById(R.id.datalist); //显示数据列表
-        btnRefresh = view.findViewById(R.id.btnRefresh);
-        btnQuery = view.findViewById(R.id.btnQuery);
-        btnExport = view.findViewById(R.id.btnExport);
-        btnDelete = view.findViewById(R.id.btnDelete);
+        //btnRefresh = view.findViewById(R.id.btnRefresh);
+        //btnQuery = view.findViewById(R.id.btnQuery);
+        //btnExport = view.findViewById(R.id.btnExport);
+        //btnDelete = view.findViewById(R.id.btnDelete);
         btnFirstPage = view.findViewById(R.id.btnFirstPage);
         btnPreviousPage = view.findViewById(R.id.btnPreviousPage);
         btnNextPage = view.findViewById(R.id.btnNextPage);
@@ -94,17 +94,17 @@ public class TabData extends Fragment {
 
         //查询数据
         SysData.currentPage = 1;
-        SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+        //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
 
         //显示数据列表
         addListTable();
-
+        /*
         //点击刷新按钮
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SysData.currentPage = 1;
-                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -119,6 +119,9 @@ public class TabData extends Fragment {
             }
         });
 
+         */
+
+        /*
         //点击查询按钮
         btnQuery.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +130,9 @@ public class TabData extends Fragment {
             }
         });
 
+         */
+
+        /*
         //点击导出按钮
         btnExport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,7 +163,7 @@ public class TabData extends Fragment {
                 }).start();
 
                 //模拟添加数据
-                /*
+
                 Log.i("数据库", "添加数据");
                 //将数据保存至数据库
                 SysData.saveDataToDB();
@@ -199,10 +205,12 @@ public class TabData extends Fragment {
                 //绘制曲线
                 drawLine();
 
-                 */
+
             }
         });
+        */
 
+        /*
         //点击清空按钮
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,6 +218,8 @@ public class TabData extends Fragment {
                 showDeleteDialog();  //显示清空数据库警告对话框
             }
         });
+
+         */
 
         //点击CODmnData按钮
         btnCodmnData.setOnClickListener(new View.OnClickListener() {
@@ -220,7 +230,7 @@ public class TabData extends Fragment {
                 btnCalibrationData.setTextColor(Color.BLACK);
                 SysData.currentPage = 1;
                 SysData.listDataType = "codmn";
-                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -240,7 +250,7 @@ public class TabData extends Fragment {
                 btnCalibrationData.setTextColor(Color.BLACK);
                 SysData.currentPage = 1;
                 SysData.listDataType = "alert";
-                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -260,7 +270,7 @@ public class TabData extends Fragment {
                 btnCalibrationData.setTextColor(Color.WHITE);
                 SysData.currentPage = 1;
                 SysData.listDataType = "calibration";
-                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -276,7 +286,7 @@ public class TabData extends Fragment {
             @Override
             public void onClick(View view) {
                 SysData.currentPage = 1;
-                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -300,7 +310,7 @@ public class TabData extends Fragment {
                 if(SysData.currentPage < 1) {
                     SysData.currentPage = 1;
                 }
-                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -324,7 +334,7 @@ public class TabData extends Fragment {
                 if(SysData.currentPage > (SysData.maxPage)) {
                     SysData.currentPage = SysData.maxPage;
                 }
-                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -345,7 +355,7 @@ public class TabData extends Fragment {
             @Override
             public void onClick(View view) {
                 SysData.currentPage = SysData.maxPage;
-                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -362,9 +372,9 @@ public class TabData extends Fragment {
         });
 
         //初始化折线图
-        initView();
+        //initView();
         //绘制曲线
-        drawLine();
+        //drawLine();
 
         //timer = new Timer(); 定时器
 
@@ -457,7 +467,7 @@ public class TabData extends Fragment {
                                 }
 
                                 SysData.currentPage = 1;
-                                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                             }
                         }).start();
                         try {
@@ -467,7 +477,7 @@ public class TabData extends Fragment {
                         }
                         //重新查询数据
                         SysData.currentPage = 1;
-                        SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                        //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
@@ -551,7 +561,7 @@ public class TabData extends Fragment {
 
     //绘制曲线
     public void drawLine() {
-        SysData.readChartData(30, 0);       //从数据库中读取30条数据
+        //SysData.readChartData(30, 0);       //从数据库中读取30条数据
         //结果数据绘制成折线图
         for (int i = SysData.resultChart.size() - 1; i >= 0; i--) {
             addPoint(SysData.resultChart.size() - i, SysData.resultChart.get(i).dataValue);
@@ -639,7 +649,7 @@ public class TabData extends Fragment {
     */
 
     private void initView() {
-        lineChartView = (LineChartView) view.findViewById(R.id.chart);
+        //lineChartView = (LineChartView) view.findViewById(R.id.chart);
         pointValueList = new ArrayList<>();
         linesList = new ArrayList<>();
 
