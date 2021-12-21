@@ -12,6 +12,9 @@ interface TaskDao {
     @Query("SELECT * FROM Task ORDER BY tid DESC")
     List<Task> getAll();
 
+    @Query("SELECT * FROM Task  ORDER BY tid DESC LIMIT (:num) OFFSET (:start)")
+    List<Task>  getNum(int num, int start);
+
     @Insert
     void insertAll(Task... tasks);
 

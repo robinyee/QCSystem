@@ -79,7 +79,7 @@ public class TabSetup extends Fragment {
     private EditText editTPVolume, editTPA, editTPB, editTPC, editTPO, editTPAddMultiplier, editTPAddVolume, editTPAddType;
     private EditText editTNVolume, editTNA, editTNB, editTNC, editTNO, editTNAddMultiplier, editTNAddVolume, editTNAddType;
     private EditText editCODVolume, editCODA, editCODB, editCODC, editCODO, editCODAddMultiplier, editCODAddVolume, editCODAddType;
-    private EditText editWaterStepNum, editWaterStepVolume, editReagentsStepNum, editReagentsStepVolume;
+    private EditText editWaterStepNum, editWaterStepVolume, editReagentsStepNum, editReagentsStepVolume, editSupplySamplesTime;
     private Spinner spinnerNH3AddType, spinnerTPAddType, spinnerTNAddType, spinnerCODAddType;
     private TextView textWaterStepTest, textReagentsStepTest;
     private EditText editAdminPassword;
@@ -182,6 +182,7 @@ public class TabSetup extends Fragment {
         editReagentsStepVolume = view.findViewById(R.id.edit_reagents_step_volume);
         textWaterStepTest = view.findViewById(R.id.text_water_step_test);
         textReagentsStepTest = view.findViewById(R.id.text_reagents_step_test);
+        editSupplySamplesTime = view.findViewById(R.id.edit_supply_samples_time);
         //氨氮
         editNH3Volume = view.findViewById(R.id.edit_NH3_volume);
         editNH3A = view.findViewById(R.id.edit_NH3_A);
@@ -578,6 +579,7 @@ public class TabSetup extends Fragment {
         //基本参数
         SysData.waterStepVolume = Double.parseDouble(editWaterStepVolume.getText().toString());      //进样泵每步的体积
         SysData.reagentStepVolume = Double.parseDouble(editReagentsStepVolume.getText().toString()); //试剂泵每步的体积
+        SysData.supplySamplesTime = Integer.parseInt(editSupplySamplesTime.getText().toString());    //供水时长
 
         //氨氮
         SysData.NH3Volume = Double.parseDouble(editNH3Volume.getText().toString());            //氨氮标样体积
@@ -644,6 +646,7 @@ public class TabSetup extends Fragment {
         //基本参数
         editWaterStepVolume.setText(String.valueOf(SysData.waterStepVolume));
         editReagentsStepVolume.setText(String.valueOf(SysData.reagentStepVolume));
+        editSupplySamplesTime.setText(String.valueOf(SysData.supplySamplesTime));
 
         //氨氮
         editNH3Volume.setText(String.valueOf(SysData.NH3Volume));
@@ -692,6 +695,7 @@ public class TabSetup extends Fragment {
             //基本参数
             editor.putLong("waterStepVolume", Double.doubleToLongBits(SysData.waterStepVolume));
             editor.putLong("reagentStepVolume", Double.doubleToLongBits(SysData.reagentStepVolume));
+            editor.putInt("supplySamplesTime", SysData.supplySamplesTime);
 
             //氨氮
             editor.putLong("NH3Volume", Double.doubleToLongBits(SysData.NH3Volume));

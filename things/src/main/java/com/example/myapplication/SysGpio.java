@@ -461,12 +461,22 @@ public class SysGpio {
     }
 
     //启动标样配制流程
-    // waterType类型：1-氨氮，2-总磷，3-总氮，4-COD；
-    // sampleType标样种类：1-原水样，2-空白样，3-标样a，4-标样b，5-标样c，6-加标回收
+    // waterType类型：0-氨氮，1-总磷，2-总氮，3-COD；
+    // sampleType标样种类：0-原水样，1-空白样，2-标样a，3-标样b，4-标样c，5-加标回收
     public static void s7_preparationWaterSamples(final int waterType, final int sampleType) {
         SysData.waterType = waterType;
+        SysData.sampleType = sampleType;
+        SysData.strWaterType = SysData.arrWaterType[waterType];
+        SysData.strSampleType = SysData.arrSampleType[sampleType];
+        SysData.calculation();                                          //计算水样和试剂步数
         SysData.startTime = currentTimeMillis();
         SysData.progressRate = 0;
+        if(sampleType>=2) {
+            SysData.concentration = SysData.sampleValue[waterType][sampleType - 2]; //当前配制的标样的浓度
+        }else {
+            SysData.concentration = 0.0;
+        }
+        SysData.saveRecord();  //保存配制记录到数据库
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -475,7 +485,7 @@ public class SysGpio {
                 statusS[7] = true;
                 isRun = true;
                 //原水样
-                if(sampleType == 1) {
+                if(sampleType == 0) {
                     Log.d(TAG, "run: 开始供应原水");
                     //return;
                     try {
@@ -487,7 +497,7 @@ public class SysGpio {
                 }
 
                 //空白样
-                if(sampleType == 2) {
+                if(sampleType == 1) {
                     Log.d(TAG, "run: 开始供应空白样");
                     try {
                         SysGpio.mGpioOutD8.setValue(true);   //开启夹管阀8
@@ -507,10 +517,10 @@ public class SysGpio {
                 }
 
                 //配制标样、加标回收
-                if(sampleType >= 3) {
-                    int waterStepNow = SysData.waterStep[waterType-1];
-                    int sampleStepNow = SysData.sampleStep[waterType-1][sampleType-3];
-                    int reagentChannelNow = waterType + 2;
+                if(sampleType >= 2) {
+                    int waterStepNow = SysData.waterStep[waterType];
+                    int sampleStepNow = SysData.sampleStep[waterType][sampleType-2];
+                    int reagentChannelNow = waterType + 3;
                     Log.d(TAG, "run: waterStepNow=" + waterStepNow);
                     Log.d(TAG, "run: sampleStepNow=" + sampleStepNow);
                     try {

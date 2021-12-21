@@ -312,6 +312,69 @@ public class OutCom {
             }
             sendBytes(askStr, true);
         }
+        if(addr == 5) {
+            //读取是否供水 03 03 00 05 00 01 XX XX
+            Log.w(TAG,  "读取供水状态");
+            String askStr = "";
+            int status = 0;
+            if(SysData.startSupplySamples) {
+                status = 1;
+            } else {
+                status = 0;
+            }
+            byte[] askByte = new byte[]{(byte) b[0], (byte) b[1], (byte) 0x02, (byte) 0x00, (byte) 0x00};
+            askByte[4] = (byte) status;
+            Log.w(TAG,  "读取是否供水:" + (Integer.toHexString(status)));
+            askStr = bytes2HexString(askByte);
+            Log.w(TAG,  "askByte数据：" + askStr);
+            for(int i = 0; i < askByte.length; i++) {
+                Log.w(TAG,  "askByte[" + (i) + "]数据：" + askByte[i]);
+            }
+            sendBytes(askStr, true);
+        }
+        if(addr == 6) {
+            //读取水样类型 03 03 00 06 00 01 XX XX
+            Log.w(TAG,  "读取水样类型");
+            String askStr = "";
+            int type = 0;
+            type = (SysData.waterType + 1) * 10 + (SysData.sampleType + 1);
+            byte[] askByte = new byte[]{(byte) b[0], (byte) b[1], (byte) 0x02, (byte) 0x00, (byte) 0x00};
+            askByte[4] = (byte) type;
+            Log.w(TAG,  "读取水样类型:" + (Integer.toHexString(type)));
+            askStr = bytes2HexString(askByte);
+            Log.w(TAG,  "askByte数据：" + askStr);
+            for(int i = 0; i < askByte.length; i++) {
+                Log.w(TAG,  "askByte[" + (i) + "]数据：" + askByte[i]);
+            }
+            sendBytes(askStr, true);
+        }
+        if(addr == 7) {
+            //读取标样浓度 03 03 00 07 00 01 XX XX
+            Log.w(TAG,  "读取标样浓度");
+            String askStr,dataStr;
+            int value = (int) (SysData.concentration * 100);
+            askStr = "";
+            byte[] askByte = new byte[]{(byte) b[0], (byte) b[1], (byte) 0x02};
+            String valueStr = Integer.toHexString(value);
+            if(value == 0) {
+                valueStr = "0000";
+            }
+            if(valueStr.length() < 4) {
+                for (int i = 0; i <= (4 - valueStr.length()); i++ ) {
+                    valueStr = "0" + valueStr;
+                }
+            }
+
+            Log.w(TAG,  "浓度:" + value);
+            Log.w(TAG,  "浓度（十六进制）:" + valueStr);
+            askStr = bytes2HexString(askByte);
+            askStr = askStr + valueStr;
+            Log.w(TAG,  "askByte数据：" + askStr);
+            for(int i = 0; i < askByte.length; i++) {
+                Log.w(TAG,  "askByte[" + (i) + "]数据：" + askByte[i]);
+            }
+            sendBytes(askStr, true);
+        }
     }
 
     //处理指令04H
@@ -357,6 +420,34 @@ public class OutCom {
                 Log.w(TAG, "上位机启动仪表校准");
                 if(!SysData.isRun) {
                     //SysGpio.s11_Calibration();             //仪表校准
+                    SysData.workFrom = "串口启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
+                }
+                String sendStr = bytes2HexString(b);
+                sendBytes(sendStr, false);
+            }
+            if(b[5] == 4) {
+                Log.w(TAG, "上位机启动仪表初始化");
+                if(!SysData.isRun) {
+                    SysGpio.s4_initialize();                //仪表初始化
+                    SysData.workFrom = "串口启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
+                }
+                String sendStr = bytes2HexString(b);
+                sendBytes(sendStr, false);
+            }
+            if(b[5] >= 10) {
+                Log.w(TAG, "配制标样");
+                Log.w(TAG, "原始指令b[5]:" + b[5]);
+                int waterType = (int)(b[5] / 10);
+                int sampleType = b[5] - waterType * 10;
+                Log.w(TAG, "接收到的指令:waterType=" + waterType + ", sampleType=" + sampleType);
+                if(waterType < 1 || waterType > 4 || sampleType < 1 || sampleType > 9 ){
+                    Log.w(TAG, "接收到的指令有误");
+                    return;
+                }
+                SysData.waterType = waterType - 1;
+                SysData.sampleType = sampleType - 1;
+                if(!SysData.isRun) {
+                    SysGpio.s7_preparationWaterSamples(SysData.waterType, SysData.sampleType);             //配制标样
                     SysData.workFrom = "串口启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
                 }
                 String sendStr = bytes2HexString(b);

@@ -25,9 +25,12 @@ public class SysData {
     static boolean microPumpOn = false;         //启动微量泵
     static int reagentChannel = 1;              //当前通道号
     static int addReagentStep = 20;             //添加试剂的步数
-    static int supplySamplesTime = 0;           //供样时长（分钟）
-    static String strWaterType = "通用";        //当前选择的水样类型
-    static String strSampleType = "原水样";     //当前选择的水样类型
+    static int supplySamplesTime = 10;          //供样时长（分钟）
+    static String arrWaterType[];               //水样类型数组
+    static String arrSampleType[];              //标样浓度型号数组
+    static String strWaterType = "通用";         //当前选择的水样类型
+    static String strSampleType = "原水样";      //当前选择的水样类型
+    static double concentration = 2.0;          //当前配制水样的浓度
     static double waterStepVolume = 2.0;        //水样泵每步的体积
     static double reagentStepVolume = 0.050;    //试剂泵每步的体积
     static double reagentVolume[][];            //所需母液的体积
@@ -276,6 +279,21 @@ public class SysData {
         }).start();
     }
 
+    //保存配制标样记录至数据库
+    public static void saveRecord() {
+        Log.i("数据库", "添加质控数据记录");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Record record = new Record();
+                record.dataType = strWaterType + strSampleType;
+                record.dateTime = startTime;
+                record.preValue = concentration;
+                record.meaValue = 0.0;
+                MainActivity.db.recordDao().insert(record);
+            }
+        }).start();
+    }
 /*
     //保存测定值数据至数据库
     public static void saveDataToDB() {

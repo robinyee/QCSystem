@@ -34,8 +34,6 @@ public class TabService extends Fragment {
     private Switch aSwitchIn1, aSwitchIn2, aSwitchIn3, aSwitchIn4, aSwitchIsNotice, aSwitchIsEmptyPipeline;
     private Button buttonNH3Start, buttonTPStart, buttonTNStart, buttonCODStart;
     private Spinner spinnerWaterType, spinnerSampleType;
-    String arrWaterType[];
-    String arrSampleType[];
 
     //获取线程发送的Msg信息，更新对于UI界面
     static final int UI_UPDATE = 100;
@@ -166,8 +164,8 @@ public class TabService extends Fragment {
         spinnerWaterType = view.findViewById(R.id.spinner_WaterType);
         spinnerSampleType = view.findViewById(R.id.spinner_SampleType);
         aSwitchS7 = (Switch) view.findViewById(R.id.s7_start);
-        arrWaterType = getResources().getStringArray(R.array.waterTyep);
-        arrSampleType = getResources().getStringArray(R.array.sampleTyep);
+        SysData.arrWaterType = getResources().getStringArray(R.array.waterTyep);
+        SysData.arrSampleType = getResources().getStringArray(R.array.sampleTyep);
         /*
         buttonNH3Start = (Button) view.findViewById(R.id.button_NH3_start);
         buttonTPStart = (Button) view.findViewById(R.id.button_TP_start);
@@ -512,12 +510,12 @@ public class TabService extends Fragment {
             @Override
             public void onClick(View view) {
                 if (aSwitchS7.isChecked() && !SysGpio.statusS7) {
-                    SysData.waterType = spinnerWaterType.getSelectedItemPosition() + 1;
-                    SysData.sampleType = spinnerSampleType.getSelectedItemPosition() + 1;
+                    SysData.waterType = spinnerWaterType.getSelectedItemPosition();
+                    SysData.sampleType = spinnerSampleType.getSelectedItemPosition();
                     SysGpio.s7_preparationWaterSamples(SysData.waterType, SysData.sampleType);
+                    //SysData.strWaterType = arrWaterType[spinnerWaterType.getSelectedItemPosition()];
+                    //SysData.strSampleType = arrSampleType[spinnerSampleType.getSelectedItemPosition()];
                     Toast.makeText(getContext(),"启动配制标样流程，请稍后...", Toast.LENGTH_LONG).show();
-                    SysData.strWaterType = arrWaterType[spinnerWaterType.getSelectedItemPosition()];
-                    SysData.strSampleType = arrSampleType[spinnerSampleType.getSelectedItemPosition()];
                     Log.d(TAG, "run: 启动配制水样类型：" + SysData.strWaterType);
                     Log.d(TAG, "run: 启动配制标样名称：" + SysData.strSampleType);
                 }
