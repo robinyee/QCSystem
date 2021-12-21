@@ -99,13 +99,12 @@ public class MainActivity extends AppCompatActivity {
         //SysData.readChartData(30, 0);       //从数据库中读取30条数据
         //SysData.delDataFromCalibration(16);         //删除一条校准记录
 
+        //清除保存的系统参数数据
         //clearPreferences();
         //读取系统参数
-        //readMeterParameter();
+        readMeterParameter();
         //读取上次仪表状态
         //readMeterStatus();
-        //清除保存的数据
-        //clearPreferences();
 
         /*
         //启动后台服务
@@ -642,34 +641,53 @@ public class MainActivity extends AppCompatActivity {
                 true);
         dialogTime.show();
     }
-/*
+
     //读取仪表参数
     public void readMeterParameter() {
         //打开文件
         final SharedPreferences sp = getSharedPreferences("Parameter", MODE_PRIVATE);
         //仪器的参数
-        SysData.shuiyangStep = sp.getInt("shuiyangStep", 65);
-        SysData.shuiyangVolume = Double.longBitsToDouble(sp.getLong("shuiyangVolume", 0));
-        SysData.liusuanStep = sp.getInt("liusuanStep", 3200);
-        SysData.liusuanVolume = Double.longBitsToDouble(sp.getLong("liusuanVolume", 0));
-        SysData.caosuannaStep = sp.getInt("caosuannaStep", 5690);
-        SysData.caosuannaVolume = Double.longBitsToDouble(sp.getLong("caosuannaVolume", 0));
-        SysData.gaomengsuanjiaStep = sp.getInt("gaomengsuanjiaStep", 5200);
-        SysData.gaomengsuanjiaVolume = Double.longBitsToDouble(sp.getLong("gaomengsuanjiaVolume", 0));
-        SysData.xiaojieTemp = Double.longBitsToDouble(sp.getLong("xiaojieTemp", 0));
-        SysData.xiaojieTime = sp.getInt("xiaojieTime", 1500);
-        SysData.didingStep = sp.getInt("didingStep", 50);
-        SysData.didingVolume = Double.longBitsToDouble(sp.getLong("didingVolume", 0));
-        SysData.didingNum = sp.getInt("didingNum", 0);
-        SysData.didingSumVolume = Double.longBitsToDouble(sp.getLong("didingSumVolume", 0));
-        SysData.kongbaiValue = Double.longBitsToDouble(sp.getLong("kongbaiValue", 0));
-        SysData.biaodingValue = Double.longBitsToDouble(sp.getLong("biaodingValue", 0));
-        SysData.caosuannaCon = Double.longBitsToDouble(sp.getLong("caosuannaCon", 0));
-        SysData.didingDeviation = sp.getInt("didingDeviation", 720);
-        SysData.didingDifference = sp.getInt("didingDifference", 20);
-        SysData.slopeA = Double.longBitsToDouble(sp.getLong("slopeA", 1));
-        SysData.interceptB = Double.longBitsToDouble(sp.getLong("interceptB", 0));
-        SysData.trueValue = Double.longBitsToDouble(sp.getLong("trueValue", 0));
+        //基本参数
+        SysData.waterStepVolume = Double.longBitsToDouble(sp.getLong("waterStepVolume", 0));
+        SysData.reagentStepVolume = Double.longBitsToDouble(sp.getLong("reagentStepVolume", 0));
+
+        //氨氮
+        SysData.NH3Volume = Double.longBitsToDouble(sp.getLong("NH3Volume", 0));
+        SysData.NH3SampleA = Double.longBitsToDouble(sp.getLong("NH3SampleA", 0));
+        SysData.NH3SampleB = Double.longBitsToDouble(sp.getLong("NH3SampleB", 0));
+        SysData.NH3SampleC = Double.longBitsToDouble(sp.getLong("NH3SampleC", 0));
+        SysData.NH3SampleO = Double.longBitsToDouble(sp.getLong("NH3SampleO", 0));
+        SysData.NH3AddMul = Double.longBitsToDouble(sp.getLong("NH3AddMul", 0));
+        SysData.NH3AddValume = Double.longBitsToDouble(sp.getLong("NH3AddValume", 0));
+        SysData.NH3AddType = sp.getInt("NH3AddType", 65);
+        //总磷
+        SysData.TPVolume = Double.longBitsToDouble(sp.getLong("TPVolume", 0));
+        SysData.TPSampleA = Double.longBitsToDouble(sp.getLong("TPSampleA", 0));
+        SysData.TPSampleB = Double.longBitsToDouble(sp.getLong("TPSampleB", 0));
+        SysData.TPSampleC = Double.longBitsToDouble(sp.getLong("TPSampleC", 0));
+        SysData.TPSampleO = Double.longBitsToDouble(sp.getLong("TPSampleO", 0));
+        SysData.TPAddMul = Double.longBitsToDouble(sp.getLong("TPAddMul", 0));
+        SysData.TPAddValume = Double.longBitsToDouble(sp.getLong("TPAddValume", 0));
+        SysData.TPAddType = sp.getInt("TPAddType", 65);
+        //总氮
+        SysData.TNVolume = Double.longBitsToDouble(sp.getLong("TNVolume", 0));
+        SysData.TNSampleA = Double.longBitsToDouble(sp.getLong("TNSampleA", 0));
+        SysData.TNSampleB = Double.longBitsToDouble(sp.getLong("TNSampleB", 0));
+        SysData.TNSampleC = Double.longBitsToDouble(sp.getLong("TNSampleC", 0));
+        SysData.TNSampleO = Double.longBitsToDouble(sp.getLong("TNSampleO", 0));
+        SysData.TNAddMul = Double.longBitsToDouble(sp.getLong("TNAddMul", 0));
+        SysData.TNAddValume = Double.longBitsToDouble(sp.getLong("TNAddValume", 0));
+        SysData.TNAddType = sp.getInt("TNAddType", 65);
+        //COD
+        SysData.CODVolume = Double.longBitsToDouble(sp.getLong("CODVolume", 0));
+        SysData.CODSampleA = Double.longBitsToDouble(sp.getLong("CODSampleA", 0));
+        SysData.CODSampleB = Double.longBitsToDouble(sp.getLong("CODSampleB", 0));
+        SysData.CODSampleC = Double.longBitsToDouble(sp.getLong("CODSampleC", 0));
+        SysData.CODSampleO = Double.longBitsToDouble(sp.getLong("CODSampleO", 0));
+        SysData.CODAddMul = Double.longBitsToDouble(sp.getLong("CODAddMul", 0));
+        SysData.CODAddValume = Double.longBitsToDouble(sp.getLong("CODAddValume", 0));
+        SysData.CODAddType = sp.getInt("CODAddType", 65);
+
         //系统参数
         //SysData.localIpAddr[0] = sp.getString("localIpAddr", "");     //ip地址不需要存储
         SysData.webPort = sp.getInt("webPort", 8080);
@@ -685,7 +703,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.BAUD_RATE = sp.getInt("baudRate", 9600);
         //Log.i("读取参数", "试剂量报警信息" + SysData.isNotice);
     }
-*/
+
     /*
     //主程序循环进程，定时保存仪器状态
     private void saveStatusRun() {
@@ -935,14 +953,6 @@ public class MainActivity extends AppCompatActivity {
         SysData.codValue = Double.longBitsToDouble(sp.getLong("codValue", 0));
     }
 
-    //清空Preferences中的数据
-    public void clearPreferences() {
-        SharedPreferences preferences = getSharedPreferences("Parameter", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();
-        editor.commit();
-    }
-
     //保存运行日志
     public Boolean saveMeterLog(String msg) {
         if(!msg.equals("") && !msg.equals(null)) {
@@ -964,6 +974,17 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 */
+
+
+    //清空Preferences中的数据
+    public void clearPreferences() {
+        SharedPreferences preferences = getSharedPreferences("Parameter", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
+    }
+
+
     /* 检测是否可以写外部文件 */
     public boolean isExternalStorageWritable() {
 

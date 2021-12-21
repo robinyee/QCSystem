@@ -49,22 +49,22 @@
             android:id="@+id/text_Specimen_Type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="氨氮标样A"
+            android:text="标样类型"
             android:textColor="@color/colorPrimary"
-            android:textSize="36sp" />
+            android:textSize="24sp" />
+
         <TextView
             android:id="@+id/textCodValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textSize="36sp"
-            android:text="3.22" />
+            android:textSize="36sp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="36sp"
-            android:text="mg/L" />
+            android:textSize="36sp" />
     </LinearLayout>
     <TextView
         android:id="@+id/txt2"

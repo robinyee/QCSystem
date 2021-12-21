@@ -591,7 +591,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="氨氮加标倍数"/>
                 <EditText
-                    android:id="@+id/edit_NH3_add_Multiplier"
+                    android:id="@+id/edit_NH3_add_multiplier"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
@@ -634,22 +634,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="氨氮加标方式"/>
-                <EditText
-                    android:id="@+id/edit_NH3_add_type"
-                    android:layout_width="120dp"
+                <Spinner
+                    android:id="@+id/spinner_NH3_add_type"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="14sp"
                     android:gravity="center"
-                    android:imeOptions="actionDone"
-                    android:hint="氨氮加标方式"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
+                    android:entries="@array/addTyep" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:text="0-加标倍数 1-加标量"/>
+                    android:layout_marginLeft="4dp" />
             </TableRow>
             <TableRow>
                 <TextView
@@ -770,7 +766,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="总磷加标倍数"/>
                 <EditText
-                    android:id="@+id/edit_TP_add_Multiplier"
+                    android:id="@+id/edit_TP_add_multiplier"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
@@ -813,22 +809,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="总磷加标方式"/>
-                <EditText
-                    android:id="@+id/edit_TP_add_type"
-                    android:layout_width="120dp"
+                <Spinner
+                    android:id="@+id/spinner_TP_add_type"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="14sp"
                     android:gravity="center"
-                    android:imeOptions="actionDone"
-                    android:hint="总磷加标方式"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
+                    android:entries="@array/addTyep" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:text="0-加标倍数 1-加标量"/>
+                    android:text=""/>
             </TableRow>
             <TableRow>
                 <TextView
@@ -949,7 +942,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="总氮加标倍数"/>
                 <EditText
-                    android:id="@+id/edit_TN_add_Multiplier"
+                    android:id="@+id/edit_TN_add_multiplier"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
@@ -992,22 +985,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="总氮加标方式"/>
-                <EditText
-                    android:id="@+id/edit_TN_add_type"
-                    android:layout_width="120dp"
+                <Spinner
+                    android:id="@+id/spinner_TN_add_type"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="14sp"
                     android:gravity="center"
-                    android:imeOptions="actionDone"
-                    android:hint="总氮加标方式"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
+                    android:entries="@array/addTyep" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:text="0-加标倍数 1-加标量"/>
+                    android:text=""/>
             </TableRow>
             <TableRow>
                 <TextView
@@ -1128,7 +1118,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="COD加标倍数"/>
                 <EditText
-                    android:id="@+id/edit_COD_add_Multiplier"
+                    android:id="@+id/edit_COD_add_multiplier"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
@@ -1171,22 +1161,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="COD加标方式"/>
-                <EditText
-                    android:id="@+id/edit_COD_add_type"
-                    android:layout_width="120dp"
+                <Spinner
+                    android:id="@+id/spinner_COD_add_type"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="14sp"
                     android:gravity="center"
-                    android:imeOptions="actionDone"
-                    android:hint="COD加标方式"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
+                    android:entries="@array/addTyep" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:text="0-加标倍数 1-加标量"/>
+                    android:text=""/>
             </TableRow>
             <TableRow>
                 <TextView
@@ -1206,7 +1193,7 @@
                     android:imeOptions="actionDone"
                     android:hint="进样泵步数"/>
                 <TextView
-                    android:id="@+id/edit_water_step_test"
+                    android:id="@+id/text_water_step_test"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
@@ -1240,7 +1227,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="试剂泵步数"/>
                 <EditText
-                    android:id="@+id/edit_Reagents_step_num"
+                    android:id="@+id/edit_reagents_step_num"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
@@ -1251,7 +1238,7 @@
                     android:imeOptions="actionDone"
                     android:hint="试剂泵步数"/>
                 <TextView
-                    android:id="@+id/edit_Reagents_step_test"
+                    android:id="@+id/text_reagents_step_test"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
@@ -1262,7 +1249,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="每步体积"/>
                 <EditText
-                    android:id="@+id/edit_Reagents_step_volume"
+                    android:id="@+id/edit_reagents_step_volume"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"

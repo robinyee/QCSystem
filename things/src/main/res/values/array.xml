@@ -25,4 +25,8 @@
         <item >标样C</item>
         <item >加标回收</item>
     </string-array>
+    <string-array name="addTyep">
+        <item >加标量</item>
+        <item >加标倍数</item>
+    </string-array>
 </resources>

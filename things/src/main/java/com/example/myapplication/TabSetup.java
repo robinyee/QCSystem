@@ -75,10 +75,14 @@ public class TabSetup extends Fragment {
     private EditText editNextStartTime, editStartCycle, editNumberTimes, editStartType;
     private Spinner spinnerStartType, spinnerCom1BaudRate;
     private Switch switchIsLoop;
-    private EditText editShuiyangStep,editShuiyangVolume,editLiusuanStep,editLiusuanVolume,editCaosuannaStep,editCaosuannaVolume;
-    private EditText editGaomengsuanjiaStep,editGaomengsuanjiaVolume,editDidingStep,editDidingVolume,editXiaojieTemp,editXiaojieTime;
-    private EditText editKongbaiValue, editBiaodingValue, editCaosuannaCon, editDidingDeviation, editDidingMax, editDidingDifference, editAdminPassword;
-    private EditText editSlopeA, editInterceptB, editTrueValue, editCorrectionValue;
+    private EditText editNH3Volume, editNH3A, editNH3B, editNH3C, editNH3O, editNH3AddMultiplier, editNH3AddVolume;
+    private EditText editTPVolume, editTPA, editTPB, editTPC, editTPO, editTPAddMultiplier, editTPAddVolume, editTPAddType;
+    private EditText editTNVolume, editTNA, editTNB, editTNC, editTNO, editTNAddMultiplier, editTNAddVolume, editTNAddType;
+    private EditText editCODVolume, editCODA, editCODB, editCODC, editCODO, editCODAddMultiplier, editCODAddVolume, editCODAddType;
+    private EditText editWaterStepNum, editWaterStepVolume, editReagentsStepNum, editReagentsStepVolume;
+    private Spinner spinnerNH3AddType, spinnerTPAddType, spinnerTNAddType, spinnerCODAddType;
+    private TextView textWaterStepTest, textReagentsStepTest;
+    private EditText editAdminPassword;
     private EditText editCom0, editCom1, editCom1Addr, editCom1BaudRate;
     private RadioGroup radioGroup;
     private TableLayout tableParameter;
@@ -162,15 +166,58 @@ public class TabSetup extends Fragment {
         editNextStartTime = view.findViewById(R.id.nextStartTime);
         editStartCycle = view.findViewById(R.id.startCycle);
         editNumberTimes = view.findViewById(R.id.numberTimes);
-//      editStartType = view.findViewById(R.id.startType);
         spinnerStartType = view.findViewById(R.id.startType);;
         switchIsLoop = view.findViewById(R.id.isLoop);
         editAdminPassword = view.findViewById(R.id.editAdminPassword);
         editCom0 = view.findViewById(R.id.editCom0);
         editCom1 = view.findViewById(R.id.editCom1);
         editCom1Addr = view.findViewById(R.id.editComAddr);
-        //editCom1BaudRate = view.findViewById(R.id.editComBaudRate);
         spinnerCom1BaudRate = view.findViewById(R.id.spinnerComBaudRate);
+
+        //仪表参数
+        //基本参数
+        editWaterStepNum = view.findViewById(R.id.edit_water_step_num);
+        editWaterStepVolume = view.findViewById(R.id.edit_water_step_volume);
+        editReagentsStepNum = view.findViewById(R.id.edit_reagents_step_num);
+        editReagentsStepVolume = view.findViewById(R.id.edit_reagents_step_volume);
+        textWaterStepTest = view.findViewById(R.id.text_water_step_test);
+        textReagentsStepTest = view.findViewById(R.id.text_reagents_step_test);
+        //氨氮
+        editNH3Volume = view.findViewById(R.id.edit_NH3_volume);
+        editNH3A = view.findViewById(R.id.edit_NH3_A);
+        editNH3B = view.findViewById(R.id.edit_NH3_B);
+        editNH3C = view.findViewById(R.id.edit_NH3_C);
+        editNH3O = view.findViewById(R.id.edit_NH3_O);
+        editNH3AddMultiplier = view.findViewById(R.id.edit_NH3_add_multiplier);
+        editNH3AddVolume = view.findViewById(R.id.edit_NH3_add_volume);
+        spinnerNH3AddType = view.findViewById(R.id.spinner_NH3_add_type);
+        //总磷
+        editTPVolume = view.findViewById(R.id.edit_TP_volume);
+        editTPA = view.findViewById(R.id.edit_TP_A);
+        editTPB = view.findViewById(R.id.edit_TP_B);
+        editTPC = view.findViewById(R.id.edit_TP_C);
+        editTPO = view.findViewById(R.id.edit_TP_O);
+        editTPAddMultiplier = view.findViewById(R.id.edit_TP_add_multiplier);
+        editTPAddVolume = view.findViewById(R.id.edit_TP_add_volume);
+        spinnerTPAddType = view.findViewById(R.id.spinner_TP_add_type);
+        //总氮
+        editTNVolume = view.findViewById(R.id.edit_TN_volume);
+        editTNA = view.findViewById(R.id.edit_TN_A);
+        editTNB = view.findViewById(R.id.edit_TN_B);
+        editTNC = view.findViewById(R.id.edit_TN_C);
+        editTNO = view.findViewById(R.id.edit_TN_O);
+        editTNAddMultiplier = view.findViewById(R.id.edit_TN_add_multiplier);
+        editTNAddVolume = view.findViewById(R.id.edit_TN_add_volume);
+        spinnerTNAddType = view.findViewById(R.id.spinner_TN_add_type);
+        //COD
+        editCODVolume = view.findViewById(R.id.edit_COD_volume);
+        editCODA = view.findViewById(R.id.edit_COD_A);
+        editCODB = view.findViewById(R.id.edit_COD_B);
+        editCODC = view.findViewById(R.id.edit_COD_C);
+        editCODO = view.findViewById(R.id.edit_COD_O);
+        editCODAddMultiplier = view.findViewById(R.id.edit_COD_add_multiplier);
+        editCODAddVolume = view.findViewById(R.id.edit_COD_add_volume);
+        spinnerCODAddType = view.findViewById(R.id.spinner_COD_add_type);
 
         //更多参数显示
         moreParameter = view.findViewById(R.id.moreParameter);
@@ -197,16 +244,6 @@ public class TabSetup extends Fragment {
         //uiUpdate();
         message = handlerUpdate.obtainMessage(UI_UPDATE);
         handlerUpdate.sendMessageDelayed(message, 1000);
-/*
-        //点击时间设置按钮
-        timeSetup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDateDialog("SetTime");
-            }
-        });
-
- */
 
         //定时启动时间设定
         editNextStartTime.setOnClickListener(new View.OnClickListener() {
@@ -322,31 +359,6 @@ public class TabSetup extends Fragment {
             }
         });
 
-        /*
-        //修改串口波特率
-        editCom1BaudRate.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    SysData.BAUD_RATE = Integer.parseInt(editCom1BaudRate.getText().toString());
-                    if(SysData.deviceList.size() >= 3) {
-                        MainActivity.com1.setBAUD_RATE(SysData.BAUD_RATE);
-                        Log.i(TAG, "重启串口，波特率：" + SysData.BAUD_RATE);
-                    }
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Log.i(TAG, "已修改波特率：" + SysData.BAUD_RATE);
-                    saveEditText();
-                    saveMeterParameter();  //保存设定的参数
-                    //return false;
-                }
-                return false;
-            }
-        });
-        */
         //选择串口速率，波特率 0-9600，1-19200，2-38400，3-115200
         spinnerCom1BaudRate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -387,9 +399,15 @@ public class TabSetup extends Fragment {
         buttonSaveData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                saveEditText();
-                saveMeterParameter();
-                Toast.makeText(getActivity(), "数据已保存", Toast.LENGTH_SHORT).show();
+                try{
+                    saveEditText();
+                    saveMeterParameter();
+                    SysData.calculation(); //计算水样和试剂步数
+                    Toast.makeText(getActivity(), "数据已保存", Toast.LENGTH_LONG).show();
+                    showRebootSysDialog();
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), "无法保存参数，参数值有错误！", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -465,13 +483,21 @@ public class TabSetup extends Fragment {
             }
         });
 
-        //点击保存系统参数按钮
+        //点击停止系统
         stopSys.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveEditText();
-                saveMeterParameter();
-                showRebootSysDialog();
+                try{
+                    saveEditText();
+                    saveMeterParameter();
+                    //SysData.calculation(); //计算水样和试剂步数
+                    Toast.makeText(getActivity(), "重启系统", Toast.LENGTH_LONG).show();
+                    showRebootSysDialog();
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), "无法保存参数，参数值有错误！", Toast.LENGTH_LONG).show();
+                    showRebootSysDialog();
+                }
+
             }
         });
 
@@ -549,24 +575,52 @@ public class TabSetup extends Fragment {
     //保存Edit数据
     private void saveEditText() {
         //保存仪表参数的内容
-        SysData.shuiyangVolume = Double.parseDouble(editShuiyangVolume.getText().toString());
-        SysData.liusuanStep = Integer.parseInt(editLiusuanStep.getText().toString());
-        SysData.liusuanVolume = Double.parseDouble(editLiusuanVolume.getText().toString());
-        SysData.caosuannaStep = Integer.parseInt(editCaosuannaStep.getText().toString());
-        SysData.caosuannaVolume = Double.parseDouble(editCaosuannaVolume.getText().toString());
+        //基本参数
+        SysData.waterStepVolume = Double.parseDouble(editWaterStepVolume.getText().toString());      //进样泵每步的体积
+        SysData.reagentStepVolume = Double.parseDouble(editReagentsStepVolume.getText().toString()); //试剂泵每步的体积
+
+        //氨氮
+        SysData.NH3Volume = Double.parseDouble(editNH3Volume.getText().toString());            //氨氮标样体积
+        SysData.NH3SampleA = Double.parseDouble(editNH3A.getText().toString());             //氨氮标样A浓度
+        SysData.NH3SampleB = Double.parseDouble(editNH3B.getText().toString());             //氨氮标样B浓度
+        SysData.NH3SampleC = Double.parseDouble(editNH3C.getText().toString());             //氨氮标样C浓度
+        SysData.NH3SampleO = Double.parseDouble(editNH3O.getText().toString());             //氨氮标样母液浓度
+        SysData.NH3AddMul = Double.parseDouble(editNH3AddMultiplier.getText().toString());              //氨氮加标倍数
+        SysData.NH3AddValume = Double.parseDouble(editNH3AddVolume.getText().toString());           //氨氮加标量
+        SysData.NH3AddType = spinnerNH3AddType.getSelectedItemPosition();               //氨氮加标类型
+        //总磷
+        SysData.TPVolume = Double.parseDouble(editTPVolume.getText().toString());            //总磷标样体积
+        SysData.TPSampleA = Double.parseDouble(editTPA.getText().toString());             //总磷标样A浓度
+        SysData.TPSampleB = Double.parseDouble(editTPB.getText().toString());             //总磷标样B浓度
+        SysData.TPSampleC = Double.parseDouble(editTPC.getText().toString());             //总磷标样C浓度
+        SysData.TPSampleO = Double.parseDouble(editTPO.getText().toString());             //总磷标样母液浓度
+        SysData.TPAddMul = Double.parseDouble(editTPAddMultiplier.getText().toString());              //总磷加标倍数
+        SysData.TPAddValume = Double.parseDouble(editTPAddVolume.getText().toString());           //总磷加标量
+        SysData.TPAddType = spinnerTPAddType.getSelectedItemPosition();               //总磷加标类型
+        //总氮
+        SysData.TNVolume = Double.parseDouble(editTNVolume.getText().toString());            //总氮标样体积
+        SysData.TNSampleA = Double.parseDouble(editTNA.getText().toString());             //总氮标样A浓度
+        SysData.TNSampleB = Double.parseDouble(editTNB.getText().toString());             //总氮标样B浓度
+        SysData.TNSampleC = Double.parseDouble(editTNC.getText().toString());             //总氮标样C浓度
+        SysData.TNSampleO = Double.parseDouble(editTNO.getText().toString());             //总氮标样母液浓度
+        SysData.TNAddMul = Double.parseDouble(editTNAddMultiplier.getText().toString());              //总氮加标倍数
+        SysData.TNAddValume = Double.parseDouble(editTNAddVolume.getText().toString());           //总氮加标量
+        SysData.TNAddType = spinnerTNAddType.getSelectedItemPosition();               //总氮加标类型
+        //COD
+        SysData.CODVolume = Double.parseDouble(editCODVolume.getText().toString());            //COD标样体积
+        SysData.CODSampleA = Double.parseDouble(editCODA.getText().toString());             //COD标样A浓度
+        SysData.CODSampleB = Double.parseDouble(editCODB.getText().toString());             //COD标样B浓度
+        SysData.CODSampleC = Double.parseDouble(editCODC.getText().toString());             //COD标样C浓度
+        SysData.CODSampleO = Double.parseDouble(editCODO.getText().toString());             //COD标样母液浓度
+        SysData.CODAddMul = Double.parseDouble(editCODAddMultiplier.getText().toString());              //COD加标倍数
+        SysData.CODAddValume = Double.parseDouble(editCODAddVolume.getText().toString());           //COD加标量
+        SysData.CODAddType = spinnerCODAddType.getSelectedItemPosition();               //COD加标类型
 
         //系统参数
         SysData.adminPassword = editAdminPassword.getText().toString();
         SysData.MODBUS_ADDR = Integer.parseInt(editCom1Addr.getText().toString());
-        //SysData.BAUD_RATE = Integer.parseInt(editCom1BaudRate.getText().toString());
+        SysData.BAUD_RATE = Integer.parseInt(editCom1BaudRate.getText().toString());
 
-        /*
-        //保存EditText的内容 -- 系统自动获取无需保存
-        SysData.wifiSsid = editSsid.getText().toString();
-        SysData.wifiPass = editPass.getText().toString();
-        SysData.webIPAddr = editlocalip.getText().toString();
-        SysData.webPort = Integer.parseInt(editwebport.getText().toString());
-         */
     }
 
     //填充Edit数据
@@ -587,11 +641,46 @@ public class TabSetup extends Fragment {
         //editCom1BaudRate.setText(String.valueOf(SysData.BAUD_RATE));
 
         //填充仪表参数的内容
-        editShuiyangVolume.setText(String.valueOf(SysData.shuiyangVolume));
-        editLiusuanStep.setText(String.valueOf(SysData.liusuanStep));
-        editLiusuanVolume.setText(String.valueOf(SysData.liusuanVolume));
-        editCaosuannaStep.setText(String.valueOf(SysData.caosuannaStep));
-        editCaosuannaVolume.setText(String.valueOf(SysData.caosuannaVolume));
+        //基本参数
+        editWaterStepVolume.setText(String.valueOf(SysData.waterStepVolume));
+        editReagentsStepVolume.setText(String.valueOf(SysData.reagentStepVolume));
+
+        //氨氮
+        editNH3Volume.setText(String.valueOf(SysData.NH3Volume));
+        editNH3A.setText(String.valueOf(SysData.NH3SampleA));
+        editNH3B.setText(String.valueOf(SysData.NH3SampleB));
+        editNH3C.setText(String.valueOf(SysData.NH3SampleC));
+        editNH3O.setText(String.valueOf(SysData.NH3SampleO));
+        editNH3AddMultiplier.setText(String.valueOf(SysData.NH3AddMul));
+        editNH3AddVolume.setText(String.valueOf(SysData.NH3AddValume));
+        spinnerNH3AddType.setSelection(SysData.NH3AddType);
+        //总磷
+        editTPVolume.setText(String.valueOf(SysData.TPVolume));
+        editTPA.setText(String.valueOf(SysData.TPSampleA));
+        editTPB.setText(String.valueOf(SysData.TPSampleB));
+        editTPC.setText(String.valueOf(SysData.TPSampleC));
+        editTPO.setText(String.valueOf(SysData.TPSampleO));
+        editTPAddMultiplier.setText(String.valueOf(SysData.TPAddMul));
+        editTPAddVolume.setText(String.valueOf(SysData.TPAddValume));
+        spinnerTPAddType.setSelection(SysData.TPAddType);
+        //总氮
+        editTNVolume.setText(String.valueOf(SysData.TNVolume));
+        editTNA.setText(String.valueOf(SysData.TNSampleA));
+        editTNB.setText(String.valueOf(SysData.TNSampleB));
+        editTNC.setText(String.valueOf(SysData.TNSampleC));
+        editTNO.setText(String.valueOf(SysData.TNSampleO));
+        editTNAddMultiplier.setText(String.valueOf(SysData.TNAddMul));
+        editTNAddVolume.setText(String.valueOf(SysData.TNAddValume));
+        spinnerTNAddType.setSelection(SysData.TNAddType);
+        //COD
+        editCODVolume.setText(String.valueOf(SysData.CODVolume));
+        editCODA.setText(String.valueOf(SysData.CODSampleA));
+        editCODB.setText(String.valueOf(SysData.CODSampleB));
+        editCODC.setText(String.valueOf(SysData.CODSampleC));
+        editCODO.setText(String.valueOf(SysData.CODSampleO));
+        editCODAddMultiplier.setText(String.valueOf(SysData.CODAddMul));
+        editCODAddVolume.setText(String.valueOf(SysData.CODAddValume));
+        spinnerCODAddType.setSelection(SysData.CODAddType);
     }
 
     //保存仪表参数
@@ -600,11 +689,46 @@ public class TabSetup extends Fragment {
             //打开文件
             final SharedPreferences.Editor editor = getActivity().getSharedPreferences("Parameter", MODE_PRIVATE).edit();
             //仪器的参数
-            editor.putLong("shuiyangVolume", Double.doubleToLongBits(SysData.shuiyangVolume));
-            editor.putInt("liusuanStep", SysData.liusuanStep);
-            editor.putLong("liusuanVolume", Double.doubleToLongBits(SysData.liusuanVolume));
-            editor.putInt("caosuannaStep", SysData.caosuannaStep);
-            editor.putLong("caosuannaVolume", Double.doubleToLongBits(SysData.caosuannaVolume));
+            //基本参数
+            editor.putLong("waterStepVolume", Double.doubleToLongBits(SysData.waterStepVolume));
+            editor.putLong("reagentStepVolume", Double.doubleToLongBits(SysData.reagentStepVolume));
+
+            //氨氮
+            editor.putLong("NH3Volume", Double.doubleToLongBits(SysData.NH3Volume));
+            editor.putLong("NH3SampleA", Double.doubleToLongBits(SysData.NH3SampleA));
+            editor.putLong("NH3SampleB", Double.doubleToLongBits(SysData.NH3SampleB));
+            editor.putLong("NH3SampleC", Double.doubleToLongBits(SysData.NH3SampleC));
+            editor.putLong("NH3SampleO", Double.doubleToLongBits(SysData.NH3SampleO));
+            editor.putLong("NH3AddMul", Double.doubleToLongBits(SysData.NH3AddMul));
+            editor.putLong("NH3AddValume", Double.doubleToLongBits(SysData.NH3AddValume));
+            editor.putInt("NH3AddType", SysData.NH3AddType);
+            //总磷
+            editor.putLong("TPVolume", Double.doubleToLongBits(SysData.TPVolume));
+            editor.putLong("TPSampleA", Double.doubleToLongBits(SysData.TPSampleA));
+            editor.putLong("TPSampleB", Double.doubleToLongBits(SysData.TPSampleB));
+            editor.putLong("TPSampleC", Double.doubleToLongBits(SysData.TPSampleC));
+            editor.putLong("TPSampleO", Double.doubleToLongBits(SysData.TPSampleO));
+            editor.putLong("TPAddMul", Double.doubleToLongBits(SysData.TPAddMul));
+            editor.putLong("TPAddValume", Double.doubleToLongBits(SysData.TPAddValume));
+            editor.putInt("TPAddType", SysData.TPAddType);
+            //总氮
+            editor.putLong("TNVolume", Double.doubleToLongBits(SysData.TNVolume));
+            editor.putLong("NTNSampleA", Double.doubleToLongBits(SysData.TNSampleA));
+            editor.putLong("TNSampleB", Double.doubleToLongBits(SysData.TNSampleB));
+            editor.putLong("TNSampleC", Double.doubleToLongBits(SysData.TNSampleC));
+            editor.putLong("TNSampleO", Double.doubleToLongBits(SysData.TNSampleO));
+            editor.putLong("TNAddMul", Double.doubleToLongBits(SysData.TNAddMul));
+            editor.putLong("TNAddValume", Double.doubleToLongBits(SysData.TNAddValume));
+            editor.putInt("TNAddType", SysData.TNAddType);
+            //COD
+            editor.putLong("CODVolume", Double.doubleToLongBits(SysData.CODVolume));
+            editor.putLong("CODSampleA", Double.doubleToLongBits(SysData.CODSampleA));
+            editor.putLong("CODSampleB", Double.doubleToLongBits(SysData.CODSampleB));
+            editor.putLong("CODSampleC", Double.doubleToLongBits(SysData.CODSampleC));
+            editor.putLong("CODSampleO", Double.doubleToLongBits(SysData.CODSampleO));
+            editor.putLong("CODAddMul", Double.doubleToLongBits(SysData.CODAddMul));
+            editor.putLong("CODAddValume", Double.doubleToLongBits(SysData.CODAddValume));
+            editor.putInt("CODAddType", SysData.CODAddType);
 
             //系统参数
             //editor.putString("localIpAddr", SysData.localIpAddr[0]);

@@ -90,7 +90,7 @@
             android:layout_marginLeft="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginRight="0dp"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorAccent"
             android:orientation="horizontal">
 
             <Button
