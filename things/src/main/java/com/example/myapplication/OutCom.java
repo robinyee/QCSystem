@@ -245,52 +245,7 @@ public class OutCom {
         Log.w(TAG,  "读取数据的地址" + addr);
 
         if(addr == 0) {
-            //读取仪表cod值 03 03 00 00 00 01 XX XX
-            Log.w(TAG,  "读取仪表cod值");
-            String askStr,dataStr;
-            //int codValue = (int) (SysData.codValue * 100);
-            int codValue = 0;
-            //codValue = 1023;
-            askStr = "";
-            byte[] askByte = new byte[]{(byte) b[0], (byte) b[1], (byte) 0x02};
-            String codStr = Integer.toHexString(codValue);
-            if(codValue == 0) {
-                codStr = "0000";
-            }
-            if(codStr.length() < 4) {
-                for (int i = 0; i <= (4 - codStr.length()); i++ ) {
-                    codStr = "0" + codStr;
-                }
-            }
-
-            Log.w(TAG,  "cod的值:" + codValue);
-            Log.w(TAG,  "cod的值H:" + codStr);
-            askStr = bytes2HexString(askByte);
-            askStr = askStr + codStr;
-            Log.w(TAG,  "askByte数据：" + askStr);
-            for(int i = 0; i < askByte.length; i++) {
-                Log.w(TAG,  "askByte[" + (i) + "]数据：" + askByte[i]);
-            }
-            sendBytes(askStr, true);
-        }
-        if(addr == 2) {
-            //读取仪表错误代码 03 03 00 02 00 01 XX XX
-            Log.w(TAG,  "读取仪表错误代码");
-            String askStr = "";
-            int errorId = SysData.errorId;
-            //errorId = 5;
-            byte[] askByte = new byte[]{(byte) b[0], (byte) b[1], (byte) 0x02, (byte) 0x00, (byte) 0x00};
-            askByte[4] = (byte) errorId;
-            Log.w(TAG,  "读取出错代码:" + (Integer.toHexString(errorId)));
-            askStr = bytes2HexString(askByte);
-            Log.w(TAG,  "askByte数据：" + askStr);
-            for(int i = 0; i < askByte.length; i++) {
-                Log.w(TAG,  "askByte[" + (i) + "]数据：" + askByte[i]);
-            }
-            sendBytes(askStr, true);
-        }
-        if(addr == 4) {
-            //读取仪表状态 03 03 00 04 00 01 XX XX
+            //读取仪表状态 03 03 00 00 00 01 XX XX
             Log.w(TAG,  "读取仪表状态");
             String askStr = "";
             int status = 0;
@@ -312,8 +267,8 @@ public class OutCom {
             }
             sendBytes(askStr, true);
         }
-        if(addr == 5) {
-            //读取是否供水 03 03 00 05 00 01 XX XX
+        if(addr == 2) {
+            //读取是否供水 03 03 00 02 00 01 XX XX
             Log.w(TAG,  "读取供水状态");
             String askStr = "";
             int status = 0;
@@ -332,8 +287,8 @@ public class OutCom {
             }
             sendBytes(askStr, true);
         }
-        if(addr == 6) {
-            //读取水样类型 03 03 00 06 00 01 XX XX
+        if(addr == 4) {
+            //读取水样类型 03 03 00 04 00 01 XX XX
             Log.w(TAG,  "读取水样类型");
             String askStr = "";
             int type = 0;
@@ -348,8 +303,8 @@ public class OutCom {
             }
             sendBytes(askStr, true);
         }
-        if(addr == 7) {
-            //读取标样浓度 03 03 00 07 00 01 XX XX
+        if(addr == 6) {
+            //读取标样浓度 03 03 00 06 00 01 XX XX
             Log.w(TAG,  "读取标样浓度");
             String askStr,dataStr;
             int value = (int) (SysData.concentration * 100);
@@ -375,6 +330,23 @@ public class OutCom {
             }
             sendBytes(askStr, true);
         }
+        if(addr == 8) {
+            //读取仪表错误代码 03 03 00 08 00 01 XX XX
+            Log.w(TAG,  "读取仪表错误代码");
+            String askStr = "";
+            int errorId = SysData.errorId;
+            //errorId = 5;
+            byte[] askByte = new byte[]{(byte) b[0], (byte) b[1], (byte) 0x02, (byte) 0x00, (byte) 0x00};
+            askByte[4] = (byte) errorId;
+            Log.w(TAG,  "读取出错代码:" + (Integer.toHexString(errorId)));
+            askStr = bytes2HexString(askByte);
+            Log.w(TAG,  "askByte数据：" + askStr);
+            for(int i = 0; i < askByte.length; i++) {
+                Log.w(TAG,  "askByte[" + (i) + "]数据：" + askByte[i]);
+            }
+            sendBytes(askStr, true);
+        }
+
     }
 
     //处理指令04H
@@ -395,38 +367,9 @@ public class OutCom {
         Log.w(TAG,  "写入数据的地址" + addr);
 
         if(addr == 6) {
-            //写入仪表值 03 06 00 0A 00 01 XX XX
+            //写入仪表值 03 06 00 06 00 01 XX XX
             if(b[5] == 1) {
-                Log.w(TAG, "上位机启动仪表开始测试");
-                if(!SysData.isRun) {
-                    //SysGpio.s7_ShuiZhiCeDing();             //启动仪表
-                    SysData.workFrom = "串口启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
-                }
-                String sendStr = bytes2HexString(b);
-                sendBytes(sendStr, false);
-            }
-            if(b[5] == 2) {
-                Log.w(TAG, "上位机启动仪表复位");
-                if(!SysGpio.statusS8) {
-                    //SysGpio.s8_Reset();                     //仪表复位
-                }
-                SysData.errorId = 0;                        //复位错误代码
-                SysData.errorMsg = "";                      //复位错误信息
-                SysData.resetAlert();                       //复位数据库报警记录
-                String sendStr = bytes2HexString(b);
-                sendBytes(sendStr, false);
-            }
-            if(b[5] == 3) {
-                Log.w(TAG, "上位机启动仪表校准");
-                if(!SysData.isRun) {
-                    //SysGpio.s11_Calibration();             //仪表校准
-                    SysData.workFrom = "串口启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
-                }
-                String sendStr = bytes2HexString(b);
-                sendBytes(sendStr, false);
-            }
-            if(b[5] == 4) {
-                Log.w(TAG, "上位机启动仪表初始化");
+                Log.w(TAG, "上位机请求仪表初始化");
                 if(!SysData.isRun) {
                     SysGpio.s4_initialize();                //仪表初始化
                     SysData.workFrom = "串口启动";           //启动分析命令来自于 触摸屏、串口、Web、定时启动
@@ -434,7 +377,17 @@ public class OutCom {
                 String sendStr = bytes2HexString(b);
                 sendBytes(sendStr, false);
             }
-            if(b[5] >= 10) {
+            //写入仪表值 03 06 00 06 00 02 XX XX
+            if(b[5] == 2) {
+                Log.w(TAG, "上位机请求仪表清除报警");
+                SysData.errorId = 0;                        //复位错误代码
+                SysData.errorMsg = "";                      //复位错误信息
+                SysData.resetAlert();                       //复位数据库报警记录
+                String sendStr = bytes2HexString(b);
+                sendBytes(sendStr, false);
+            }
+            //写入仪表值 03 06 00 06 00 0b XX XX
+            if(b[5] >= 10) {  //11-16 氨氮：原水、空白、标样A、标样B、标样C、加标回收；21-26 总磷；31-36 总氮；41-46 COD
                 Log.w(TAG, "配制标样");
                 Log.w(TAG, "原始指令b[5]:" + b[5]);
                 int waterType = (int)(b[5] / 10);

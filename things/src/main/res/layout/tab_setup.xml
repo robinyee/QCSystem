@@ -146,7 +146,8 @@
             android:layout_height="wrap_content">
 
             <TableRow
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -188,7 +189,8 @@
                     android:text="定时开启" />-->
             </TableRow>
             <TableRow
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -229,14 +231,7 @@
                     android:gravity="center"
                     android:imeOptions="actionDone"
                     android:hint="输入启动类型"/>-->
-                <Switch
-                    android:id="@+id/isLoop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:theme="@style/MySwitch"
-                    android:layout_column="4"
-                    android:text="定时开启" />
+
             </TableRow>
             <!--
         </TableLayout>
@@ -291,15 +286,7 @@
                     android:singleLine="true"
                     android:inputType="textPassword"
                     android:textSize="14sp" />
-                <Button
-                    android:id="@+id/setupwifi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_wifi_24px"
-                    android:layout_gravity="left"
-                    android:background="@android:drawable/list_selector_background"
-                    android:layout_marginLeft="20dp"
-                    android:text="连接WIFI"/>
+
             </TableRow>
             <!--
             <TableRow>
@@ -381,15 +368,7 @@
                     android:hint="通讯端口"
                     android:singleLine="true"
                     android:textSize="14sp" />
-                <Button
-                    android:id="@+id/reload"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:drawableLeft="@drawable/ic_replay_black_24dp"
-                    android:layout_gravity="left"
-                    android:background="@android:drawable/list_selector_background"
-                    android:text="刷新参数"/>
+
             </TableRow>
             <TableRow
                 android:layout_marginTop="10dp">
@@ -434,6 +413,42 @@
                     android:textSize="14sp"
                     android:gravity="center"
                     android:entries="@array/baudRateTyep" />
+
+            </TableRow>
+
+        </TableLayout>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TableRow>
+                <Switch
+                    android:id="@+id/isLoop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:theme="@style/MySwitch"
+                    android:layout_column="4"
+                    android:visibility="gone"
+                    android:text="定时任务" />
+                <Button
+                    android:id="@+id/setupwifi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_baseline_wifi_24px"
+                    android:layout_gravity="left"
+                    android:background="@android:drawable/list_selector_background"
+                    android:layout_marginLeft="20dp"
+                    android:text="连接WIFI"/>
+                <Button
+                    android:id="@+id/reload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:drawableLeft="@drawable/ic_replay_black_24dp"
+                    android:layout_gravity="left"
+                    android:background="@android:drawable/list_selector_background"
+                    android:text="刷新参数"/>
                 <Button
                     android:id="@+id/stopSys"
                     android:layout_width="wrap_content"
@@ -471,7 +486,8 @@
         <TableLayout
             android:id="@+id/tableParameter"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"> <!--android:visibility="gone" -->
+            android:layout_height="wrap_content"
+            android:visibility="gone"> <!--android:visibility="gone" -->
             <TableRow>
                 <TextView
                     android:layout_width="wrap_content"
@@ -1211,7 +1227,7 @@
                     android:gravity="center"
                     android:imeOptions="actionDone"
                     android:hint="每步体积"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:singleLine="true"
                     android:textSize="14sp" />
                 <TextView
@@ -1256,7 +1272,7 @@
                     android:gravity="center"
                     android:imeOptions="actionDone"
                     android:hint="每步体积"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:singleLine="true"
                     android:textSize="14sp" />
                 <TextView

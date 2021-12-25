@@ -23,20 +23,22 @@ public class SysData {
     static int waterType = 0;                   //水样的类型 0-氨氮 1-总磷 2-总氮 3-COD
     static int sampleType = 0;                  //标样的类型 0-原水 1-空白样 2-标样A 3-标样B 4-标样C 5-加标回收
     static boolean microPumpOn = false;         //启动微量泵
+    static boolean microPumpTest = false;       //微量泵计量标定
     static int reagentChannel = 1;              //当前通道号
     static int addReagentStep = 20;             //添加试剂的步数
-    static int supplySamplesTime = 10;          //供样时长（分钟）
+    static int pureWaterStep = 50;              //添加试剂的步数
+    static int supplySamplesTime = 1;          //供样时长（分钟）
     static String arrWaterType[];               //水样类型数组
     static String arrSampleType[];              //标样浓度型号数组
     static String strWaterType = "通用";         //当前选择的水样类型
     static String strSampleType = "原水样";      //当前选择的水样类型
     static double concentration = 2.0;          //当前配制水样的浓度
-    static double waterStepVolume = 2.0;        //水样泵每步的体积
+    static double waterStepVolume = 1.8;        //水样泵每步的体积
     static double reagentStepVolume = 0.050;    //试剂泵每步的体积
-    static double reagentVolume[][];            //所需母液的体积
+
 
     //氨氮
-    static double NH3Volume = 250.0;            //氨氮标样体积mL
+    static double NH3Volume = 150.0;            //氨氮标样体积mL
     static double NH3SampleA = 0.5;             //氨氮标样A浓度mg/L
     static double NH3SampleB = 1.0;             //氨氮标样B浓度mg/L
     static double NH3SampleC = 2.0;             //氨氮标样C浓度mg/L
@@ -50,7 +52,7 @@ public class SysData {
     static int NH3SampleCStep = 30;             //氨氮标样C添加步数
     static int NH3SampleDStep = 10;             //氨氮加标回收添加步数
     //总磷
-    static double TPVolume = 250.0;             //总磷标样体积
+    static double TPVolume = 150.0;             //总磷标样体积
     static double TPSampleA = 0.5;              //总磷标样A浓度
     static double TPSampleB = 1.0;              //总磷标样B浓度
     static double TPSampleC = 2.0;              //总磷标样C浓度
@@ -64,7 +66,7 @@ public class SysData {
     static int TPSampleCStep = 30;              //总磷标样C添加步数
     static int TPSampleDStep = 10;              //总磷加标回收添加步数
     //总氮
-    static double TNVolume = 250.0;             //总氮标样体积
+    static double TNVolume = 150.0;             //总氮标样体积
     static double TNSampleA = 0.5;              //总氮标样A浓度
     static double TNSampleB = 1.0;              //总氮标样B浓度
     static double TNSampleC = 2.0;              //总氮标样C浓度
@@ -79,12 +81,12 @@ public class SysData {
     static int TNSampleDStep = 10;              //总氮加标回收添加步数
     //COD
     static double CODVolume = 250.0;            //COD标样体积
-    static double CODSampleA = 0.5;             //COD标样A浓度
-    static double CODSampleB = 1.0;             //COD标样B浓度
-    static double CODSampleC = 2.0;             //COD标样C浓度
-    static double CODSampleO = 100;             //COD标样母液浓度
+    static double CODSampleA = 2.0;             //COD标样A浓度
+    static double CODSampleB = 4.0;             //COD标样B浓度
+    static double CODSampleC = 6.0;             //COD标样C浓度
+    static double CODSampleO = 1000;            //COD标样母液浓度
     static double CODAddMul = 0.5;              //COD加标倍数
-    static double CODAddValume = 1.0;           //COD加标量
+    static double CODAddValume = 2.0;           //COD加标量
     static int CODAddType = 0;                  //COD加标类型
     static int CODWaterStep = 150;              //COD标样步数
     static int CODSampleAStep = 10;             //COD标样A添加步数
@@ -106,11 +108,13 @@ public class SysData {
                                  {TNSampleAStep,TNSampleBStep,TNSampleCStep,TNSampleDStep},         //总氮加母液步数数组
                                  {CODSampleAStep,CODSampleBStep,CODSampleCStep,CODSampleDStep}};    //COD加母液步数数组
 
+    static double reagentVolume[][] = new double[4][4];            //所需母液的体积
+
     //仪器运行状态
     static boolean isGetNetTime = false;        //是否已经获取到网络时间
     static boolean isRun = false;               //仪器是否运行
     static int progressRate = 0;                //分析进度
-    static String statusMsg = "";               //仪器当前执行动作
+    static String statusMsg = "仪器待机";        //仪器当前执行动作
     static double tempIn, tempOut;              //温度值，in反应器内温度，out加热器温度
     static int adLight, adBack;                 //adLight光电值，adBack备用模拟量
     static double smaAdLight;                   //adLight光电值的滑动平均值
@@ -160,11 +164,11 @@ public class SysData {
     static String version = "1.0";              //软件版本
 
     //数据查询结果
-    static List<Result> results = null;             //仪表测定结果数据
-    static List<Result> resultChart = null;         //仪表趋势线图测定结果数据
+    static List<Task> tasks = null;                 //仪表测定结果数据
+    //static List<Result> resultChart = null;       //仪表趋势线图测定结果数据
+    static List<Record> records = null;             //仪表校准记录数据
     static List<AlertLog> alertLogs = null;         //仪表报警记录数据
-    static List<Calibration> calibrations = null;   //仪表校准记录数据
-    static String listDataType = "codmn";           //查询的数据类型，codmn,alert,calibration
+    static String listDataType = "task";            //查询的数据类型，task,record,alert
     //数据查询结果分页
     static int currentPage = 1;                     //当前浏览的页码
     static int countData = 0;                       //数据的总条数
@@ -209,7 +213,7 @@ public class SysData {
         waterVolumes = volumes;
         if(waterStepVolume > 0) {
             for (int i = 0; i < waterVolumes.length; i++) {
-                waterStep[i] = (int) Math.round(waterVolumes[i] / waterStepVolume);
+                waterStep[i] = (int) Math.round((waterVolumes[i] - pureWaterStep * reagentStepVolume) / waterStepVolume);
             }
         }else {
             Log.i("参数设置", "设置错误：水样单步体积小于等于0");
@@ -220,10 +224,11 @@ public class SysData {
     public static void calculationReagentStep() {
         double volumes[] = {NH3Volume,TPVolume,TNVolume,CODVolume};  //水样体积数组 0-氨氮，1-总磷，2-总氮，3-COD
         double[] con = {NH3SampleO,TPSampleO,TNSampleO,CODSampleO};     //母液浓度数组 0-氨氮，1-总磷，2-总氮，3-COD
-        double[][] value = {{NH3SampleA,NH3SampleB,NH3SampleC,NH3AddValume},      //氨氮标样浓度
-                            {TPSampleA,TPSampleB,TPSampleC,TPAddValume},          //总磷标样浓度
-                            {TNSampleA,TNSampleB,TNSampleC,TNAddValume},          //总氮标样浓度
-                            {CODSampleA,CODSampleB,CODSampleC,CODAddValume}};     //COD标样浓度
+        double[][] value = {{NH3SampleA,NH3SampleB,NH3SampleC,NH3AddValume*(1+NH3AddMul*NH3AddType)},      //氨氮标样浓度
+                            {TPSampleA,TPSampleB,TPSampleC,TPAddValume*(1+TPAddMul*TPAddType)},          //总磷标样浓度
+                            {TNSampleA,TNSampleB,TNSampleC,TNAddValume*(1+TNAddMul*TNAddType)},          //总氮标样浓度
+                            {CODSampleA,CODSampleB,CODSampleC,CODAddValume*(1+CODAddMul*CODAddType)}};     //COD标样浓度
+
         waterVolumes = volumes;
         reagentCon = con;
         sampleValue = value;
@@ -231,11 +236,15 @@ public class SysData {
             for (int i = 0; i < waterVolumes.length; i++) {
                 for (int j=0; j< sampleValue[i].length; j++)
                 {
+                    //Log.i("参数设置", "reagentCon[i]=" + reagentCon[i] + " sampleValue[i][j]=" + sampleValue[i][j] + " waterVolumes[i]=" + waterVolumes[i]);
+                    //Log.i("参数设置", "reagentVolume[i][j]=" + reagentVolume[i][j]);
                     reagentVolume[i][j] = calculationReagentVolume(reagentCon[i], sampleValue[i][j], waterVolumes[i]);
                     if(reagentVolume[i][j]>2){
-                        Log.i("参数设置", "设置错误：加入母液的量大于2ml");
+                        Log.i("参数设置", "设置错误：加入母液的量大于2ml" + " i=" + i + " j=" + j + " 试剂量=" + reagentVolume[i][j]);
                     }
                     sampleStep[i][j] = (int) Math.round(reagentVolume[i][j] / reagentStepVolume);
+                    Log.i("参数设置", "加试剂步数：" + " i=" + i + " j=" + j + " 试剂量=" + reagentVolume[i][j]);
+                    Log.i("参数设置", "加试剂步数：" + " i=" + i + " j=" + j + " 步数=" + sampleStep[i][j]);
                 }
             }
         }else {
@@ -294,6 +303,38 @@ public class SysData {
             }
         }).start();
     }
+
+    //从数据库读取配制记录
+    public static void readData(final int num, final int start) {
+        Log.i("数据库", "读取数据");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(listDataType.equals("task")) {
+                    List<Task> rss;
+                    countData = MainActivity.db.taskDao().findTaskCount();
+                    maxPage = countData / numPerpage + 1;
+                    rss = MainActivity.db.taskDao().getNum(num, start);
+                    tasks = rss;
+                }
+                if(listDataType.equals("record")) {
+                    List<Record> rss;
+                    countData = MainActivity.db.recordDao().findRecordCount();
+                    maxPage = countData / numPerpage + 1;
+                    rss = MainActivity.db.recordDao().getNum(num, start);
+                    records = rss;
+                }
+                if(listDataType.equals("alert")) {
+                    List<AlertLog> rss;
+                    countData = MainActivity.db.alertLogDao().findAlertLogCount();
+                    maxPage = countData / numPerpage + 1;
+                    rss = MainActivity.db.alertLogDao().getNum(num, start);
+                    alertLogs = rss;
+                }
+            }
+        }).start();
+    }
+
 /*
     //保存测定值数据至数据库
     public static void saveDataToDB() {

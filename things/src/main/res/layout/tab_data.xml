@@ -94,7 +94,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnCodmnData"
+                android:id="@+id/btnTaskData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -107,7 +107,7 @@
                 android:textColor="@android:color/white" />
 
             <Button
-                android:id="@+id/btnAlertData"
+                android:id="@+id/btnRecordData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -120,7 +120,7 @@
                 android:textColor="@android:color/black" />
 
             <Button
-                android:id="@+id/btnCalibrationData"
+                android:id="@+id/btnAlertData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"

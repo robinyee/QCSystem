@@ -235,14 +235,14 @@ public class TabSetup extends Fragment {
 
         if(SysData.localIpAddr != null && SysData.localIpAddr.length >= 1) {
             //更新网络TextView信息
-            //setNetTxtInfo();
+            setNetTxtInfo();
         }
 
         //填充Edit数据
-        //setEditText();
+        setEditText();
 
         //刷新界面信息
-        //uiUpdate();
+        uiUpdate();
         message = handlerUpdate.obtainMessage(UI_UPDATE);
         handlerUpdate.sendMessageDelayed(message, 1000);
 
@@ -405,8 +405,9 @@ public class TabSetup extends Fragment {
                     saveMeterParameter();
                     SysData.calculation(); //计算水样和试剂步数
                     Toast.makeText(getActivity(), "数据已保存", Toast.LENGTH_LONG).show();
-                    showRebootSysDialog();
+                    //showRebootSysDialog();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     Toast.makeText(getActivity(), "无法保存参数，参数值有错误！", Toast.LENGTH_LONG).show();
                 }
             }
@@ -502,6 +503,25 @@ public class TabSetup extends Fragment {
             }
         });
 
+        //点击水样泵测试
+        textWaterStepTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int step = Integer.parseInt(editWaterStepNum.getText().toString());
+                SysGpio.s1_inletWater(step);
+            }
+        });
+
+        //点击试剂泵测试
+        textReagentsStepTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int step = Integer.parseInt(editReagentsStepNum.getText().toString());
+                SysData.microPumpTest = true;
+                SysGpio.s2_addReagent(2, step);
+            }
+        });
+
         return view;
     }
 
@@ -513,9 +533,10 @@ public class TabSetup extends Fragment {
             for (int i = 0; i < SysData.localIpAddr.length; i++) {
                 localIpAddr = localIpAddr + SysData.localIpAddr[i] + " ";
             }
-            localIp.setText(localIpAddr);
+            //localIp.setText(localIpAddr);
             //显示已连接的wifi
-            wifiName.setText("" + SysData.wifiSsid + "");
+            //wifiName.setText("" + SysData.wifiSsid + "");
+            editSsid.setText("" + SysData.wifiSsid + "");
             SysData.webIPAddr = SysData.localIpAddr[0];
             editlocalip.setText(SysData.webIPAddr);
 
@@ -621,7 +642,7 @@ public class TabSetup extends Fragment {
         //系统参数
         SysData.adminPassword = editAdminPassword.getText().toString();
         SysData.MODBUS_ADDR = Integer.parseInt(editCom1Addr.getText().toString());
-        SysData.BAUD_RATE = Integer.parseInt(editCom1BaudRate.getText().toString());
+        //SysData.BAUD_RATE = Integer.parseInt(editCom1BaudRate.getText().toString());
 
     }
 

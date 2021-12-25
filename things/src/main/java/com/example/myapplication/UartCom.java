@@ -280,16 +280,18 @@ public class UartCom {
             bytes = newBytes;
         }
         try {
-            mUartDevice.write(bytes, bytes.length);
-            /*
-            Log.v(TAG, "已发送数据:");
-            for (byte x : bytes) {
-                //System.out.print(x);
-                //Log.w(TAG, "x" + x);
+            if(bytes.length > 0) {
+                mUartDevice.write(bytes, bytes.length);
+                /*
+                Log.v(TAG, "已发送数据:");
+                for (byte x : bytes) {
+                    System.out.print(x);
+                    Log.w(TAG, "x" + x);
+                }
+                */
             }
-
-             */
             return bytes.length;
+
         } catch (IOException e) {
             e.printStackTrace();
             return -1;

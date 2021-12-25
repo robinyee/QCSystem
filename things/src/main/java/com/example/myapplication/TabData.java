@@ -66,7 +66,7 @@ public class TabData extends Fragment {
     private ArrayList<String> listData;
     private Button btnRefresh, btnQuery, btnExport, btnDelete;
     private Button btnFirstPage, btnPreviousPage, btnNextPage, btnLastPage;
-    private Button btnCodmnData, btnAlterData, btnCalibrationData;
+    private Button btnTaskData, btnRecordData, btnAlterData;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
     private SimpleDateFormat dateFormatShort = new SimpleDateFormat("yyyy年MM月dd日");
 
@@ -88,9 +88,10 @@ public class TabData extends Fragment {
         btnPreviousPage = view.findViewById(R.id.btnPreviousPage);
         btnNextPage = view.findViewById(R.id.btnNextPage);
         btnLastPage = view.findViewById(R.id.btnLastPage);
-        btnCodmnData = view.findViewById(R.id.btnCodmnData);
+        btnTaskData = view.findViewById(R.id.btnTaskData);
+        btnRecordData = view.findViewById(R.id.btnRecordData);
         btnAlterData = view.findViewById(R.id.btnAlertData);
-        btnCalibrationData = view.findViewById(R.id.btnCalibrationData);
+
 
         //查询数据
         SysData.currentPage = 1;
@@ -221,16 +222,36 @@ public class TabData extends Fragment {
 
          */
 
-        //点击CODmnData按钮
-        btnCodmnData.setOnClickListener(new View.OnClickListener() {
+        //点击Task按钮
+        btnTaskData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnCodmnData.setTextColor(Color.WHITE);
+                btnTaskData.setTextColor(Color.WHITE);
+                btnRecordData.setTextColor(Color.BLACK);
                 btnAlterData.setTextColor(Color.BLACK);
-                btnCalibrationData.setTextColor(Color.BLACK);
                 SysData.currentPage = 1;
-                SysData.listDataType = "codmn";
-                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.listDataType = "task";
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //显示数据列表
+                addListTable();
+            }
+        });
+
+        //点击Record数据按钮
+        btnRecordData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnTaskData.setTextColor(Color.BLACK);
+                btnRecordData.setTextColor(Color.WHITE);
+                btnAlterData.setTextColor(Color.BLACK);
+                SysData.currentPage = 1;
+                SysData.listDataType = "record";
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -245,32 +266,12 @@ public class TabData extends Fragment {
         btnAlterData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnCodmnData.setTextColor(Color.BLACK);
+                btnTaskData.setTextColor(Color.BLACK);
+                btnRecordData.setTextColor(Color.BLACK);
                 btnAlterData.setTextColor(Color.WHITE);
-                btnCalibrationData.setTextColor(Color.BLACK);
                 SysData.currentPage = 1;
                 SysData.listDataType = "alert";
-                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //显示数据列表
-                addListTable();
-            }
-        });
-
-        //点击CalibrationData按钮
-        btnCalibrationData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnCodmnData.setTextColor(Color.BLACK);
-                btnAlterData.setTextColor(Color.BLACK);
-                btnCalibrationData.setTextColor(Color.WHITE);
-                SysData.currentPage = 1;
-                SysData.listDataType = "calibration";
-                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -286,7 +287,7 @@ public class TabData extends Fragment {
             @Override
             public void onClick(View view) {
                 SysData.currentPage = 1;
-                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -310,7 +311,7 @@ public class TabData extends Fragment {
                 if(SysData.currentPage < 1) {
                     SysData.currentPage = 1;
                 }
-                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -334,7 +335,7 @@ public class TabData extends Fragment {
                 if(SysData.currentPage > (SysData.maxPage)) {
                     SysData.currentPage = SysData.maxPage;
                 }
-                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -355,7 +356,7 @@ public class TabData extends Fragment {
             @Override
             public void onClick(View view) {
                 SysData.currentPage = SysData.maxPage;
-                //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+                SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -405,14 +406,14 @@ public class TabData extends Fragment {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(SysData.listDataType.equals("codmn")) {
-                                        SysData.results = MainActivity.db.resultDao().findByTime(SysData.startDataTime, SysData.endDataTime);
+                                    if(SysData.listDataType.equals("task")) {
+                                        //SysData.tasks = MainActivity.db.taskDao().findByTime(SysData.startDataTime, SysData.endDataTime);
+                                    }
+                                    if(SysData.listDataType.equals("record")) {
+                                        SysData.records = MainActivity.db.recordDao().findByTime(SysData.startDataTime, SysData.endDataTime);
                                     }
                                     if(SysData.listDataType.equals("alert")) {
                                         SysData.alertLogs = MainActivity.db.alertLogDao().findByTime(SysData.startDataTime, SysData.endDataTime);
-                                    }
-                                    if(SysData.listDataType.equals("calibration")) {
-                                        SysData.calibrations = MainActivity.db.calibrationDao().findByTime(SysData.startDataTime, SysData.endDataTime);
                                     }
                                 }
                             }).start();
@@ -426,7 +427,7 @@ public class TabData extends Fragment {
                             //初始化折线图
                             initView();
                             //绘制曲线
-                            drawLine();
+                            //drawLine();
                             Toast.makeText(getView().getContext(), "起始时间：" + dateFormatShort.format(SysData.startDataTime) + "\n截至时间：" +  dateFormatShort.format(SysData.endDataTime), Toast.LENGTH_LONG).show();
                         }
                     }
@@ -456,14 +457,14 @@ public class TabData extends Fragment {
                             @Override
                             public void run() {
                                 Log.i("数据库", "删除数据");
-                                if(SysData.listDataType.equals("codmn")) {
-                                    MainActivity.db.resultDao().deleteByTime(System.currentTimeMillis());
+                                if(SysData.listDataType.equals("task")) {
+                                    MainActivity.db.taskDao().deleteAll();
+                                }
+                                if(SysData.listDataType.equals("record")) {
+                                    MainActivity.db.recordDao().deleteByTime(System.currentTimeMillis());
                                 }
                                 if(SysData.listDataType.equals("alert")) {
                                     MainActivity.db.alertLogDao().deleteByTime(System.currentTimeMillis());
-                                }
-                                if(SysData.listDataType.equals("calibration")) {
-                                    MainActivity.db.calibrationDao().deleteByTime(System.currentTimeMillis());
                                 }
 
                                 SysData.currentPage = 1;
@@ -488,7 +489,7 @@ public class TabData extends Fragment {
                         //初始化折线图
                         initView();
                         //绘制曲线
-                        drawLine();
+                        //drawLine();
                         Log.i("数据库", "已清空数据");
                     }
                 });
@@ -508,11 +509,11 @@ public class TabData extends Fragment {
     public void addListTable() {
         //将数据加入到ListView展示数据
         listData = new ArrayList<String>();
-        if(SysData.listDataType.equals("codmn")) {
-            if (SysData.results != null && !SysData.results.isEmpty()) {
-                listData.add("序号\t\t\t\t时间\t\t\t类型\t测定结果");
-                for (Result result : SysData.results) {
-                    listData.add(result.rid + "\t\t" + dateFormat.format(result.dateTime) + "\t" + result.dataType + "\t" + result.dataValue + " mg/L");
+        if (SysData.listDataType.equals("task")) {
+            if (SysData.tasks != null && !SysData.tasks.isEmpty()) {
+                listData.add("序号\t\t\t\t生效时间\t\t\t\t失效时间\t\t\t定时指令\t任务名称\t状态");
+                for (Task task : SysData.tasks) {
+                    listData.add(task.tid + "\t\t" + dateFormat.format(task.startTime) + "\t\t" + dateFormat.format(task.endTime) + "\t" + task.cron + "\t" + task.task + "\t" + task.enable);
                 }
                 String[] stringData = listData.toArray(new String[0]);
                 listview.setAdapter(new DataAdapter(view.getContext(), stringData));
@@ -522,11 +523,26 @@ public class TabData extends Fragment {
                 listview.setAdapter(new DataAdapter(view.getContext(), stringData));
             }
         }
-        if(SysData.listDataType.equals("alert")) {
+        if (SysData.listDataType.equals("record")) {
+            if (SysData.records != null && !SysData.records.isEmpty()) {
+                listData.add("序号\t\t时间\t\t\t\t\t标样类型\t\t配制浓度\t\t测量结果");
+                for (Record record : SysData.records) {
+                    listData.add(record.rid + "\t\t" + dateFormat.format(record.dateTime) + "\t\t" + record.dataType + "\t\t" + record.preValue + "\t\t" + record.meaValue);
+                }
+                String[] stringData = listData.toArray(new String[0]);
+                listview.setAdapter(new DataAdapter(view.getContext(), stringData));
+            } else {
+                listData.add("暂未查询到数据");
+                String[] stringData = listData.toArray(new String[0]);
+                listview.setAdapter(new DataAdapter(view.getContext(), stringData));
+            }
+        }
+
+        if (SysData.listDataType.equals("alert")) {
             if (SysData.alertLogs != null && !SysData.alertLogs.isEmpty()) {
                 listData.add("序号\t\t报警时间\t\t\t\t出错信息\t\t\t\t复位时间");
                 for (AlertLog alertLog : SysData.alertLogs) {
-                    if(alertLog.resetTime != null) {
+                    if (alertLog.resetTime != null) {
                         listData.add(alertLog.alertid + "\t" + dateFormat.format(alertLog.alertTime) + "\t"
                                 + "\t" + alertLog.errorMsg + "\t" + dateFormat.format(alertLog.resetTime));
                     } else {
@@ -542,23 +558,9 @@ public class TabData extends Fragment {
                 listview.setAdapter(new DataAdapter(view.getContext(), stringData));
             }
         }
-        if(SysData.listDataType.equals("calibration")) {
-            if (SysData.calibrations != null && !SysData.calibrations.isEmpty()) {
-                listData.add("序号\t\t时间\t\t\t\t\t原值\t\t滴定量\t\tK值\t\t新值");
-                for (Calibration calibration : SysData.calibrations) {
-                    listData.add(calibration.cid + "\t\t" + dateFormat.format(calibration.dateTime) + "\t\t" +
-                            calibration.byValue + "\t\t" + calibration.gmsjValue + "\t\t" + calibration.coefficient + "\t\t" + calibration.newValue);
-                }
-                String[] stringData = listData.toArray(new String[0]);
-                listview.setAdapter(new DataAdapter(view.getContext(), stringData));
-            } else {
-                listData.add("暂未查询到数据");
-                String[] stringData = listData.toArray(new String[0]);
-                listview.setAdapter(new DataAdapter(view.getContext(), stringData));
-            }
-        }
     }
 
+    /*
     //绘制曲线
     public void drawLine() {
         //SysData.readChartData(30, 0);       //从数据库中读取30条数据
@@ -603,6 +605,8 @@ public class TabData extends Fragment {
 
         lineChartView.setOnValueTouchListener(new ValueTouchListener());
     }
+
+     */
 
     /*
     @Override

@@ -15,6 +15,9 @@ interface TaskDao {
     @Query("SELECT * FROM Task  ORDER BY tid DESC LIMIT (:num) OFFSET (:start)")
     List<Task>  getNum(int num, int start);
 
+    @Query("SELECT count(*) FROM Task")
+    int findTaskCount();
+
     @Insert
     void insertAll(Task... tasks);
 
@@ -23,6 +26,9 @@ interface TaskDao {
 
     @Delete
     void delete(Task task);
+
+    @Query("DELETE FROM Task WHERE tid > 0")
+    void deleteAll();
 
     @Query("DELETE FROM Task WHERE tid = (:tid)")
     void deleteById(int tid);

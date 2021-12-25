@@ -282,18 +282,18 @@ public class SysGpio {
     //清洗定容器
     public static void s8_cleaning() {
         Log.d(TAG, "run: 清洗、润洗定容器");
+        SysData.statusMsg = "清洗定容器";
         new Thread(new Runnable() {
             public void run() {
                 statusS[8] = true;
                 try {
                     SysGpio.mGpioOutP1.setValue(true);  //开启水样泵电源
+                    SysGpio.mGpioOutD8.setValue(true);   //开启夹管阀电源
+                    Thread.sleep(3000);
+                    SysGpio.mGpioOutD4.setValue(true);   //开启夹管阀4
                     Thread.sleep(3000);
                     Log.d(TAG, "run: P1状态" + SysGpio.mGpioOutP1.getValue());
                     Log.d(TAG, "run: 发送串口启动进样泵指令" );
-
-                    //清洗试剂管路
-                    s2_addReagent(2, 20);
-                    Thread.sleep(20000);
 
                     //注射泵状态查询
                     pumpStatus(1, 1000);
@@ -301,14 +301,31 @@ public class SysGpio {
                     //注射泵1状态正常时执行
                     if(SysData.Pump[1] == 0x00) {
                         //注射泵抽取液体
-                        MainActivity.com0.pumpCmd(1, "turn", 30);
-                        Thread.sleep(20000);
+                        MainActivity.com0.pumpCmd(1, "turn", 15);
+                        Thread.sleep(10000);
                     }
+
+                    //注射泵状态查询
+                    pumpStatus(1, 1000);
+                    SysGpio.mGpioOutD4.setValue(false);   //关闭夹管阀4
+                    Thread.sleep(3000);
+
+                    //注射泵1状态正常时执行
+                    if(SysData.Pump[1] == 0x00) {
+                        //注射泵抽取液体
+                        MainActivity.com0.pumpCmd(1, "turn", 15);
+                        Thread.sleep(10000);
+                    }
+
                     //注射泵状态查询
                     pumpStatus(1, 1000);
                     SysGpio.mGpioOutDC1.setValue(true);   //开启蠕动泵排出液体
                     Thread.sleep(30000);  //等待30秒，排空反应器液体
                     SysGpio.mGpioOutDC1.setValue(false);   //关闭蠕动泵
+                    SysGpio.mGpioOutP1.setValue(false);  //关闭水样泵电源
+                    SysGpio.mGpioOutD4.setValue(false);   //开启夹管阀4
+                    Thread.sleep(3000);
+                    //SysGpio.mGpioOutD8.setValue(false);   //开启夹管阀8
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -316,6 +333,7 @@ public class SysGpio {
                 }
                 Log.d(TAG, "run: 清洗、润洗定容器完成");
                 statusS[8] = false;
+
             }
         }).start();
     }
@@ -323,6 +341,7 @@ public class SysGpio {
     //进水样
     public static void s1_inletWater(int waterStep) {
         Log.d(TAG, "run: 开始进水样");
+        SysData.statusMsg = "进水样";
         SysData.inletWaterStep = waterStep;
         new Thread(new Runnable() {
             public void run() {
@@ -341,10 +360,10 @@ public class SysGpio {
                     if(SysData.Pump[1] == 0x00) {
                         //注射泵抽取液体
                         MainActivity.com0.pumpCmd(1, "turn", SysData.inletWaterStep);
-                        Thread.sleep(20000);
+                        Thread.sleep(30000);
                     }
                     //注射泵状态查询
-                    pumpStatus(1, 10000);
+                    pumpStatus(1, 3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -356,11 +375,15 @@ public class SysGpio {
         }).start();
     }
 
-    //添加试剂 reagentChannel-试剂通道，addReagentStep-添加试剂步数
+    //添加试剂 reagentChannel-试剂通道，addReagentStep-添加试剂步数；试剂通道分配：1-纯水 2-氨氮 3-总磷 4-总氮 5-COD 6-备用
     public static void s2_addReagent(int reagentChannel, int addReagentStep) {
         Log.d(TAG, "run: 开始加试剂");
-        SysData.reagentChannel = reagentChannel;
+        SysData.statusMsg = "添加试剂";
+        if(!SysData.microPumpTest) {
+            SysData.reagentChannel = reagentChannel;
+        }
         SysData.addReagentStep = addReagentStep;
+
         new Thread(new Runnable() {
             public void run() {
                 statusS[2] = true;
@@ -370,15 +393,18 @@ public class SysGpio {
                     Log.d(TAG, "run: P2状态" + SysGpio.mGpioOutP2.getValue());
                     Log.d(TAG, "run: 启动多通道阀" );
 
-                    //多通道阀状态查询
-                    pumpStatus(2, 1000);
-
-                    //多通道阀状态正常时执行
-                    if(SysData.Pump[2] == 0x00) {
-                        //切换多通道阀到指定通道
-                        MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
-                        Thread.sleep(3000);
+                    //如果不是计量标定，清空管路中的液体
+                    if(!SysData.microPumpTest) {
+                        //多通道阀状态查询
+                        pumpStatus(2, 1000);
+                        //多通道阀状态正常时执行
+                        if (SysData.Pump[2] == 0x00) {
+                            //切换多通道阀到指定通道
+                            MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
+                            Thread.sleep(3000);
+                        }
                     }
+
                     //注射泵状态查询
                     pumpStatus(2, 1000);
                     //启动微量泵添加试剂
@@ -387,17 +413,21 @@ public class SysGpio {
                     //多通道阀状态查询
                     pumpStatus(2, 1000);
 
-                    //多通道阀状态正常时执行
-                    if(SysData.Pump[2] == 0x00) {
-                        //切换多通道阀到指定通道
-                        SysData.reagentChannel = 1;
-                        MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
-                        Thread.sleep(3000);
+                    //如果不是计量标定，清空管路中的液体
+                    if(!SysData.microPumpTest) {
+                        //多通道阀状态正常时执行
+                        if (SysData.Pump[2] == 0x00) {
+                            //切换多通道阀到指定通道
+                            SysData.reagentChannel = 1;      //加过试剂之后用纯水清洗管路
+                            MainActivity.com0.pumpCmd(2, "switch", SysData.reagentChannel);
+                            Thread.sleep(3000);
+                        }
+                        //注射泵状态查询
+                        pumpStatus(2, 1000);
+                        //启动微量泵添加试剂
+                        microPumpRun(SysData.pureWaterStep);  //用纯水冲洗试剂管路，所有的试剂都加入定容器
                     }
-                    //注射泵状态查询
-                    pumpStatus(2, 1000);
-                    //启动微量泵添加试剂
-                    microPumpRun(20);
+
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -406,17 +436,20 @@ public class SysGpio {
                 }
                 Log.d(TAG, "run: 加试剂完成");
                 statusS[2] = false;
+                SysData.microPumpTest = false;
             }
         }).start();
     }
 
     //混合样品、供样、排空样品、清洗容器
     public static void s3_supplySamples() {
+
         new Thread(new Runnable() {
             public void run() {
                 statusS[3] = true;
                 try {
                     Log.d(TAG, "run: 混合样品");
+                    SysData.statusMsg = "混合样品";
                     SysGpio.mGpioOutD8.setValue(true);  //开启夹管阀电源
                     Thread.sleep(1000);
                     SysGpio.mGpioOutD5.setValue(true);  //打开夹管阀5
@@ -428,11 +461,13 @@ public class SysGpio {
                     Log.d(TAG, "run: 混合结束");
 
                     Log.d(TAG, "run: 开始供样");
+                    SysData.statusMsg = "开始供样";
                     SysGpio.mGpioOutD1.setValue(true);   //打开夹管阀1提供配制的标样
                     SysData.startSupplySamples = true;   //开始供样标志
                     Thread.sleep(SysData.supplySamplesTime*60000);          //仪表抽取标样等待时间10分钟
 
                     Log.d(TAG, "run: 结束供样排出废液");
+                    SysData.statusMsg = "结束供样";
                     SysGpio.mGpioOutD1.setValue(false);   //关闭夹管阀1
                     SysData.startSupplySamples = false;   //停止供样标志
                     Thread.sleep(1000);          //等待1秒
@@ -441,13 +476,11 @@ public class SysGpio {
                     SysGpio.mGpioOutDC1.setValue(false);   //停止蠕动泵
 
                     Log.d(TAG, "run: 清洗容器");
-                    SysGpio.mGpioOutD4.setValue(true);   //开启夹管阀4
                     s8_cleaning();
                     Thread.sleep(1000);
                     threadWaiting(8, 60*5);                    //启动清洗流程
-                    SysGpio.mGpioOutD4.setValue(false);   //关闭夹管阀4
                     Thread.sleep(1000);
-                    SysGpio.mGpioOutD8.setValue(false);  //关闭夹管阀电源
+                    //SysGpio.mGpioOutD8.setValue(false);  //关闭夹管阀电源
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -482,23 +515,27 @@ public class SysGpio {
             public void run() {
                 Log.d(TAG, "run: 开始配制标样");
                 updateProgress();  //更新进度条
+                SysData.statusMsg = "配制标样";
                 statusS[7] = true;
                 isRun = true;
                 //原水样
                 if(sampleType == 0) {
-                    Log.d(TAG, "run: 开始供应原水");
+                    Log.d(TAG, "run: 原水开始供样");
+                    SysData.statusMsg = "原水供样";
                     //return;
                     try {
                         Thread.sleep(3000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d(TAG, "run: 默认供应原水");
+                    Log.d(TAG, "run: 维持原水供样");
+                    SysData.statusMsg = "维持原水供样";
                 }
 
                 //空白样
                 if(sampleType == 1) {
-                    Log.d(TAG, "run: 开始供应空白样");
+                    Log.d(TAG, "run: 空白样开始供样");
+                    SysData.statusMsg = "空白样供样";
                     try {
                         SysGpio.mGpioOutD8.setValue(true);   //开启夹管阀8
                         Thread.sleep(3000);
@@ -513,32 +550,40 @@ public class SysGpio {
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d(TAG, "run: 结束供样空白样");
+                    Log.d(TAG, "run: 空白样结束供样");
+                    SysData.statusMsg = "结束供样";
                 }
 
                 //配制标样、加标回收
                 if(sampleType >= 2) {
+                    SysData.statusMsg = "配制水样";
                     int waterStepNow = SysData.waterStep[waterType];
                     int sampleStepNow = SysData.sampleStep[waterType][sampleType-2];
-                    int reagentChannelNow = waterType + 3;
+                    int reagentChannelNow = waterType + 2;
                     Log.d(TAG, "run: waterStepNow=" + waterStepNow);
                     Log.d(TAG, "run: sampleStepNow=" + sampleStepNow);
                     try {
                         SysGpio.mGpioOutD8.setValue(true);   //开启夹管阀电源
                         Thread.sleep(3000);          //仪表抽取标样等待时间3秒
-                        if(sampleType == 6) {
+                        if(sampleType == 5) {
                             SysGpio.mGpioOutD3.setValue(true);   //开启夹管阀3
                             Thread.sleep(3000);          //仪表抽取标样等待时间3秒
                         }
                         s8_cleaning(); //润洗管路
                         Thread.sleep(1000);
-                        threadWaiting(8, 60*5);
+                        threadWaiting(8, 120);
                         s1_inletWater(waterStepNow); //进样
                         Thread.sleep(1000);
-                        threadWaiting(1, 60);
+                        threadWaiting(1, 120);
                         s2_addReagent(reagentChannelNow, sampleStepNow); //加入母液
                         Thread.sleep(1000);
                         threadWaiting(2, 60);
+
+                        if(sampleType == 5) {
+                            SysGpio.mGpioOutD3.setValue(false);   //关闭夹管阀3
+                            Thread.sleep(3000);          //仪表抽取标样等待时间3秒
+                        }
+
                         s3_supplySamples(); //混合、供样、清洗
                         Thread.sleep(1000);
                         threadWaiting(3, 60*20);
@@ -547,12 +592,21 @@ public class SysGpio {
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d(TAG, "run: 标样配制运行完成");
+                    Log.d(TAG, "run: 水样配制完成");
+                    SysData.statusMsg = "水样配制完成";
                 }
                 //进度条到达100
                 SysData.progressRate = 100;
                 statusS[7] = false;
                 isRun = false;
+                //3秒后仪表显示待机状态
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                SysData.progressRate = 0;
+                SysData.statusMsg = "待机";
             }
         }).start();
     }
@@ -619,41 +673,35 @@ public class SysGpio {
                     SysGpio.mGpioOutD8.setValue(true);
                     Thread.sleep(1000);
                     Log.d(TAG, "run: 开启泵1、2、夹管阀电源");
-                    Log.d(TAG, "run: 开始加试剂，通道3");
-                    s2_addReagent(3, 20); //加入母液
+                    Log.d(TAG, "run: 开始加试剂，通道2");
+                    s2_addReagent(2, 50); //加入母液
                     Thread.sleep(1000);
-                    threadWaiting(2, 60);
+                    threadWaiting(2, 150);
+                    Log.d(TAG, "run: 完成加试剂，通道2");
+                    Thread.sleep(1000);
+                    Log.d(TAG, "run: 开始加试剂，通道3");
+                    s2_addReagent(3, 50); //加入母液
+                    Thread.sleep(1000);
+                    threadWaiting(2, 150);
                     Log.d(TAG, "run: 完成加试剂，通道3");
                     Thread.sleep(1000);
                     Log.d(TAG, "run: 开始加试剂，通道4");
-                    s2_addReagent(4, 20); //加入母液
+                    s2_addReagent(4, 50); //加入母液
                     Thread.sleep(1000);
-                    threadWaiting(2, 60);
+                    threadWaiting(2, 150);
                     Log.d(TAG, "run: 完成加试剂，通道4");
                     Thread.sleep(1000);
                     Log.d(TAG, "run: 开始加试剂，通道5");
-                    s2_addReagent(5, 20); //加入母液
+                    s2_addReagent(5, 50); //加入母液
                     Thread.sleep(1000);
-                    threadWaiting(2, 60);
+                    threadWaiting(2, 150);
                     Log.d(TAG, "run: 完成加试剂，通道5");
                     Thread.sleep(1000);
                     Log.d(TAG, "run: 开始加试剂，通道6");
-                    s2_addReagent(6, 20); //加入母液
+                    s2_addReagent(6, 50); //加入母液
                     Thread.sleep(1000);
-                    threadWaiting(2, 60);
+                    threadWaiting(2, 150);
                     Log.d(TAG, "run: 完成加试剂，通道6");
-                    Thread.sleep(1000);
-                    Log.d(TAG, "run: 开始加试剂，通道2");
-                    s2_addReagent(2, 20); //加入母液
-                    Thread.sleep(1000);
-                    threadWaiting(2, 60);
-                    Log.d(TAG, "run: 完成加试剂，通道2");
-                    Thread.sleep(1000);
-                    Log.d(TAG, "run: 开始加试剂，通道1");
-                    s2_addReagent(1, 20); //加入母液
-                    Thread.sleep(1000);
-                    threadWaiting(2, 60);
-                    Log.d(TAG, "run: 完成加试剂，通道1");
                     Thread.sleep(1000);
                     Log.d(TAG, "run: 开始清洗流程1");
                     s8_cleaning();//清洗容器
@@ -662,7 +710,6 @@ public class SysGpio {
                     Log.d(TAG, "run: 完成清洗流程1");
                     Thread.sleep(1000);
                     Log.d(TAG, "run: 开始清洗流程2");
-                    SysGpio.mGpioOutD4.setValue(true);
                     s8_cleaning();//清洗容器
                     Thread.sleep(1000);
                     threadWaiting(8, 60*5);
@@ -692,8 +739,8 @@ public class SysGpio {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    //时间超过90分钟，可能仪器故障
-                    if(isRun && (currentTimeMillis() - SysData.startTime) / 1000 > 5400) {
+                    //时间超过40分钟，可能仪器故障
+                    if(isRun && (currentTimeMillis() - SysData.startTime) / 1000 > 2400) {
                         SysData.errorMsg = "运行超时";
                         SysData.errorId = 6;
                         SysData.saveAlertToDB();  //保存报警记录
