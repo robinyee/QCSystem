@@ -94,19 +94,6 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnTaskData"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:background="@android:drawable/list_selector_background"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="定时任务"
-                android:textColor="@android:color/white" />
-
-            <Button
                 android:id="@+id/btnRecordData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -117,6 +104,19 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="运行记录"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btnTaskData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/list_selector_background"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="定时任务"
                 android:textColor="@android:color/black" />
 
             <Button

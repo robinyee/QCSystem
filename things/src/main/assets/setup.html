@@ -7,7 +7,7 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
 	<link rel="icon" href="favicon.ico">
-    <title>高锰酸盐指数在线分析仪</title>
+    <title>水质质控仪</title>
 <!--	
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -52,7 +52,7 @@
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 	<div class="container">
-    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">高锰酸盐指数在线分析仪</a>
+    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">水质质控仪</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -89,7 +89,7 @@
 	  <div class="jumbotron">
 	    <div class="container">
 	      <h3 class="display-5">仪表设置</h3>
-	      <p class="lead">设置仪表启动信息、仪表试剂计量参数、仪表系统参数</p>
+	      <p class="lead">设置定时任务、试剂计量参数、系统参数</p>
 	    </div>
 	  </div>
 
@@ -98,8 +98,8 @@
 	    <div class="row">
 	        <div class="col-md-4">
 				<div class="card mb-3">
-				  <h5 class="card-header">定时启动<span v-html="connected ? connecting : ''"></span></h5>
-				  <div class="card-body" style="min-height: 360px;">
+				  <h5 class="card-header">定时任务<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 365px;">
 				    <form>
 				    	<div class="form-group">
 				    	  <h6>启动时间：<span class="badge badge-success">{{nextStartTime}}</span></h6>
@@ -111,24 +111,33 @@
 				    	</div>
 				    	<div class="form-group">
 				    	  <h6>启动周期：[小时]</h6>
-				    	  <input type="text" placeholder="输入启动间隔时间" class="form-control" v-model="startCycle" v-on:change="sendData('SET_Setup|startCycle|' + startCycle)">
+				    	  <input type="text" placeholder="输入启动间隔时间" class="form-control" v-model="startCycle" v-on:change="sendData('SET_Setup|startCycle|' + startCycle)"/>
 				    	</div>
 				    	<div class="form-group">
 				    	  <h6>启动次数：[输入999，不限次数]</h6>
-				    	  <input type="text" placeholder="输入启动次数" class="form-control" v-model="numberTimes" v-on:change="sendData('SET_Setup|numberTimes|' + numberTimes)">
+				    	  <input type="text" placeholder="输入启动次数" class="form-control" v-model="numberTimes" v-on:change="sendData('SET_Setup|numberTimes|' + numberTimes)"/>
 				    	</div>
 						<div class="form-group">
-							<h6>启动方式：</h6>
+							<h6>标样类型：</h6>
 							<p>
 								<label for="select"></label>
-								<select id="select" v-model="startType" v-on:change="sendData('SET_Setup|startType|' + startType)">
-									<option value="0">无</option>
-									<option value="1">水样测定</option>
-									<option value="2">标样测定</option>
-									<option value="3">仪表校准</option>
+								<select id="select" v-model="startWaterType" v-on:change="sendData('SET_Setup|startWaterType|' + startWartType)">
+									<option value="0">氨氮</option>
+									<option value="1">总磷</option>
+									<option value="2">总氮</option>
+									<option value="3">COD</option>
+									<option value="4">混合</option>
+								</select>
+								<select id="select" v-model="startSampleType" v-on:change="sendData('SET_Setup|startSampleType|' + startSampleType)">
+									<option value="0">原水样</option>
+									<option value="1">空白样</option>
+									<option value="2">标样A</option>
+									<option value="3">标样B</option>
+									<option value="3">标样C</option>
+									<option value="3">加标回收</option>
 								</select>
 								<label for="select">  </label>
-								<button type="button" v-bind:class="isLoop ? 'btn btn-danger btn-sm' : 'btn btn-success btn-sm'"  @click="sendData('SET_Setup|isLoop|' + !isLoop); isLoop = !isLoop" >{{isLoop ? "定时已开启" : "定时已关闭"}}</button>
+								<button type="button" class="btn btn-success btn-sm" @click="sendData('SET_Setup|addTask|' + true)" > 添加任务 </button>
 							</p>
 						</div>
 						<!--<div class="form-group">
@@ -143,58 +152,26 @@
 			</div>
 			<div class="col-md-4">
 				<div class="card mb-3">
-				  <h5 class="card-header">仪表参数<span v-html="connected ? connecting : ''"></span></h5>
-				  <div class="card-body" style="min-height: 360px;">
+				  <h5 class="card-header">基本参数<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 365px;">
 				    <form>
 				    	<div class="form-group">
-				    	  <h6>校正斜率：[原值{{ trueValue }}]</h6>
-				    	  <input type="text" placeholder="输入斜率" class="form-control" v-model="slopeA" v-on:change="sendData('SET_Setup|slopeA|' + slopeA)">
+				    	  <h6>供样时长：[分钟]</h6>
+				    	  <input type="text" placeholder="供样时长" class="form-control" v-model="supplySamplesTime" v-on:change="sendData('SET_Setup|supplySamplesTime|' + supplySamplesTime)"/>
 				    	</div>
+						<div class="form-group">
+							<h6>搅拌时长：[秒]</h6>
+							<input type="text" placeholder="搅拌时长" class="form-control" v-model="mixedTime" v-on:change="sendData('SET_Setup|mixedTime|' + mixedTime)"/>
+						</div>
 				    	<div class="form-group">
-				    	  <h6>校正截距：</h6>
-				    	  <input type="text" placeholder="输入截距" class="form-control" v-model="interceptB" v-on:change="sendData('SET_Setup|interceptB|' + interceptB)">
+				    	  <h6>进样泵单步体积：[mL]</h6>
+				    	  <input type="text"  placeholder="进样泵单步体积" class="form-control" v-model="waterStepVolume" v-on:change="sendData('SET_Setup|waterStepVolume|' + waterStepVolume)" disabled readonly/>
 				    	</div>
 						<div class="form-group">
-						  <h6>试剂标定：</h6>
-						  <input type="text" placeholder="输入标定值" class="form-control" v-model="biaodingValue" v-on:change="sendData('SET_Setup|biaodingValue|' + biaodingValue)">
+						  <h6>试剂泵单步体积：[mL]</h6>
+						  <input type="text" placeholder="试剂泵单步体积" class="form-control" v-model="reagentStepVolume" v-on:change="sendData('SET_Setup|reagentStepVolume|' + reagentStepVolume)" disabled readonly/>
 						</div>
-						<!--
-				    	<div class="form-group">
-				    	  <h6>原始值：[Y]</h6>
-				    	  <input type="text" placeholder="原始值" class="form-control" v-model="trueValue" v-on:change="sendData('SET_Setup|trueValue|' + trueValue)">
-				    	</div>
-						-->
-						<div class="form-group">
-							<h6>软件版本：</h6>
-							<p class="lead">
-								<span class="badge badge-success">CODmn V{{version}}</span>
-							</p>
-						</div>
-						<!--
-						<div class="form-group">
-						  <h6>消解温度：[℃]</h6>
-						  <input type="text" placeholder="输入消解温度" class="form-control" v-model="xiaojieTemp" v-on:change="sendData('SET_Setup|xiaojieTemp|' + xiaojieTemp)">
-						</div>
-						<div class="form-group">
-						  <h6>消解时间：[秒]</h6>
-						  <input type="text" placeholder="输入消解时长" class="form-control" v-model="xiaojieTime" v-on:change="sendData('SET_Setup|xiaojieTime|' + xiaojieTime)">
-						</div>
-						<div class="form-group">
-						  <h6>试剂标定：[试剂标定值]</h6>
-						  <input type="text" placeholder="输入标定值" class="form-control" v-model="biaodingValue" v-on:change="sendData('SET_Setup|biaodingValue|' + biaodingValue)">
-						</div>
-						<div class="form-group">
-							<h6>软件版本：</h6>
-							<p class="lead">
-								<span class="badge badge-success">CODmn V{{version}}</span>
-							</p>
-						</div>-->
-						<!--<div>
-							<h6>系统重启：</h6>
-							<p>
-								<button type="button" class="btn btn-success" @click="sendData('GET_Setup')" >重启仪表</button>
-							</p>
-				  		</div>-->
+						
 				    </form>
 				  </div>
 				</div>
@@ -202,7 +179,7 @@
 			<div class="col-md-4">
 				<div class="card mb-3">
 				  <h5 class="card-header">系统信息<span v-html="connected ? connecting : ''"></span></h5>
-				  <div class="card-body" style="min-height: 360px;">
+				  <div class="card-body" style="min-height: 365px;">
 				    <form>
 				    	<div class="form-group">
 				    	  <h6>串口名称：[USB串口]</h6>
@@ -210,7 +187,7 @@
 				    	</div>
 				    	<div class="form-group">
 				    	  <h6>RS485地址：[Modbus协议]</h6>
-				    	  <input type="text" placeholder="输入串口通讯地址" class="form-control" v-model="MODBUS_ADDR" v-on:change="sendData('SET_Setup|MODBUS_ADDR|' + MODBUS_ADDR)">
+				    	  <input type="text" placeholder="输入串口通讯地址" class="form-control" v-model="MODBUS_ADDR" v-on:change="sendData('SET_Setup|MODBUS_ADDR|' + MODBUS_ADDR)"/>
 				    	</div>
 				    	<div class="form-group">
 							<h6>波特率：</h6>
@@ -226,9 +203,10 @@
 							</p>
 				    	</div>
 						<div class="form-group">
-							<h6>系统参数：</h6>
+							<h6>软件版本：V{{version}}</h6>
 							<p>
-				    			<button type="button" class="btn btn-success btn-sm" @click="sendData('GET_Setup')" >重新载入</button>
+				    			<button type="button" class="btn btn-success btn-sm" @click="sendData('GET_Setup')" >刷新参数</button>
+								<button type="button" class="btn btn-success btn-sm" @click="sendData('SET_Setup|Save|true')" >保存参数</button>
 								<button type="button" class="btn btn-success btn-sm" @click="sendData('RUN_Stop')" >重启仪表</button>
 							</p>
 						</div>
@@ -238,6 +216,248 @@
 			</div>
 		</div>
 		
+		<div class="row">
+		    <div class="col-md-4">
+		    	<div class="card mb-3">
+		    	  <h5 class="card-header">氨氮标样<span v-html="connected ? connecting : ''"></span></h5>
+		    	  <div class="card-body" style="min-height: 360px;">
+		    	    <form>
+		    	    	<div class="form-group">
+		    	    	  <h6>定容体积：[mL]</h6>
+		    	    	  <input type="text" placeholder="定容体积" class="form-control" v-model="NH3Volume" v-on:change="sendData('SET_Setup|NH3Volume|' + NH3Volume)"/>
+		    	    	</div>
+		    	    	<div class="form-group">
+		    	    	  <h6>母液浓度：[mg/L]</h6>
+		    	    	  <input type="text" placeholder="母液浓度" class="form-control" v-model="NH3SampleO" v-on:change="sendData('SET_Setup|NH3SampleO|' + NH3SampleO)"/>
+		    	    	</div>
+		    			<div class="form-group">
+		    			  <h6>标样A浓度：[mg/L]</h6>
+		    			  <input type="text" placeholder="标样A浓度" class="form-control" v-model="NH3SampleA" v-on:change="sendData('SET_Setup|NH3SampleA|' + NH3SampleA)"/>
+		    			</div>
+		    			<div class="form-group">
+						  <h6>标样B浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样B浓度" class="form-control" v-model="NH3SampleB" v-on:change="sendData('SET_Setup|NH3SampleB|' + NH3SampleB)"/>
+		    			</div>
+						<div class="form-group">
+						  <h6>标样C浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样C浓度" class="form-control" v-model="NH3SampleC" v-on:change="sendData('SET_Setup|NH3SampleC|' + NH3SampleC)"/>
+						</div>
+						<div class="form-group">
+						  <h6>加标量：[mg/L]</h6>
+						  <input type="text" placeholder="加标量" class="form-control" v-model="NH3AddValume" v-on:change="sendData('SET_Setup|NH3AddValume|' + NH3AddValume)"/>
+						</div>
+						<div class="form-group">
+						  <h6>加标倍数：[倍]</h6>
+						  <input type="text" placeholder="加标倍数" class="form-control" v-model="NH3AddMul" v-on:change="sendData('SET_Setup|NH3AddMul|' + NH3AddMul)"/>
+						</div>
+						<div class="form-group">
+							<h6>加标回收计算方式：</h6>
+							<p>
+								<label for="select"></label>
+								<select id="select" v-model="NH3AddType" v-on:change="sendData('SET_Setup|NH3AddType|' + NH3AddType)">
+									<option value="0">加标量</option>
+									<option value="1">加标倍数</option>
+								</select>
+							</p>
+						</div>
+		    	    </form>
+		    	  </div>
+		    	</div>
+		    </div>
+			<div class="col-md-4">
+				<div class="card mb-3">
+				  <h5 class="card-header">总磷标样<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 360px;">
+					<form>
+						<div class="form-group">
+						  <h6>定容体积：[mL]</h6>
+						  <input type="text" placeholder="定容体积" class="form-control" v-model="TPVolume" v-on:change="sendData('SET_Setup|TPVolume|' + TPVolume)"/>
+						</div>
+						<div class="form-group">
+						  <h6>母液浓度：[mg/L]</h6>
+						  <input type="text" placeholder="母液浓度" class="form-control" v-model="TPSampleO" v-on:change="sendData('SET_Setup|TPSampleO|' + TPSampleO)"/>
+						</div>
+						<div class="form-group">
+						  <h6>标样A浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样A浓度" class="form-control" v-model="TPSampleA" v-on:change="sendData('SET_Setup|TPSampleA|' + TPSampleA)"/>
+						</div>
+						<div class="form-group">
+						  <h6>标样B浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样B浓度" class="form-control" v-model="TPSampleB" v-on:change="sendData('SET_Setup|TPSampleB|' + TPSampleB)"/>
+						</div>
+						<div class="form-group">
+						  <h6>标样C浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样C浓度" class="form-control" v-model="TPSampleC" v-on:change="sendData('SET_Setup|TPSampleC|' + TPSampleC)"/>
+						</div>
+						<div class="form-group">
+						  <h6>加标量：[mg/L]</h6>
+						  <input type="text" placeholder="加标量" class="form-control" v-model="TPAddValume" v-on:change="sendData('SET_Setup|TPAddValume|' + TPAddValume)"/>
+						</div>
+						<div class="form-group">
+						  <h6>加标倍数：[倍]</h6>
+						  <input type="text" placeholder="加标倍数" class="form-control" v-model="TPAddMul" v-on:change="sendData('SET_Setup|TPAddMul|' + TPAddMul)"/>
+						</div>
+						<div class="form-group">
+							<h6>加标回收计算方式：</h6>
+							<p>
+								<label for="select"></label>
+								<select id="select" v-model="TPAddType" v-on:change="sendData('SET_Setup|TPAddType|' + TPAddType)">
+									<option value="0">加标量</option>
+									<option value="1">加标倍数</option>
+								</select>
+							</p>
+						</div>
+					</form>
+				  </div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="card mb-3">
+				  <h5 class="card-header">总氮标样<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 360px;">
+					<form>
+						<div class="form-group">
+						  <h6>定容体积：[mL]</h6>
+						  <input type="text" placeholder="定容体积" class="form-control" v-model="TNVolume" v-on:change="sendData('SET_Setup|TNVolume|' + TNVolume)"/>
+						</div>
+						<div class="form-group">
+						  <h6>母液浓度：[mg/L]</h6>
+						  <input type="text" placeholder="母液浓度" class="form-control" v-model="TNSampleO" v-on:change="sendData('SET_Setup|TNSampleO|' + TNSampleO)"/>
+						</div>
+						<div class="form-group">
+						  <h6>标样A浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样A浓度" class="form-control" v-model="TNSampleA" v-on:change="sendData('SET_Setup|TNSampleA|' + TNSampleA)"/>
+						</div>
+						<div class="form-group">
+						  <h6>标样B浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样B浓度" class="form-control" v-model="TNSampleB" v-on:change="sendData('SET_Setup|TNSampleB|' + TNSampleB)"/>
+						</div>
+						<div class="form-group">
+						  <h6>标样C浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样C浓度" class="form-control" v-model="TNSampleC" v-on:change="sendData('SET_Setup|TNSampleC|' + TNSampleC)"/>
+						</div>
+						<div class="form-group">
+						  <h6>加标量：[mg/L]</h6>
+						  <input type="text" placeholder="加标量" class="form-control" v-model="TNAddValume" v-on:change="sendData('SET_Setup|TNAddValume|' + TNAddValume)"/>
+						</div>
+						<div class="form-group">
+						  <h6>加标倍数：[倍]</h6>
+						  <input type="text" placeholder="加标倍数" class="form-control" v-model="TNAddMul" v-on:change="sendData('SET_Setup|TNAddMul|' + TNAddMul)"/>
+						</div>
+						<div class="form-group">
+							<h6>加标回收计算方式：</h6>
+							<p>
+								<label for="select"></label>
+								<select id="select" v-model="TNAddType" v-on:change="sendData('SET_Setup|TNAddType|' + TNAddType)">
+									<option value="0">加标量</option>
+									<option value="1">加标倍数</option>
+								</select>
+							</p>
+						</div>
+					</form>
+				  </div>
+				</div>
+			</div>
+		</div>
+
+		
+		<div class="row">
+		    <div class="col-md-4">
+		    	<div class="card mb-3">
+		    	  <h5 class="card-header">CODMn标样<span v-html="connected ? connecting : ''"></span></h5>
+		    	  <div class="card-body" style="min-height: 360px;">
+		    	    <form>
+		    	    	<div class="form-group">
+		    	    	  <h6>定容体积：[mL]</h6>
+		    	    	  <input type="text" placeholder="定容体积" class="form-control" v-model="CODVolume" v-on:change="sendData('SET_Setup|CODVolume|' + CODVolume)"/>
+		    	    	</div>
+		    	    	<div class="form-group">
+		    	    	  <h6>母液浓度：[mg/L]</h6>
+		    	    	  <input type="text" placeholder="母液浓度" class="form-control" v-model="CODSampleO" v-on:change="sendData('SET_Setup|CODSampleO|' + CODSampleO)"/>
+		    	    	</div>
+		    			<div class="form-group">
+		    			  <h6>标样A浓度：[mg/L]</h6>
+		    			  <input type="text" placeholder="标样A浓度" class="form-control" v-model="CODSampleA" v-on:change="sendData('SET_Setup|CODSampleA|' + CODSampleA)"/>
+		    			</div>
+		    			<div class="form-group">
+						  <h6>标样B浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样B浓度" class="form-control" v-model="CODSampleB" v-on:change="sendData('SET_Setup|CODSampleB|' + CODSampleB)"/>
+		    			</div>
+						<div class="form-group">
+						  <h6>标样C浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样C浓度" class="form-control" v-model="CODSampleC" v-on:change="sendData('SET_Setup|CODSampleC|' + CODSampleC)"/>
+						</div>
+						<div class="form-group">
+						  <h6>加标量：[mg/L]</h6>
+						  <input type="text" placeholder="加标量" class="form-control" v-model="CODAddValume" v-on:change="sendData('SET_Setup|CODAddValume|' + CODAddValume)"/>
+						</div>
+						<div class="form-group">
+						  <h6>加标倍数：[倍]</h6>
+						  <input type="text" placeholder="加标倍数" class="form-control" v-model="CODAddMul" v-on:change="sendData('SET_Setup|CODAddMul|' + CODAddMul)"/>
+						</div>
+						<div class="form-group">
+							<h6>加标回收计算方式：</h6>
+							<p>
+								<label for="select"></label>
+								<select id="select" v-model="CODAddType" v-on:change="sendData('SET_Setup|CODAddType|' + CODAddType)">
+									<option value="0">加标量</option>
+									<option value="1">加标倍数</option>
+								</select>
+							</p>
+						</div>
+		    	    </form>
+		    	  </div>
+		    	</div>
+		    </div>
+			<div class="col-md-8">
+				<div class="card mb-3">
+				  <h5 class="card-header">混合标样<span v-html="connected ? connecting : ''"></span></h5>
+				  <div class="card-body" style="min-height: 360px;">
+					<form>
+						<div class="form-group">
+						  <h6>定容体积：[mL]</h6>
+						  <input type="text" placeholder="定容体积" class="form-control" v-model="MIXVolume" v-on:change="sendData('SET_Setup|MIXVolume|' + MIXVolume)"/>
+						</div>
+						<div class="form-group">
+						  <h6>母液浓度：[mg/L]</h6>
+						  <input type="text" placeholder="母液浓度" class="form-control" v-model="MIXSampleO" v-on:change="sendData('SET_Setup|MIXSampleO|' + MIXSampleO)"/>
+						  </div>
+						<div class="form-group">
+						  <h6>标样A浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样A浓度" class="form-control" v-model="MIXSampleA" v-on:change="sendData('SET_Setup|MIXSampleA|' + MIXSampleA)">
+						</div>
+						<div class="form-group">
+						  <h6>标样B浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样B浓度" class="form-control" v-model="MIXSampleB" v-on:change="sendData('SET_Setup|MIXSampleB|' + MIXSampleB)">
+						</div>
+						<div class="form-group">
+						  <h6>标样C浓度：[mg/L]</h6>
+						  <input type="text" placeholder="标样C浓度" class="form-control" v-model="MIXSampleC" v-on:change="sendData('SET_Setup|MIXSampleC|' + MIXSampleC)">
+						</div>
+						<div class="form-group">
+						  <h6>加标量：[mg/L]</h6>
+						  <input type="text" placeholder="加标量" class="form-control" v-model="MIXAddValume" v-on:change="sendData('SET_Setup|MIXAddValume|' + MIXAddValume)">
+						</div>
+						<div class="form-group">
+						  <h6>加标倍数：[倍]</h6>
+						  <input type="text" placeholder="加标倍数" class="form-control" v-model="MIXAddMul" v-on:change="sendData('SET_Setup|MIXAddMul|' + MIXAddMul)">
+						</div>
+						<div class="form-group">
+							<h6>加标回收计算方式：</h6>
+							<p>
+								<label for="select"></label>
+								<select id="select" v-model="MIXAddType" v-on:change="sendData('SET_Setup|MIXAddType|' + MIXAddType)">
+									<option value="0">加标量</option>
+									<option value="1">加标倍数</option>
+								</select>
+							</p>
+						</div>
+					</form>
+				  </div>
+				</div>
+			</div>
+		</div>
+				
 	</div>
 <!--<span class="badge badge-pill badge-success">发送数据</span><span class="badge badge-success">{{sendCmd}}</span>-->
 </main>
@@ -246,6 +466,7 @@
 <footer class="footer mt-auto py-3">
   <div class="container">
     <span class="text-muted">&copy; 2020 江苏南水科技有限公司</span>
+	
   </div>
 </footer>
 
@@ -257,7 +478,7 @@
 <!--加载库文件-->
 
 <script src="format.js"></script>
-<script src="socketcod.js"></script>
+<script src="socketqc.js"></script>
 <!--<script src="dashboard.js"></script>-->
 <script src="connect.js"></script>
 

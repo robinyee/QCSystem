@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         //打开数据库
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "db_qc").build();  //创建数据库
+        //db.recordDao().deleteByTime(System.currentTimeMillis()); //删除所有记录
         //SysData.readData(SysData.numPerpage, (SysData.currentPage - 1) * SysData.numPerpage);  //从数据库读取数据
         //SysData.readChartData(30, 0);       //从数据库中读取30条数据
         //SysData.delDataFromCalibration(16);         //删除一条校准记录

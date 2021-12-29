@@ -16,6 +16,7 @@
         <item >总磷</item>
         <item >总氮</item>
         <item >COD</item>
+        <item >混合</item>
     </string-array>
     <string-array name="sampleTyep">
         <item >原水样</item>

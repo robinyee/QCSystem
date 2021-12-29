@@ -95,7 +95,7 @@ public class TabData extends Fragment {
 
         //查询数据
         SysData.currentPage = 1;
-        //SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
+        SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
 
         //显示数据列表
         addListTable();
@@ -509,11 +509,11 @@ public class TabData extends Fragment {
     public void addListTable() {
         //将数据加入到ListView展示数据
         listData = new ArrayList<String>();
-        if (SysData.listDataType.equals("task")) {
-            if (SysData.tasks != null && !SysData.tasks.isEmpty()) {
-                listData.add("序号\t\t\t\t生效时间\t\t\t\t失效时间\t\t\t定时指令\t任务名称\t状态");
-                for (Task task : SysData.tasks) {
-                    listData.add(task.tid + "\t\t" + dateFormat.format(task.startTime) + "\t\t" + dateFormat.format(task.endTime) + "\t" + task.cron + "\t" + task.task + "\t" + task.enable);
+        if (SysData.listDataType.equals("record")) {
+            if (SysData.records != null && !SysData.records.isEmpty()) {
+                listData.add("序号\t\t时间\t\t\t\t\t标样类型\t\t配制浓度\t\t测量结果");
+                for (Record record : SysData.records) {
+                    listData.add(record.rid + "\t\t" + dateFormat.format(record.dateTime) + "\t\t" + record.dataType + "\t\t" + record.preValue + "\t\t" + record.meaValue);
                 }
                 String[] stringData = listData.toArray(new String[0]);
                 listview.setAdapter(new DataAdapter(view.getContext(), stringData));
@@ -523,11 +523,12 @@ public class TabData extends Fragment {
                 listview.setAdapter(new DataAdapter(view.getContext(), stringData));
             }
         }
-        if (SysData.listDataType.equals("record")) {
-            if (SysData.records != null && !SysData.records.isEmpty()) {
-                listData.add("序号\t\t时间\t\t\t\t\t标样类型\t\t配制浓度\t\t测量结果");
-                for (Record record : SysData.records) {
-                    listData.add(record.rid + "\t\t" + dateFormat.format(record.dateTime) + "\t\t" + record.dataType + "\t\t" + record.preValue + "\t\t" + record.meaValue);
+
+        if (SysData.listDataType.equals("task")) {
+            if (SysData.tasks != null && !SysData.tasks.isEmpty()) {
+                listData.add("序号\t\t\t\t生效时间\t\t\t\t失效时间\t\t\t定时指令\t任务名称\t状态");
+                for (Task task : SysData.tasks) {
+                    listData.add(task.tid + "\t\t" + dateFormat.format(task.startTime) + "\t\t" + dateFormat.format(task.endTime) + "\t" + task.cron + "\t" + task.task + "\t" + task.enable);
                 }
                 String[] stringData = listData.toArray(new String[0]);
                 listview.setAdapter(new DataAdapter(view.getContext(), stringData));

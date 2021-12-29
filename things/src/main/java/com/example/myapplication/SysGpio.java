@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import static android.content.ContentValues.TAG;
 import static com.example.myapplication.SysData.isRun;
+import static com.example.myapplication.SysData.waterVolumes;
 import static java.lang.System.currentTimeMillis;
 
 public class SysGpio {
@@ -455,7 +456,7 @@ public class SysGpio {
                     SysGpio.mGpioOutD5.setValue(true);  //打开夹管阀5
                     Thread.sleep(3000);
                     SysGpio.mGpioOutRE1.setValue(true);   //开启蠕动泵反转泵入空气
-                    Thread.sleep(120000);           //泵入空气混合时间2分钟
+                    Thread.sleep(SysData.mixedTime * 1000);   //泵入空气混合时间2分钟
                     SysGpio.mGpioOutRE1.setValue(false);   //停止蠕动泵
                     SysGpio.mGpioOutD5.setValue(false);  //关闭夹管阀5
                     Log.d(TAG, "run: 混合结束");
@@ -464,6 +465,7 @@ public class SysGpio {
                     SysData.statusMsg = "开始供样";
                     SysGpio.mGpioOutD1.setValue(true);   //打开夹管阀1提供配制的标样
                     SysData.startSupplySamples = true;   //开始供样标志
+                    SysData.startSupplySamplesTime = System.currentTimeMillis();  //开始供样的时间
                     Thread.sleep(SysData.supplySamplesTime*60000);          //仪表抽取标样等待时间10分钟
 
                     Log.d(TAG, "run: 结束供样排出废液");
@@ -502,12 +504,16 @@ public class SysGpio {
         SysData.strWaterType = SysData.arrWaterType[waterType];
         SysData.strSampleType = SysData.arrSampleType[sampleType];
         SysData.calculation();                                          //计算水样和试剂步数
-        SysData.startTime = currentTimeMillis();
+        SysData.startTime = currentTimeMillis();             //开始运行时间
+        SysData.endTime = currentTimeMillis() + 20*60*1000;  //预计结束时间
         SysData.progressRate = 0;
+        SysData.waterVolumeNow = SysData.waterVolumes[waterType];  //当前定容的体积
         if(sampleType>=2) {
             SysData.concentration = SysData.sampleValue[waterType][sampleType - 2]; //当前配制的标样的浓度
+            SysData.reagentVolumeNow = SysData.reagentVolume[waterType][sampleType-2]; //当前加入母液体积
         }else {
             SysData.concentration = 0.0;
+            SysData.reagentVolumeNow = 0.0;
         }
         SysData.saveRecord();  //保存配制记录到数据库
         new Thread(new Runnable() {
@@ -541,6 +547,7 @@ public class SysGpio {
                         Thread.sleep(3000);
                         SysGpio.mGpioOutD2.setValue(true);   //开启夹管阀2
                         SysData.startSupplySamples = true;   //开始供样标志
+                        SysData.startSupplySamplesTime = System.currentTimeMillis();  //开始供样的时间
                         Thread.sleep(SysData.supplySamplesTime*60000);       //仪表抽取标样等待时间10分钟
                         SysData.startSupplySamples = false;   //结束供样标志
                         Thread.sleep(3000);
@@ -599,6 +606,7 @@ public class SysGpio {
                 SysData.progressRate = 100;
                 statusS[7] = false;
                 isRun = false;
+                SysData.endTime = currentTimeMillis();
                 //3秒后仪表显示待机状态
                 try {
                     Thread.sleep(3000);

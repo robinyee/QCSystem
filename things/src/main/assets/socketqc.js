@@ -28,29 +28,121 @@ var Vm = new Vue({
         recvDecode: false,
         connected: false,
         recvPause: false,
+		
+		//发送的指令
+		sendCmd: '',
+		
+		//用户登录
+		username: '',
+		password: '',
+		token: '',
+		
+		//仪表运行状态
 		respond: '',
 		isRun: false,
 		sysTime: '',
-		codValue: 0,
+		currentTime: 0,
 		progressRate: 0,
 		statusMsg: '',
+		errorMsg: '',
 		startTime: '',
 		endTime: '',
-		tempIn: 0,
-		tempOut: 0,
-		adLight: 0,
-		errorMsg: '',
-		startXiaojie: '',
-		endXiaoJie: '',
-		didingNum: 0,
-		didingSumVolume: 0,
 		deviceList: '',
 		webServiceFlag: true,
 		workType: '',
 		workFrom: '',
-		sendCmd: '',
 		tempBox: 0,
+		waterType: 0,
+		sampleType: 0,
+		strSpecimen: '',
+		concentration: 0,
+		waterVolumeNow: 0,
+		reagentVolumeNow: 0,
+		startSupplySamples: false,
+		startSupplySamplesTime: 0,
+		//状态显示
 		loading: '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>',
+		connecting: '<div class="float-right spinner-grow text-success spinner-grow-sm" role="status"><span class="sr-only">Loading...</span></div>',
+		
+		//数据查询
+		perPageTask: 10,
+		currentPageTask: 1,
+		itemsTask: 0,
+		perPageRecord: 10,
+		currentPageRecord: 1,
+		itemsRecord: 0,
+		perPageAlert: 10,
+		currentPageAlert: 1,
+		itemsAlert: 0,
+		chartData: 0,
+		chartTime: 0,
+		
+		//系统设置
+		//定时任务
+		date: '',
+		time: '',
+		nextStartTime: 0,
+		startCycle: 0,
+		numberTimes: 0,
+		startWaterType: 0,
+		startSampleType: 0,
+		//系统参数
+		deviceList: '',
+		BAUD_RATE: 9600,
+		MODBUS_ADDR: 3,
+		version: '1.0',
+		//基本设置
+		supplySamplesTime: 0,
+		waterStepVolume: 0,
+		reagentStepVolume: 0,
+		mixedTime: 0,
+		//氨氮参数
+		NH3Volume: 0,
+		NH3SampleA: 0,
+		NH3SampleB: 0,
+		NH3SampleC: 0,
+		NH3SampleO: 0,
+		NH3AddValume: 0,
+		NH3AddMul: 0,
+		NH3AddType: 0,
+		//总磷参数
+		TPVolume: 0,
+		TPSampleA: 0,
+		TPSampleB: 0,
+		TPSampleC: 0,
+		TPSampleO: 0,
+		TPAddValume: 0,
+		TPAddMul: 0,
+		TPAddType: 0,
+		//总氮参数
+		TNVolume: 0,
+		TNSampleA: 0,
+		TNSampleB: 0,
+		TNSampleC: 0,
+		TNSampleO: 0,
+		TNAddValume: 0,
+		TNAddMul: 0,
+		TNAddType: 0,
+		//COD参数
+		CODVolume: 0,
+		CODSampleA: 0,
+		CODSampleB: 0,
+		CODSampleC: 0,
+		CODSampleO: 0,
+		CODAddValume: 0,
+		CODAddMul: 0,
+		CODAddType: 0,
+		//混合参数
+		MIXVolume: 0,
+		MIXSampleA: 0,
+		MIXSampleB: 0,
+		MIXSampleC: 0,
+		MIXSampleO: 0,
+		MIXAddValume: 0,
+		MIXAddMul: 0,
+		MIXAddType: 0,
+		
+		//系统服务
 		mGpioOutD1: false,
 		mGpioOutD2: false,
 		mGpioOutD3: false,
@@ -69,10 +161,18 @@ var Vm = new Vue({
 		mGpioOutRE1: false,
 		mGpioOutDC2: false,
 		mGpioOutRE2: false,
+		statusC1: false,
+		statusC2: false,
+		statusC3: false,
+		statusC4: false,
+		statusC5: false,
+		statusC6: false,
 		mGpioIn1: false,
 		mGpioIn2: false,
 		mGpioIn3: false,
 		mGpioIn4: false,
+		mGpioIn5: false,
+		mGpioIn6: false,
 		statusS1: false,
 		statusS2: false,
 		statusS3: false,
@@ -85,42 +185,10 @@ var Vm = new Vue({
 		statusS10: false,
 		statusS11: false,
 		statusS12: false,
-		isEmptyPipeline: false,
 		isNotice: false,
 		isSaveLog: false,
-		nextStartTime: 0,
-		startCycle: 0,
-		numberTimes: 0,
-		startType: 0,
-		isLoop: false,
-		xiaojieTemp: 0,
-		xiaojieTime: 0,
-		biaodingValue: 0,
-		slopeA: 0,
-		interceptB: 0,
-		trueValue: 0,
-		deviceList: '',
-		BAUD_RATE: 9600,
-		MODBUS_ADDR: 3,
-		version: '1.0',
 		errorId: 0,
-		date: '',
-		time: '',
-		connecting: '<div class="float-right spinner-grow text-success spinner-grow-sm" role="status"><span class="sr-only">Loading...</span></div>',
-		perPageCod: 10,
-		currentPageCod: 1,
-		itemsCod: 0,
-		perPageAlert: 10,
-		currentPageAlert: 1,
-		itemsAlert: 0,
-		perPageCalibration: 10,
-		currentPageCalibration: 1,
-		itemsCalibration: 0,
-		chartData: 0,
-		chartTime: 0,
-		username: '',
-		password: '',
-		token: ''
+		
 	},
     created: function created () {
         this.canUseH5WebSocket()
@@ -294,29 +362,139 @@ var Vm = new Vue({
 		getJsonCodData: function getJsonCodData(data){
 			var obj = JSON.parse(data);
 			var _this = Vm;
+			
+			//系统登录
+			if(obj.respond === 'LOGIN_Ok'){
+				_this.respond = obj.respond;
+				_this.token = obj.token;
+				_this.username = obj.user;
+			}
+			if(obj.respond === 'LOGIN_No'){
+				_this.respond = obj.respond;
+				_this.token = obj.token;
+				_this.username = obj.user;
+				_this.makeToast("验证错误或登录超时，请重新登录", "错误", 'danger', 'b-toaster-top-center');
+				//_this.makeToast('success');
+			}
+			
+			//首页运行状态
 			if(obj.respond === 'RUN_Status'){
 				_this.respond = obj.respond;
 				_this.isRun = obj.isRun;
 				_this.sysTime = obj.sysTime;
-				_this.codValue = obj.codValue;
+				_this.currentTime = obj.currentTime;
 				_this.progressRate = obj.progressRate;
 				_this.statusMsg = obj.statusMsg;
+				_this.errorMsg = obj.errorMsg;
 				_this.startTime = obj.startTime;
 				_this.endTime = obj.endTime;
-				_this.tempIn = obj.tempIn;
-				_this.tempOut = obj.tempOut;
-				_this.adLight = obj.adLight;
-				_this.errorMsg = obj.errorMsg;
-				_this.startXiaojie = obj.startXiaojie;
-				_this.endXiaoJie = obj.endXiaoJie;
-				_this.didingNum = obj.didingNum;
-				_this.didingSumVolume = obj.didingSumVolume;
 				_this.deviceList = obj.deviceList;
 				_this.webServiceFlag = obj.webServiceFlag;
 				_this.workType = obj.workType;
 				_this.workFrom = obj.workFrom;
 				_this.tempBox = obj.tempBox;
+				_this.waterType = obj.waterType;
+				_this.sampleType = obj.sampleType;
+				_this.strSpecimen = obj.strSpecimen;
+				_this.concentration = obj.concentration;
+				_this.waterVolumeNow = obj.waterVolumeNow;
+				_this.reagentVolumeNow = obj.reagentVolumeNow;
+				_this.startSupplySamples = obj.startSupplySamples;
+				_this.supplySamplesTime = obj.supplySamplesTime;
+				_this.startSupplySamplesTime = obj.startSupplySamplesTime;
 			}
+			
+			//数据查询
+			if(obj.respond === 'GET_TaskData'){
+				_this.respond = obj.respond;
+				var taskdata = JSON.parse(obj.data);
+				_this.itemsTask = taskdata;
+			}
+			if(obj.respond === 'GET_RecordData'){
+				_this.respond = obj.respond;
+				var recorddata = JSON.parse(obj.data);
+				_this.itemsRecord = recorddata;
+			}
+			if(obj.respond === 'GET_AlertData'){
+				_this.respond = obj.respond;
+				var alertdata = JSON.parse(obj.data);
+				_this.itemsAlert = alertdata;
+			}
+			
+			//系统设置
+			if(obj.respond === 'GET_Setup' || obj.respond === 'SET_Setup'){
+				_this.respond = obj.respond;
+				//定时任务
+				_this.nextStartTime = obj.nextStartTime;
+				_this.startCycle = obj.startCycle;
+				_this.numberTimes = obj.numberTimes;
+				_this.startWaterType = obj.startWaterType;
+				_this.startSampleType = obj.startSampleType;
+				//系统参数
+				_this.deviceList = obj.deviceList;
+				_this.BAUD_RATE = obj.BAUD_RATE;
+				_this.MODBUS_ADDR = obj.MODBUS_ADDR;
+				_this.version = obj.version;
+				//基本设置
+				_this.supplySamplesTime = obj.supplySamplesTime;
+				_this.waterStepVolume = obj.waterStepVolume;
+				_this.reagentStepVolume = obj.reagentStepVolume;
+				_this.mixedTime = obj.mixedTime;
+				//氨氮参数
+				_this.NH3Volume = obj.NH3Volume;
+				_this.NH3SampleA = obj.NH3SampleA;
+				_this.NH3SampleB = obj.NH3SampleB;
+				_this.NH3SampleC = obj.NH3SampleC;
+				_this.NH3SampleO = obj.NH3SampleO;
+				_this.NH3AddValume = obj.NH3AddValume;
+				_this.NH3AddMul = obj.NH3AddMul;
+				_this.NH3AddType = obj.NH3AddType;
+				//总磷参数
+				_this.TPVolume = obj.TPVolume;
+				_this.TPSampleA = obj.TPSampleA;
+				_this.TPSampleB = obj.TPSampleB;
+				_this.TPSampleC = obj.TPSampleC;
+				_this.TPSampleO = obj.TPSampleO;
+				_this.TPAddValume = obj.TPAddValume;
+				_this.TPAddMul = obj.TPAddMul;
+				_this.TPAddType = obj.TPAddType;
+				//总氮参数
+				_this.TNVolume = obj.TNVolume;
+				_this.TNSampleA = obj.TNSampleA;
+				_this.TNSampleB = obj.TNSampleB;
+				_this.TNSampleC = obj.TNSampleC;
+				_this.TNSampleO = obj.TNSampleO;
+				_this.TNAddValume = obj.TNAddValume;
+				_this.TNAddMul = obj.TNAddMul;
+				_this.TNAddType = obj.TNAddType;
+				//COD参数
+				_this.CODVolume = obj.CODVolume;
+				_this.CODSampleA = obj.CODSampleA;
+				_this.CODSampleB = obj.CODSampleB;
+				_this.CODSampleC = obj.CODSampleC;
+				_this.CODSampleO = obj.CODSampleO;
+				_this.CODAddValume = obj.CODAddValume;
+				_this.CODAddMul = obj.CODAddMul;
+				_this.CODAddType = obj.CODAddType;
+				//混合参数
+				_this.MIXVolume = obj.MIXVolume;
+				_this.MIXSampleA = obj.MIXSampleA;
+				_this.MIXSampleB = obj.MIXSampleB;
+				_this.MIXSampleC = obj.MIXSampleC;
+				_this.MIXSampleO = obj.MIXSampleO;
+				_this.MIXAddValume = obj.MIXAddValume;
+				_this.MIXAddMul = obj.MIXAddMul;
+				_this.MIXAddType = obj.MIXAddType;
+				//提示信息
+				if(obj.respond === 'GET_Setup'){
+				_this.makeToast("参数已加载", "消息", 'success', 'b-toaster-top-right');
+				}
+				if(obj.respond === 'SET_Setup'){
+				_this.makeToast("设置已成功", "消息", 'success', 'b-toaster-top-right');
+				}
+			}
+						
+			//系统服务
 			if(obj.respond === 'GPIO_Status'){
 				_this.respond = obj.respond;
 				_this.mGpioOutD1 = obj.mGpioOutD1;
@@ -337,10 +515,18 @@ var Vm = new Vue({
 				_this.mGpioOutRE1 = obj.mGpioOutRE1;
 				_this.mGpioOutDC2 = obj.mGpioOutDC2;
 				_this.mGpioOutRE2 = obj.mGpioOutRE2;
+				_this.statusC1 = obj.statusC1;
+				_this.statusC2 = obj.statusC2;
+				_this.statusC3 = obj.statusC3;
+				_this.statusC4 = obj.statusC4;
+				_this.statusC5 = obj.statusC5;
+				_this.statusC6 = obj.statusC6;
 				_this.mGpioIn1 = obj.mGpioIn1;
 				_this.mGpioIn2 = obj.mGpioIn2;
 				_this.mGpioIn3 = obj.mGpioIn3;
 				_this.mGpioIn4 = obj.mGpioIn4;
+				_this.mGpioIn5 = obj.mGpioIn5;
+                _this.mGpioIn6 = obj.mGpioIn6;
 				_this.statusS1 = obj.statusS1;
 				_this.statusS2 = obj.statusS2;
 				_this.statusS3 = obj.statusS3;
@@ -353,7 +539,6 @@ var Vm = new Vue({
 				_this.statusS10 = obj.statusS10;
 				_this.statusS11 = obj.statusS11;
 				_this.statusS12 = obj.statusS12;
-				_this.isEmptyPipeline = obj.isEmptyPipeline;
 				_this.isNotice = obj.isNotice;
 				_this.isSaveLog = obj.isSaveLog;
 				_this.errorId = obj.errorId;
@@ -366,77 +551,7 @@ var Vm = new Vue({
 				_this.respond = obj.respond;
 				_this.makeToast("仪器正在分析，请稍后再试！", "警告", 'danger', 'b-toaster-top-right');
 			}
-			if(obj.respond === 'GET_Setup'){
-				_this.respond = obj.respond;
-				_this.nextStartTime = obj.nextStartTime;
-				_this.startCycle = obj.startCycle;
-				_this.numberTimes = obj.numberTimes;
-				_this.startType = obj.startType;
-				_this.isLoop = obj.isLoop;
-				_this.xiaojieTemp = obj.xiaojieTemp;
-				_this.xiaojieTime = obj.xiaojieTime;
-				_this.biaodingValue = obj.biaodingValue;
-				_this.slopeA = obj.slopeA;
-				_this.interceptB = obj.interceptB;
-				_this.trueValue = obj.trueValue;
-				_this.deviceList = obj.deviceList;
-				_this.BAUD_RATE = obj.BAUD_RATE;
-				_this.MODBUS_ADDR = obj.MODBUS_ADDR;
-				_this.version = obj.version;
-				_this.makeToast("参数已加载", "消息", 'success', 'b-toaster-top-right');
-			}
-			if(obj.respond === 'SET_Setup'){
-				_this.respond = obj.respond;
-				_this.nextStartTime = obj.nextStartTime;
-				_this.startCycle = obj.startCycle;
-				_this.numberTimes = obj.numberTimes;
-				_this.startType = obj.startType;
-				_this.isLoop = obj.isLoop;
-				_this.xiaojieTemp = obj.xiaojieTemp;
-				_this.xiaojieTime = obj.xiaojieTime;
-				_this.biaodingValue = obj.biaodingValue;
-				_this.slopeA = obj.slopeA;
-				_this.interceptB = obj.interceptB;
-				_this.trueValue = obj.trueValue;
-				_this.deviceList = obj.deviceList;
-				_this.BAUD_RATE = obj.BAUD_RATE;
-				_this.MODBUS_ADDR = obj.MODBUS_ADDR;
-				_this.makeToast("设置已成功", "消息", 'success', 'b-toaster-top-right');
-			}
-			if(obj.respond === 'GET_CodData'){
-				_this.respond = obj.respond;
-				var coddata = JSON.parse(obj.data);
-				_this.itemsCod = coddata;
-			}
-			if(obj.respond === 'GET_AlertData'){
-				_this.respond = obj.respond;
-				var alertdata = JSON.parse(obj.data);
-				_this.itemsAlert = alertdata;
-			}
-			if(obj.respond === 'GET_CalibrationData'){
-				_this.respond = obj.respond;
-				var calibrationdata = JSON.parse(obj.data);
-				_this.itemsCalibration = calibrationdata;
-			}
-			if(obj.respond === 'GET_NewData'){
-				_this.respond = obj.respond;
-				_this.chartData = JSON.parse(obj.codData);
-				_this.chartTime = JSON.parse(obj.codTime);
-				options.series[0].data = _this.chartData;
-				options.xaxis.categories = _this.chartTime;
-			}
-			if(obj.respond === 'LOGIN_Ok'){
-				_this.respond = obj.respond;
-				_this.token = obj.token;
-				_this.username = obj.user;
-			}
-			if(obj.respond === 'LOGIN_No'){
-				_this.respond = obj.respond;
-				_this.token = obj.token;
-				_this.username = obj.user;
-				_this.makeToast("验证错误或登录超时，请重新登录", "错误", 'danger', 'b-toaster-top-center');
-				//_this.makeToast('success');
-			}
+			
 			//控制台输出
 			//console.log(data);
 		},
@@ -458,14 +573,24 @@ var Vm = new Vue({
 		}
     },
 	computed: {
-		rowsCod() {
-			return this.itemsCod.length
+		//数据查询
+		rowsTask() {
+			return this.itemsTask.length;
+		},
+		rowsRecord() {
+			return this.itemsRecord.length;
 		},
 		rowsAlert() {
-			return this.itemsAlert.length
+			return this.itemsAlert.length;
 		},
-		rowsCalibration() {
-			return this.itemsCalibration.length
+		//计算剩余时间
+		remainingTime(){
+		    return Math.round(this.supplySamplesTime*60 - (this.currentTime - this.startSupplySamplesTime)/1000);
+		},
+		remainingProgress(){
+		    return Math.round((this.remainingTime/(this.supplySamplesTime*60))*100);
 		}
+
+
 	}
 })

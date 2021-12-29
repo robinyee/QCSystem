@@ -263,7 +263,7 @@
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="系统复位"
+                        android:text="关闭电源"
                         android:theme="@style/MySwitch" />
 
                     <Switch

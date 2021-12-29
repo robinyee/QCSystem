@@ -7,7 +7,7 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
 	<link rel="icon" href="favicon.ico">
-    <title>高锰酸盐指数在线分析仪</title>
+    <title>水质质控仪</title>
 <!--	
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -53,7 +53,7 @@
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 	<div class="container">
-    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">高锰酸盐指数在线分析仪</a>
+    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">水质质控仪</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -90,7 +90,7 @@
 	  <div class="jumbotron">
 	    <div class="container">
 	      <h3 class="display-5">系统服务</h3>
-	      <p class="lead">监测仪表运行状态、试剂余量、运行异常情况，远程启动仪表测量、试剂标定、仪表校准功能</p>
+	      <p class="lead">试剂余量报警、输入输出控制、流程控制、仪表检测</p>
 		  
 	    </div>
 	  </div>
@@ -103,12 +103,13 @@
 				  <h5 class="card-header">试剂状态<span v-html="connected ? connecting : ''"></span></h5>
 				  <div class="card-body" style="min-height: 320px;">
 					<dl class="row">
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn1 ? 'btn btn-danger' : 'btn btn-success'">硫酸</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn2 ? 'btn btn-danger' : 'btn btn-success'">高锰酸钾</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn3 ? 'btn btn-danger' : 'btn btn-success'">草酸钠</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn4 ? 'btn btn-danger' : 'btn btn-success'">蒸馏水</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn1 ? 'btn btn-danger' : 'btn btn-success'">纯水</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn2 ? 'btn btn-danger' : 'btn btn-success'">氨氮</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn3 ? 'btn btn-danger' : 'btn btn-success'">总磷</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn4 ? 'btn btn-danger' : 'btn btn-success'">总氮</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn5 ? 'btn btn-danger' : 'btn btn-success'">COD</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioIn6 ? 'btn btn-danger' : 'btn btn-success'">混合</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="isNotice ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_isNotice')" >量低报警</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="isEmptyPipeline ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_isEmptyPipeline')" >前置润洗</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="errorId != 0 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CLS_Alert')" >清除报警</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="isSaveLog != 0 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_isSaveLog')" >保存日志</button></dd>
 					</dl>
@@ -120,41 +121,39 @@
 				  <h5 class="card-header">开关控制<span v-html="connected ? connecting : ''"></span></h5>
 				  <div class="card-body" style="min-height: 320px;">
 					<dl class="row">
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOut24V ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOut24V')" >总电源</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutH1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutH1')" >加热器</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutLED ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutLED')" >光源灯</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutP1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutP1')" >进样泵</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutP2 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutP2')" >注射泵1</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutP3 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutP3')" >注射泵2</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutP2 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutP2')" >多通道阀</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutP3 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutP3')" >微量泵</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD1')" >电磁阀1</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD2 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD2')" >电磁阀2</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD3 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD3')" >电磁阀3</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD4 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD4')" >电磁阀4</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD5 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD5')" >电磁阀5</button></dd>
 					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD6 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD6')" >电磁阀6</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD8 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD8')" >电磁阀8</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutDC1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutDC1')" >搅拌正转</button></dd>
-					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutRE1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutRE1')" >搅拌反转</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutD8 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutD8')" >总电源</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutRE1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutRE1')" >混合水样</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="mGpioOutDC1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_mGpioOutDC1')" >排出废液</button></dd>
 					</dl>
 				  </div>
 				</div>
 			</div>
 			<div class="col-md-4">
 				<div class="card mb-3">
-				  <h5 class="card-header">测定流程<span v-html="connected ? connecting : ''"></span></h5>
+				  <h5 class="card-header">流程测试<span v-html="connected ? connecting : ''"></span></h5>
 				  <div class="card-body" style="min-height: 320px;">
 					  <dl class="row">
-					    <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS1')" >进水样</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS2 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS2')" >加硫酸</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS3 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS3')" >加锰</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS4 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS4')" >加草酸钠</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS5 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS5')" >消解</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS6 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS6')" >滴定</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS7 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS7')" >水质测定</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS9 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS9')" >空白实验</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS8 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('RUN_Reset')" >仪表复位</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS10 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS10')" >标样测定</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS11 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS11')" >仪表校准</button></dd>
-						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS12 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('RUN_Stop')" >紧急停止</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusC1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusC1')" >通道1</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusC2 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusC2')" >通道2</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusC3 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusC3')" >通道3</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusC4 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusC4')" >通道4</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusC5 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusC5')" >通道5</button></dd>
+					  <dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusC6 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusC6')" >通道6</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS1 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS1')" >进水样</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS2 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS2')" >加标样</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS4 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS4')" >初始化</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS8 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS8')" >清洗容器</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS5 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS5')" >系统复位</button></dd>
+						<dd class="col-sm-4"><button type="button" style="width:90px" v-bind:class="statusS6 ? 'btn btn-danger' : 'btn btn-success'" @click="sendData('CMD_statusS6')" >重新启动</button></dd>
 					  </dl>
 					</div>
 				</div>
@@ -184,7 +183,7 @@
 <!--加载库文件-->
 
 <script src="format.js"></script>
-<script src="socketcod.js"></script>
+<script src="socketqc.js"></script>
 <!--<script src="dashboard.js"></script>-->
 <script src="connect.js"></script>
 

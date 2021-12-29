@@ -353,22 +353,6 @@ public class TabService extends Fragment {
             }
         });
 
-        //SwitchRE1按钮点击
-        aSwitchRE1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    SysGpio.mGpioOutRE1.setValue(aSwitchRE1.isChecked());
-                    if(SysGpio.mGpioOutRE1.getValue()) {
-                        SysGpio.mGpioOutDC1.setValue(false);
-                        aSwitchDC1.setChecked(false);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
         //SwitchC1多通道阀到1通道
         aSwitchC1.setOnClickListener(new View.OnClickListener() {
             @Override

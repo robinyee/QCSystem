@@ -7,7 +7,7 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
 	<link rel="icon" href="favicon.ico">
-    <title>高锰酸盐指数在线分析仪</title>
+    <title>水质质控仪</title>
 
 	<!--加载第三方库文件-->
 	<!--
@@ -56,7 +56,7 @@
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 	<div class="container">
-    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">高锰酸盐指数在线分析仪</a>
+    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">水质质控仪</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -92,22 +92,30 @@
 	<!-- Main jumbotron for a primary marketing message or call to action -->
 	  <div class="jumbotron">
 	    <div class="container">
-	      <h3 class="display-5">最新数据</h3>
-		  <div class="lead float-right"><span class="badge badge-success">{{sysTime}}</span></div>
-	      <p class="lead">高锰酸盐指数值：<span class="badge badge-success">{{codValue}} mg/L</span></p>
-		  <!--<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>-->
-			
-				<div id="chart">
-				    
-				</div>
-			
-	      <!--<p><a class="btn btn-primary btn-lg" v-bind:class="isRun ? 'disabled' : ''"  href="#" role="button" @click="sendData('RUN_Start')">启动分析 &raquo;</a></p>-->
+	      <h3 class="display-5">实时信息</h3>
+		  <p class="lead">显示质控仪的实时运行状态</p>
 		  <p>
-			<!-- Button trigger modal -->
-			<button type="button" class="btn btn-primary" v-bind:class="isRun ? 'disabled' : ''" data-toggle="modal" v-bind:data-target="isRun ? '' : '#exampleModal'">
-			   {{isRun ? '正在分析 ' : '启动分析 &raquo;'}} <span v-html="isRun ? loading : ''"></span>
-			</button>
+		  	<label for="select"></label>
+		  	<select id="select" v-model="waterType" v-on:change="sendData('SET_Setup|waterType|' + waterType)">
+		  		<option value="0">氨氮</option>
+		  		<option value="1">总磷</option>
+		  		<option value="2">总氮</option>
+		  		<option value="3">COD</option>
+				<option value="4">混合</option>
+		  	</select>
+		  	<select id="select" v-model="sampleType" v-on:change="sendData('SET_Setup|sampleType|' + sampleType)">
+		  		<option value="0">原水样</option>
+		  		<option value="1">空白样</option>
+		  		<option value="2">标样A</option>
+		  		<option value="3">标样B</option>
+		  		<option value="4">标样C</option>
+		  		<option value="5">加标回收</option>
+		  	</select>
+		  	<button type="button" class="btn btn-primary btn-sm" v-bind:class="isRun ? 'disabled' : ''" data-toggle="modal" v-bind:data-target="isRun ? '' : '#exampleModal'">
+		  				   {{isRun ? '正在运行 ' : '启动运行 &raquo;'}} <span v-html="isRun ? loading : ''"></span>
+		  	</button>
 		  </p>
+			<!--<div class="lead float-left"><span class="badge badge-success">{{sysTime}}</span></div>-->
 	    </div>
 	  </div>
 
@@ -119,9 +127,9 @@
 				  <h5 class="card-header">基本信息<span v-html="connected ? connecting : ''"></span></h5>
 				  <div class="card-body">
 				    <p class="lead">仪器时间：<span class="badge badge-success">{{sysTime}}</span></p>
-				    <p class="lead">开始时间：<span class="badge badge-success">{{startTime}}</span></p>
+				    <p class="lead">启动时间：<span class="badge badge-success">{{startTime}}</span></p>
 				    <p class="lead">预计结束：<span class="badge badge-success">{{endTime}}</span></p>
-				    <p class="lead">当前任务：<span class="badge badge-success">{{workType}}</span></p>
+				    <p class="lead">当前任务：<span class="badge badge-success">{{strSpecimen}}</span></p>
 				    <p class="lead">当前步骤：<span class="badge badge-success">{{statusMsg}}</span></p>
 				  </div>
 				</div>
@@ -142,98 +150,41 @@
 			</div>
 			<div class="col-md-4">
 				<div class="card mb-3">
-				  <h5 class="card-header">实时数据<span v-html="connected ? connecting : ''"></span></h5>
+				  <h5 class="card-header">标样配制<span v-html="connected ? connecting : ''"></span></h5>
 				  <div class="card-body">
-				    <!--<p>消解开始：2020-06-18 09:00</p>
-				    <p>消解剩余：25分钟</p>
-				    <p>消解进度：20%</p>
-				    <div class="progress">
-				        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 20%"><span class="sr-only">20% Complete (warning)</span></div>
-				    </div>-->
-				    <!--<p>主板温度：27摄氏度</p>-->
-				    <p class="lead">加热器温度：<span v-bind:class="(tempOut <= 150) ? 'badge badge-success' : 'badge badge-danger'">{{tempOut}} ℃</span></p>
-				    <p class="lead">反应器水温：<span v-bind:class="(tempIn <= 100) ? 'badge badge-success' : 'badge badge-danger'">{{tempIn}} ℃</span></p>
-				    <p class="lead">滴定滴数：<span class="badge badge-success">{{didingNum}} 滴</span></p>
-				    <p class="lead">滴定量：<span class="badge badge-success">{{didingSumVolume}} mL</span></p>
-				    <p class="lead">COD值：<span class="badge badge-success">{{codValue}} mg/L</span></p>
+				    <p class="lead">标样名称：<span class="badge badge-success">{{strSpecimen}} </span></p>
+				    <p class="lead">标样浓度：<span class="badge badge-success">{{concentration}} mg/L</span></p>
+				    <p class="lead">定容体积：<span class="badge badge-success">{{waterVolumeNow}} mL</span></p>
+				    <p class="lead">母液体积：<span class="badge badge-success">{{reagentVolumeNow}} mL</span></p>
+				    <p class="lead">供样状态：<span v-bind:class="(startSupplySamples) ? 'badge badge-success' : 'badge badge-danger'">{{startSupplySamples ? '正在供标样' : '未供标样'}}</span></p>
 				  </div>
 				</div>
 			</div>
 		</div>
 		<div class="row">
 		    <div class="col-md-6">
-		    	<div class="card mb-3">
-		    	  <h5 class="card-header">消解温度</h5>
-		    	  <div class="card-body">
-		    	    <p>消解温度：{{tempIn}} ℃</p>
-		    	    <div class="progress">
-		    	        <div class="progress-bar bg-warning" role="progressbar" v-bind:style="{ width: tempIn + '%' }" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-		    	    </div>
-		    	  </div>
-		    	</div>
-		    </div>
-		    <div class="col-md-6">
-		    	<div class="card mb-3">
-		    	  <h5 class="card-header">光度变化</h5>
-		    	  <div class="card-body">
-		    	    <p>实时光度值：{{adLight}}</p>
-		    	    <div class="progress">
-		    	        <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: adLight / 3000 * 100 + '%' }" aria-valuenow="40" aria-valuemin="0" aria-valuemax="3000"></div>
-		    	    </div>
-		    	  </div>
-		    	</div>
-		    </div>
-		</div>
-		<div class="row">
-		    <div class="col-md-12">
+				<div class="card mb-3">
+				  <h5 class="card-header">供样进度</h5>
+				  <div class="card-body">
+					  <p>剩余时间：{{(startSupplySamples) ? remainingTime : 0}}秒</p>
+					  <div class="progress">
+				        <div class="progress-bar" role="progressbar" v-bind:style="{ width: ((startSupplySamples) ? remainingProgress : 0) + '%' }" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+				    </div>
+				  </div>
+				</div>
+			</div>
+			<div class="col-md-6">
 				<div class="card mb-3">
 				  <h5 class="card-header">当前进程</h5>
 				  <div class="card-body">
-				    <p>分析进度：{{progressRate}}%</p>
+				    <p>运行进度：{{progressRate}}%</p>
 				    <div class="progress">
-				        <div class="progress-bar" role="progressbar" v-bind:style="{ width: progressRate + '%' }" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+				        <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: progressRate + '%' }" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
 				    </div>
 				  </div>
 				</div>
 			</div>
 		</div>
-		<!--
-		<div class="row">
-		    <div class="col-md-4">
-				<div class="card mb-3">
-				  <h5 class="card-header">当前进程</h5>
-				  <div class="card-body" style="height: 140px;">
-				    <p>分析进度：{{progressRate}}%</p>
-				    <div class="progress">
-				        <div class="progress-bar" role="progressbar" v-bind:style="{ width: progressRate + '%' }" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-				    </div>
-				  </div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card mb-3">
-				  <h5 class="card-header">消解温度</h5>
-				  <div class="card-body" style="height: 140px;">
-				    <p>消解温度：{{tempIn}}</p>
-				    <div class="progress">
-				        <div class="progress-bar bg-warning" role="progressbar" v-bind:style="{ width: tempIn + '%' }" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-				    </div>
-				  </div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card mb-3">
-				  <h5 class="card-header">光度变化</h5>
-				  <div class="card-body" style="height: 140px;">
-				    <p>实时光度值：{{adLight}}</p>
-				    <div class="progress">
-				        <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: adLight / 3000 * 100 + '%' }" aria-valuenow="40" aria-valuemin="0" aria-valuemax="3000"></div>
-				    </div>
-				  </div>
-				</div>
-			</div>
-		</div>
-		-->
 	</div>	
 </main>
 
@@ -269,11 +220,11 @@
         </button>
       </div>
       <div class="modal-body">
-        是否启动水质分析流程？
+        是否启动标样配制流程？
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary" @click="sendData('RUN_Start')" data-dismiss="modal">启动</button>
+        <button type="button" class="btn btn-primary" @click="sendData('CMD_statusS7')" data-dismiss="modal">启动</button>
       </div>
     </div>
   </div>
@@ -297,7 +248,7 @@
 <!--加载库文件-->
 
 <script src="format.js"></script>
-<script src="socketcod.js"></script>
+<script src="socketqc.js"></script>
 <!--<script src="dashboard.js"></script>-->
 <script src="connect.js"></script>
 
@@ -312,42 +263,6 @@
 			}
 		}
 	}, 1000);
-	//获取最新COD数据
-	setTimeout(function(){
-		if(Vm.connected){
-			Vm.sendData("GET_NewData|30|0")
-		}
-	}, 1200);
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<!--<script src="https://cdn.jsdelivr.net/npm/vue-apexcharts"></script>-->
-
-<script>
-var options = {
-  chart: {
-	height: 380,
-    type: 'line',
-	stacked: false
-  },
-  stroke: {
-    curve: 'smooth',
-  },
-  series: [{
-    name: 'CODmn',
-	data: []
-  }],
-  xaxis: {
-	categories: []	 
-  }
-}
-
-//刷新COD数据图表
-setTimeout(function(){
-	var chart = new ApexCharts(document.querySelector("#chart"), options);
-	chart.render();
-	}, 1500);
-
 </script>
 
 </html>

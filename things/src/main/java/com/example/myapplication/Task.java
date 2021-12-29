@@ -13,7 +13,7 @@ class Task {
     public Long startTime;
 
     @ColumnInfo(name = "endtime")
-    public String endTime;
+    public Long endTime;
 
     @ColumnInfo(name = "cron")
     public String cron;

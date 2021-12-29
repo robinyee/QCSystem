@@ -101,12 +101,7 @@ public class TabSetup extends Fragment {
             if (msg.what == UI_UPDATE) {
 
                 uiUpdate();    //Log.d(TAG, "run: 更新界面");
-                /*
-                if(SysData.isRun) {
-                    uiUpdate();
-                    //Log.d(TAG, "run: 更新界面");
-                }
-                */
+
             }
             message = handlerUpdate.obtainMessage(UI_UPDATE);
             handlerUpdate.sendMessageDelayed(message, 1000);
@@ -116,20 +111,16 @@ public class TabSetup extends Fragment {
     //刷新界面输出状态
     public void uiUpdate() {
 
+        //保存参数
+        if(SysData.isSaveParameter){
+            saveMeterParameter();
+            SysData.calculation(); //计算水样和试剂步数
+            setEditText();
+            SysData.isSaveParameter = false;
+            Log.i(TAG, "参数已保存" );
+        }
         //更新网络信息
         if(SysData.isUpdatnetwork){
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            updateNetwork();
-            SysData.updateNum--;
-            if(SysData.updateNum <= 0) {
-                SysData.isUpdatnetwork = false;
-                saveMeterParameter();
-                SysData.updateNum = 3;
-            }
             saveMeterParameter();
         }
         //波特率改变
@@ -479,7 +470,10 @@ public class TabSetup extends Fragment {
                     tableParameter.setVisibility(View.GONE);
                     moreParameter.setImageResource(R.drawable.ic_expand_more_black_24dp);
                     isGone = true;
-                    setEditText(); //更新界面显示数据
+                    //setEditText(); //更新界面显示数据
+                    setNetTxtInfo(); //显示网络信息
+                    updateCom1(); //显示串口信息
+
                 }
 
             }
@@ -650,7 +644,7 @@ public class TabSetup extends Fragment {
     private void setEditText() {
         //填充EditText的内容
         //editSsid.setText(SysData.wifiSsid);
-        editSsid.setText("");
+        editSsid.setText(SysData.wifiSsid);
         editPass.setText("");
         editlocalip.setText(SysData.webIPAddr);
         editwebport.setText(String.valueOf(SysData.webPort));

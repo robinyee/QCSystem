@@ -7,7 +7,7 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
 	<link rel="icon" href="favicon.ico">
-    <title>高锰酸盐指数在线分析仪</title>
+    <title>水质质控仪</title>
 <!--	
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -52,7 +52,7 @@
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 	<div class="container">
-    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">高锰酸盐指数在线分析仪</a>
+    <a class="navbar-brand" v-bind:href="'index.html?id=' + token">水质质控仪</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -89,7 +89,7 @@
 	  <div class="jumbotron">
 	    <div class="container">
 	      <h3 class="display-5">数据查询</h3>
-	      <p class="lead">查询高锰酸盐指数历史数据、仪表报警记录、试剂标定校准记录</p>
+	      <p class="lead">查询质控仪定时任务、标样配制记录、报警记录</p>
 		  <!--<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>-->
 	    </div>
 	  </div>
@@ -98,77 +98,75 @@
 	    <!-- Example row of columns -->
 		<nav>
 		  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-		    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">高锰酸盐指数</a>
-		    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">报警记录</a>
-		    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">校准记录</a>
+		    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">配制记录</a>
+		    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">定时任务</a>
+			  <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">报警记录</a>
 		  </div>
 		</nav>
 		<div class="tab-content" id="nav-tabContent">
 		  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 			  <!--表格-->
 			  <template>
-			    <div class="overflow-auto">
-			  	  <b-table
-			          id="cod-table"
-			          :items="itemsCod"
-			          :per-page="perPageCod"
-			          :current-page="currentPageCod"
-					  striped hover
-			        ></b-table>
-			  	  <b-pagination
-			  	    v-model="currentPageCod"
-			  	    :total-rows="rowsCod"
-			  	    :per-page="perPageCod"
-			  	    aria-controls="cod-table"
-			  	  ></b-pagination>
-			      </div>
+				  <div class="overflow-auto">
+					  <b-table
+							  id="record-table"
+							  :items="itemsRecord"
+							  :per-page="perPageRecord"
+							  :current-page="currentPageRecord"
+							  striped hover
+					  ></b-table>
+					  <b-pagination
+							  v-model="currentPageRecord"
+							  :total-rows="rowsRecord"
+							  :per-page="perPageRecord"
+							  aria-controls="record-table"
+					  ></b-pagination>
+				  </div>
 			  </template>
-			  
-		  </div>
-		  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-			<!--表格-->
-			<template>
-			  <div class="overflow-auto">
-				  <b-table
-			        id="alert-table"
-			        :items="itemsAlert"
-			        :per-page="perPageAlert"
-			        :current-page="currentPageAlert"
-								  striped hover
-			      ></b-table>
-				  <b-pagination
-				    v-model="currentPageAlert"
-				    :total-rows="rowsAlert"
-				    :per-page="perPageAlert"
-				    aria-controls="alert-table"
-				  ></b-pagination>
-			    </div>
-			</template>
-			
 		  </div>
 		  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-			<!--表格-->
-			<template>
-			  <div class="overflow-auto">
-				  <b-table
-			        id="calibration-table"
-			        :items="itemsCalibration"
-			        :per-page="perPageCalibration"
-			        :current-page="currentPageCalibration"
-								  striped hover
-			      ></b-table>
-				  <b-pagination
-				    v-model="currentPageCalibration"
-				    :total-rows="rowsCalibration"
-				    :per-page="perPageCalibration"
-				    aria-controls="calibration-table"
-				  ></b-pagination>
-			    </div>
-			</template>
-			
-		  </div>
-		</div>
+			  <!--表格-->
+			  <template>
+				  <div class="overflow-auto">
+					  <b-table
+							  id="task-table"
+							  :items="itemsTask"
+							  :per-page="perPageTask"
+							  :current-page="currentPageTask"
+							  striped hover
+					  ></b-table>
+					  <b-pagination
+							  v-model="currentPageTask"
+							  :total-rows="rowsTask"
+							  :per-page="perPageTask"
+							  aria-controls="task-table"
+					  ></b-pagination>
+				  </div>
+			  </template>
 
+		  </div>
+		  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+				<!--表格-->
+				<template>
+				  <div class="overflow-auto">
+					  <b-table
+						id="alert-table"
+						:items="itemsAlert"
+						:per-page="perPageAlert"
+						:current-page="currentPageAlert"
+									  striped hover
+					  ></b-table>
+					  <b-pagination
+						v-model="currentPageAlert"
+						:total-rows="rowsAlert"
+						:per-page="perPageAlert"
+						aria-controls="alert-table"
+					  ></b-pagination>
+					</div>
+				</template>
+		  </div>
+		  
+		</div>
 	</div>
 	
 </main>
@@ -188,7 +186,7 @@
 <!--加载库文件-->
 
 <script src="format.js"></script>
-<script src="socketcod.js"></script>
+<script src="socketqc.js"></script>
 <!--<script src="dashboard.js"></script>-->
 <script src="connect.js"></script>
 
@@ -203,22 +201,22 @@
 			}
 		}
 	}, 800);
-	//获取仪表COD数据
+	//获取仪表任务task数据
 	setTimeout(function(){
 		if(Vm.connected){
-			Vm.sendData("GET_CodData")
+			Vm.sendData("GET_TaskData")
 		}
 	}, 1000);
-	//获取仪表COD数据
+	//获取仪表配制记录record数据
+	setTimeout(function(){
+		if(Vm.connected){
+			Vm.sendData("GET_RecordData")
+		}
+	}, 1200);
+	//获取仪表报警alert数据
 	setTimeout(function(){
 		if(Vm.connected){
 			Vm.sendData("GET_AlertData")
-		}
-	}, 1200);
-	//获取仪表COD数据
-	setTimeout(function(){
-		if(Vm.connected){
-			Vm.sendData("GET_CalibrationData")
 		}
 	}, 1400);
 </script>
