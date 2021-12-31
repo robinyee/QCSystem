@@ -76,11 +76,12 @@ public class TabSetup extends Fragment {
     private Spinner spinnerStartType, spinnerCom1BaudRate;
     private Switch switchIsLoop;
     private EditText editNH3Volume, editNH3A, editNH3B, editNH3C, editNH3O, editNH3AddMultiplier, editNH3AddVolume;
-    private EditText editTPVolume, editTPA, editTPB, editTPC, editTPO, editTPAddMultiplier, editTPAddVolume, editTPAddType;
-    private EditText editTNVolume, editTNA, editTNB, editTNC, editTNO, editTNAddMultiplier, editTNAddVolume, editTNAddType;
-    private EditText editCODVolume, editCODA, editCODB, editCODC, editCODO, editCODAddMultiplier, editCODAddVolume, editCODAddType;
+    private EditText editTPVolume, editTPA, editTPB, editTPC, editTPO, editTPAddMultiplier, editTPAddVolume;
+    private EditText editTNVolume, editTNA, editTNB, editTNC, editTNO, editTNAddMultiplier, editTNAddVolume;
+    private EditText editCODVolume, editCODA, editCODB, editCODC, editCODO, editCODAddMultiplier, editCODAddVolume;
+    private EditText editMIXVolume, editMIXA, editMIXB, editMIXC, editMIXO, editMIXAddMultiplier, editMIXAddVolume;
     private EditText editWaterStepNum, editWaterStepVolume, editReagentsStepNum, editReagentsStepVolume, editSupplySamplesTime;
-    private Spinner spinnerNH3AddType, spinnerTPAddType, spinnerTNAddType, spinnerCODAddType;
+    private Spinner spinnerNH3AddType, spinnerTPAddType, spinnerTNAddType, spinnerCODAddType, spinnerMIXAddType;
     private TextView textWaterStepTest, textReagentsStepTest;
     private EditText editAdminPassword;
     private EditText editCom0, editCom1, editCom1Addr, editCom1BaudRate;
@@ -210,6 +211,16 @@ public class TabSetup extends Fragment {
         editCODAddMultiplier = view.findViewById(R.id.edit_COD_add_multiplier);
         editCODAddVolume = view.findViewById(R.id.edit_COD_add_volume);
         spinnerCODAddType = view.findViewById(R.id.spinner_COD_add_type);
+
+        //混合
+        editMIXVolume = view.findViewById(R.id.edit_MIX_volume);
+        editMIXA = view.findViewById(R.id.edit_MIX_A);
+        editMIXB = view.findViewById(R.id.edit_MIX_B);
+        editMIXC = view.findViewById(R.id.edit_MIX_C);
+        editMIXO = view.findViewById(R.id.edit_MIX_O);
+        editMIXAddMultiplier = view.findViewById(R.id.edit_MIX_add_multiplier);
+        editMIXAddVolume = view.findViewById(R.id.edit_MIX_add_volume);
+        spinnerMIXAddType = view.findViewById(R.id.spinner_MIX_add_type);
 
         //更多参数显示
         moreParameter = view.findViewById(R.id.moreParameter);
@@ -632,6 +643,15 @@ public class TabSetup extends Fragment {
         SysData.CODAddMul = Double.parseDouble(editCODAddMultiplier.getText().toString());              //COD加标倍数
         SysData.CODAddValume = Double.parseDouble(editCODAddVolume.getText().toString());           //COD加标量
         SysData.CODAddType = spinnerCODAddType.getSelectedItemPosition();               //COD加标类型
+        //混合
+        SysData.MIXVolume = Double.parseDouble(editMIXVolume.getText().toString());            //混合标样体积
+        SysData.MIXSampleA = Double.parseDouble(editMIXA.getText().toString());             //混合标样A浓度
+        SysData.MIXSampleB = Double.parseDouble(editMIXB.getText().toString());             //混合标样B浓度
+        SysData.MIXSampleC = Double.parseDouble(editMIXC.getText().toString());             //混合标样C浓度
+        SysData.MIXSampleO = Double.parseDouble(editMIXO.getText().toString());             //混合标样母液浓度
+        SysData.MIXAddMul = Double.parseDouble(editMIXAddMultiplier.getText().toString());              //混合加标倍数
+        SysData.MIXAddValume = Double.parseDouble(editMIXAddVolume.getText().toString());           //混合加标量
+        SysData.MIXAddType = spinnerMIXAddType.getSelectedItemPosition();               //混合加标类型
 
         //系统参数
         SysData.adminPassword = editAdminPassword.getText().toString();
@@ -699,6 +719,16 @@ public class TabSetup extends Fragment {
         editCODAddMultiplier.setText(String.valueOf(SysData.CODAddMul));
         editCODAddVolume.setText(String.valueOf(SysData.CODAddValume));
         spinnerCODAddType.setSelection(SysData.CODAddType);
+        //混合
+        editMIXVolume.setText(String.valueOf(SysData.MIXVolume));
+        editMIXA.setText(String.valueOf(SysData.MIXSampleA));
+        editMIXB.setText(String.valueOf(SysData.MIXSampleB));
+        editMIXC.setText(String.valueOf(SysData.MIXSampleC));
+        editMIXO.setText(String.valueOf(SysData.MIXSampleO));
+        editMIXAddMultiplier.setText(String.valueOf(SysData.MIXAddMul));
+        editMIXAddVolume.setText(String.valueOf(SysData.MIXAddValume));
+        spinnerMIXAddType.setSelection(SysData.MIXAddType);
+
     }
 
     //保存仪表参数
@@ -748,6 +778,15 @@ public class TabSetup extends Fragment {
             editor.putLong("CODAddMul", Double.doubleToLongBits(SysData.CODAddMul));
             editor.putLong("CODAddValume", Double.doubleToLongBits(SysData.CODAddValume));
             editor.putInt("CODAddType", SysData.CODAddType);
+            //混合
+            editor.putLong("MIXVolume", Double.doubleToLongBits(SysData.MIXVolume));
+            editor.putLong("MIXSampleA", Double.doubleToLongBits(SysData.MIXSampleA));
+            editor.putLong("MIXSampleB", Double.doubleToLongBits(SysData.MIXSampleB));
+            editor.putLong("MIXSampleC", Double.doubleToLongBits(SysData.MIXSampleC));
+            editor.putLong("MIXSampleO", Double.doubleToLongBits(SysData.MIXSampleO));
+            editor.putLong("MIXAddMul", Double.doubleToLongBits(SysData.MIXAddMul));
+            editor.putLong("MIXAddValume", Double.doubleToLongBits(SysData.MIXAddValume));
+            editor.putInt("MIXAddType", SysData.MIXAddType);
 
             //系统参数
             //editor.putString("localIpAddr", SysData.localIpAddr[0]);

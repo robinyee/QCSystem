@@ -95,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
         //打开数据库
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "db_qc").build();  //创建数据库
+        //查询数据
+        SysData.currentPage = 1;
+        SysData.readData(SysData.numPerpage, (SysData.currentPage-1)*SysData.numPerpage);  //从数据库读取数据
         //db.recordDao().deleteByTime(System.currentTimeMillis()); //删除所有记录
         //SysData.readData(SysData.numPerpage, (SysData.currentPage - 1) * SysData.numPerpage);  //从数据库读取数据
         //SysData.readChartData(30, 0);       //从数据库中读取30条数据
@@ -661,7 +664,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.NH3SampleO = Double.longBitsToDouble(sp.getLong("NH3SampleO", 0));
         SysData.NH3AddMul = Double.longBitsToDouble(sp.getLong("NH3AddMul", 0));
         SysData.NH3AddValume = Double.longBitsToDouble(sp.getLong("NH3AddValume", 0));
-        SysData.NH3AddType = sp.getInt("NH3AddType", 65);
+        SysData.NH3AddType = sp.getInt("NH3AddType", 0);
         //总磷
         SysData.TPVolume = Double.longBitsToDouble(sp.getLong("TPVolume", 0));
         SysData.TPSampleA = Double.longBitsToDouble(sp.getLong("TPSampleA", 0));
@@ -670,7 +673,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.TPSampleO = Double.longBitsToDouble(sp.getLong("TPSampleO", 0));
         SysData.TPAddMul = Double.longBitsToDouble(sp.getLong("TPAddMul", 0));
         SysData.TPAddValume = Double.longBitsToDouble(sp.getLong("TPAddValume", 0));
-        SysData.TPAddType = sp.getInt("TPAddType", 65);
+        SysData.TPAddType = sp.getInt("TPAddType", 0);
         //总氮
         SysData.TNVolume = Double.longBitsToDouble(sp.getLong("TNVolume", 0));
         SysData.TNSampleA = Double.longBitsToDouble(sp.getLong("TNSampleA", 0));
@@ -679,7 +682,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.TNSampleO = Double.longBitsToDouble(sp.getLong("TNSampleO", 0));
         SysData.TNAddMul = Double.longBitsToDouble(sp.getLong("TNAddMul", 0));
         SysData.TNAddValume = Double.longBitsToDouble(sp.getLong("TNAddValume", 0));
-        SysData.TNAddType = sp.getInt("TNAddType", 65);
+        SysData.TNAddType = sp.getInt("TNAddType", 0);
         //COD
         SysData.CODVolume = Double.longBitsToDouble(sp.getLong("CODVolume", 0));
         SysData.CODSampleA = Double.longBitsToDouble(sp.getLong("CODSampleA", 0));
@@ -688,7 +691,16 @@ public class MainActivity extends AppCompatActivity {
         SysData.CODSampleO = Double.longBitsToDouble(sp.getLong("CODSampleO", 0));
         SysData.CODAddMul = Double.longBitsToDouble(sp.getLong("CODAddMul", 0));
         SysData.CODAddValume = Double.longBitsToDouble(sp.getLong("CODAddValume", 0));
-        SysData.CODAddType = sp.getInt("CODAddType", 65);
+        SysData.CODAddType = sp.getInt("CODAddType", 0);
+        //混合
+        SysData.MIXVolume = Double.longBitsToDouble(sp.getLong("MIXVolume", 0));
+        SysData.MIXSampleA = Double.longBitsToDouble(sp.getLong("MIXSampleA", 0));
+        SysData.MIXSampleB = Double.longBitsToDouble(sp.getLong("MIXSampleB", 0));
+        SysData.MIXSampleC = Double.longBitsToDouble(sp.getLong("MIXSampleC", 0));
+        SysData.MIXSampleO = Double.longBitsToDouble(sp.getLong("MIXSampleO", 0));
+        SysData.MIXAddMul = Double.longBitsToDouble(sp.getLong("MIXAddMul", 0));
+        SysData.MIXAddValume = Double.longBitsToDouble(sp.getLong("MIXAddValume", 0));
+        SysData.MIXAddType = sp.getInt("MIXAddType", 0);
 
         //系统参数
         //SysData.localIpAddr[0] = sp.getString("localIpAddr", "");     //ip地址不需要存储
@@ -701,7 +713,7 @@ public class MainActivity extends AppCompatActivity {
         SysData.isNotice = sp.getBoolean("isNotice", false);
         SysData.isEmptyPipeline = sp.getBoolean("isEmptyPipeline", false);
         SysData.adminPassword = sp.getString("adminPassword", "nsy218");
-        SysData.MODBUS_ADDR = sp.getInt("modbusAddr", 3);
+        SysData.MODBUS_ADDR = sp.getInt("modbusAddr", 6);
         SysData.BAUD_RATE = sp.getInt("baudRate", 9600);
         //Log.i("读取参数", "试剂量报警信息" + SysData.isNotice);
     }

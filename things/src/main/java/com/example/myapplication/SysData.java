@@ -170,7 +170,7 @@ public class SysData {
     static int startCycle = 1;                  //启动周期
     static int numberTimes = 0;                 //启动次数
     static int startType = 0;                   //定时启动的类型：0-空; 1-水质测定; 2-标样测定; 3-仪表校准
-    static int startWaterType = 0;              //水样类型：0-氨氮; 1-总磷; 2-总氮; 3-COD
+    static int startWaterType = 0;              //水样类型：0-氨氮; 1-总磷; 2-总氮; 3-COD; 4-混合
     static int startSampleType = 0;             //标样的类型 0-原水 1-空白样 2-标样A 3-标样B 4-标样C 5-加标回收
     static boolean isUpdateAutoRun = false;     //是否需要更新自动启动信息
     static boolean isUpdatnetwork = false;      //是否需要更新网络信息
@@ -180,7 +180,7 @@ public class SysData {
     static int BAUD_RATE = 9600;                //外部串口通讯波特率
     static int DATA_BITS = 8;                   //外部串口通讯数据位
     static int STOP_BITS = 1;                   //外部串口通讯停止位
-    static int MODBUS_ADDR = 3;                 //MODBUS地址位
+    static int MODBUS_ADDR = 6;                 //MODBUS地址位 默认地址是6
     static boolean isUpdateCom1 = false;        //是否需要更新串口参数
     static int updateNum = 3;                   //界面更新次数
     static String version = "1.0";              //软件版本
@@ -231,7 +231,7 @@ public class SysData {
 
     //计算水样步数
     public static void calculationWaterStep() {
-        double volumes[] = {NH3Volume,TPVolume,TNVolume,CODVolume};                         //水样体积数组 0-氨氮，1-总磷，2-总氮，3-COD
+        double volumes[] = {NH3Volume,TPVolume,TNVolume,CODVolume};                         //水样体积数组 0-氨氮，1-总磷，2-总氮，3-COD; 4-混合
         waterVolumes = volumes;
         if(waterStepVolume > 0) {
             for (int i = 0; i < waterVolumes.length; i++) {
@@ -244,8 +244,8 @@ public class SysData {
 
     //计算母液步数
     public static void calculationReagentStep() {
-        double volumes[] = {NH3Volume,TPVolume,TNVolume,CODVolume,MIXVolume};  //水样体积数组 0-氨氮，1-总磷，2-总氮，3-COD
-        double[] con = {NH3SampleO,TPSampleO,TNSampleO,CODSampleO,MIXSampleO};     //母液浓度数组 0-氨氮，1-总磷，2-总氮，3-COD
+        double volumes[] = {NH3Volume,TPVolume,TNVolume,CODVolume,MIXVolume};  //水样体积数组 0-氨氮，1-总磷，2-总氮，3-COD; 4-混合
+        double[] con = {NH3SampleO,TPSampleO,TNSampleO,CODSampleO,MIXSampleO};     //母液浓度数组 0-氨氮，1-总磷，2-总氮，3-COD; 4-混合
         double[][] value = {{NH3SampleA,NH3SampleB,NH3SampleC,NH3AddValume*(1+NH3AddMul*NH3AddType)},      //氨氮标样浓度
                             {TPSampleA,TPSampleB,TPSampleC,TPAddValume*(1+TPAddMul*TPAddType)},          //总磷标样浓度
                             {TNSampleA,TNSampleB,TNSampleC,TNAddValume*(1+TNAddMul*TNAddType)},          //总氮标样浓度
